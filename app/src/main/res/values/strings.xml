@@ -10,5 +10,6 @@
     <string name="publication">Опубликовано</string>
     <string name="online">В cети</string>
     <string name="offline">Не в сети</string>
+    <string name="failedLoad">Во время загрузки произошла ошибка</string>
 
 </resources>

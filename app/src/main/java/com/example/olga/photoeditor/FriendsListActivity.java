@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,11 +41,15 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     @BindView(R.id.friends_list_recycler_view_friends)
     RecyclerView mFriendsRecyclerView;
 
-    @BindView(R.id.friends_list_frame_layout_message)
-    View mMessageView;
+    @BindView(R.id.friends_list_text_view_nodata)
+    TextView mNoDataTextView;
 
+    @BindView(R.id.friends_list_text_view_failed)
+    TextView mFailedTextView;
+
+    private static final String FRIENDS_DATA = "FRIENDS_DATA";
+    private static List<Friend> mFriends;
     private FriendAdapter mFriendAdapter;
-
     private FriendsListAsyncTask mFriendsListAsyncTask;
 
     @Override
@@ -53,6 +58,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         setContentView(R.layout.friends_list);
         ButterKnife.bind(this);
 
+        mFriends = new ArrayList<>();
         mFriendAdapter = new FriendAdapter(this);
         mFriendsRecyclerView.setAdapter(mFriendAdapter);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,7 +69,28 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             mFriendsListAsyncTask.execute();
         } else {
             mFriendsListAsyncTask.setFriendsListener(this);
+            //noinspection ConstantConditions
+            mFriends = (List<Friend>) savedInstanceState.getSerializable(FRIENDS_DATA);
+            mFriendsListAsyncTask.onPostExecute(mFriends);
         }
+
+        // init swipe to dismiss logic
+        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                // callback for drag-n-drop, false to skip this feature
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // callback for swipe to dismiss, removing item from data and adapter
+                mFriends.remove(viewHolder.getAdapterPosition());
+                mFriendAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+        });
+        swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
     }
 
     @Override
@@ -80,11 +107,20 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Friend> friends = new ArrayList<>();
+        for (int i = 0; i < mFriendAdapter.getItemCount(); i++) {
+            friends.add(mFriendAdapter.getItem(i));
+        }
+        outState.putSerializable(FRIENDS_DATA, friends);
+    }
+
+    @Override
     public void startProgress() {
         mLoadingBar.setVisibility(View.VISIBLE);
         mProgressTextView.setVisibility(View.VISIBLE);
         mFriendsRecyclerView.setVisibility(View.GONE);
-        mMessageView.setVisibility(View.GONE);
     }
 
     @Override
@@ -95,19 +131,26 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     }
 
     @Override
+    public void failedProgress() {
+        mLoadingBar.setVisibility(View.GONE);
+        mProgressTextView.setVisibility(View.GONE);
+        mFailedTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void updateProgress(int progress) {
         mProgressTextView.setText(getString(R.string.progress_format, progress));
     }
 
     @Override
     public void setResult(List<Friend> friends) {
-        mFriendAdapter.setCollection(friends);
+        if (friends.isEmpty()) mNoDataTextView.setVisibility(View.VISIBLE);
+        else mFriendAdapter.setCollection(friends);
     }
 
     static class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
         private Context mContext;
-        private List<Friend> mFriends = new ArrayList<>();
         private int mAvatarSize = 60;
 
         public FriendAdapter(Context context) {
@@ -150,7 +193,6 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         public int getItemCount() {
             return mFriends.size();
         }
-
     }
 
     static class FriendViewHolder extends RecyclerView.ViewHolder {

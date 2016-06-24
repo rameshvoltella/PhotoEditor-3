@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -31,7 +32,7 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         mFriendsListener = friendsListener;
         mFriendListRequest = RetrofitService.getInstance(context)
                 .createApiService(VkFriendsApi.class)
-                .getFriends(4283833,"photo_100,online","5.52");
+                .getFriends(4283833, "photo_100,online", "5.52");
     }
 
     public void setFriendsListener(FriendsListener friendsListener) {
@@ -65,8 +66,28 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
 
         try {
             Response<FriendListRequest> friendsResponse = mFriendListRequest.execute();
-            publishProgress(100);
-            return  friendsResponse.body().getResponse().getFriends();
+            if (friendsResponse.isSuccessful()) {
+                mFriends = friendsResponse.body().getResponse().getFriends();
+                int currentProgress = 0;
+
+                for (int i = 0; i < mFriends.size(); i++) {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(30);
+                        publishProgress(currentProgress);
+                        currentProgress += 100 / mFriends.size();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    publishProgress(currentProgress);
+                }
+
+                return friendsResponse.body().getResponse().getFriends();
+
+            } else {
+                mFriendsListener.failedProgress();
+                return Collections.emptyList();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -98,6 +119,8 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         void startProgress();
 
         void stopProgress();
+
+        void failedProgress();
 
         void updateProgress(int progress);
 
