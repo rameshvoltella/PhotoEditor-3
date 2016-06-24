@@ -14,7 +14,9 @@ import retrofit2.http.Query;
  */
 public interface VkFriendsApi {
     @GET(VkUrls.Friends.GET_FRIENDS)
-    Call<FriendListRequest> getFriends(@Query("user_id") int UserId,
+    Call<FriendListRequest> getFriends(@Query("user_id") int userId,
+                                       @Query("order") String order,
+                                       @Query("count") int count,
                                        @Query("fields") String fields,
                                        @Query("v") String version);
 }

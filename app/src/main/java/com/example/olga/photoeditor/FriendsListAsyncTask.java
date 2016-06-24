@@ -32,7 +32,7 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         mFriendsListener = friendsListener;
         mFriendListRequest = RetrofitService.getInstance(context)
                 .createApiService(VkFriendsApi.class)
-                .getFriends(4283833, "photo_100,online", "5.52");
+                .getFriends(4283833, "random", 10, "photo_100,online", "5.52");
     }
 
     public void setFriendsListener(FriendsListener friendsListener) {
@@ -72,7 +72,7 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
 
                 for (int i = 0; i < mFriends.size(); i++) {
                     try {
-                        TimeUnit.MILLISECONDS.sleep(30);
+                        TimeUnit.MILLISECONDS.sleep(100);
                         publishProgress(currentProgress);
                         currentProgress += 100 / mFriends.size();
                     } catch (InterruptedException e) {

@@ -2,49 +2,40 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/activity_main_text_view_publication"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/activity_main_linear_layout_interface"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/publication"
-            android:visibility="gone"/>
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_padding">
 
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/activity_main_image_view_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/photo_height"
+                android:src="@drawable/pinguin"/>
 
-    <LinearLayout
-        android:id="@+id/activity_main_linear_layout_interface"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="@dimen/activity_vertical_padding">
+            <Button
+                android:id="@+id/activity_main_button_Send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send_photo"/>
 
-        <ImageView
-            android:id="@+id/activity_main_image_view_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pinguin"/>
+            <CheckBox
+                android:id="@+id/activity_main_checkbox_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check_friends"/>
 
-        <Button
-            android:id="@+id/activity_main_button_Send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send_photo"/>
+        </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/activity_main_checkbox_friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/check_friends"/>
-
-    </LinearLayout>
-
+    </ScrollView>
 
 </FrameLayout>

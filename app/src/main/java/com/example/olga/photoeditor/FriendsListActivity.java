@@ -65,16 +65,16 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
         mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
         if (mFriendsListAsyncTask == null) {
-            mFriendsListAsyncTask = new FriendsListAsyncTask(this, this);
+            mFriendsListAsyncTask = new FriendsListAsyncTask(this, FriendsListActivity.this);
             mFriendsListAsyncTask.execute();
         } else {
-            mFriendsListAsyncTask.setFriendsListener(this);
-            //noinspection ConstantConditions
-            mFriends = (List<Friend>) savedInstanceState.getSerializable(FRIENDS_DATA);
-            mFriendsListAsyncTask.onPostExecute(mFriends);
+            mFriendsListAsyncTask.setFriendsListener(FriendsListActivity.this);
+            //noinspection ConstantConditions,unchecked
+            List<Friend> friends = (List<Friend>) savedInstanceState.getSerializable(FRIENDS_DATA);
+            if (friends.size() != 0) mFriends = friends;
         }
 
-        // init swipe to dismiss logic
+        // init swipe
         ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -85,9 +85,10 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // callback for swipe to dismiss, removing item from data and adapter
+
                 mFriends.remove(viewHolder.getAdapterPosition());
                 mFriendAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                if (mFriends.isEmpty()) mNoDataTextView.setVisibility(View.VISIBLE);
             }
         });
         swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);

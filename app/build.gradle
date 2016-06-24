@@ -35,6 +35,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
 
-    compile project(':vksdk_library')
     
 }
