@@ -38,6 +38,7 @@ captures/
 
 # Keystore files
 *.jks
+.idea/
 .idea/libraries/butterknife_8_1_0.xml
 .idea/libraries/butterknife_annotations_8_1_0.xml
 .idea/libraries/gson_2_6_2.xml
