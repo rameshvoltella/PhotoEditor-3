@@ -35,11 +35,17 @@ captures/
 # Intellij
 *.iml
 *.idea
-.idea/
 
 # Keystore files
 *.jks
-
+.idea/*.xml
+.idea/libraries/butterknife_8_1_0.xml
+.idea/libraries/butterknife_annotations_8_1_0.xml
+.idea/libraries/gson_2_6_2.xml
+.idea/libraries/okhttp_3_3_1.xml
+.idea/libraries/okio_1_8_0.xml
+.idea/libraries/picasso_2_5_2.xml
+.idea/libraries/retrofit_2_1_0.xml
 app/libs/
 app/src/main/java/com/example/olga/photoeditor/models/
 app/src/main/res/drawable/
