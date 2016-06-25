@@ -47,7 +47,6 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     @BindView(R.id.friends_list_text_view_failed)
     TextView mFailedTextView;
 
-    private static final String FRIENDS_DATA = "FRIENDS_DATA";
     private static List<Friend> mFriends;
     private FriendAdapter mFriendAdapter;
     private FriendsListAsyncTask mFriendsListAsyncTask;
@@ -65,13 +64,10 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
         mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
         if (mFriendsListAsyncTask == null) {
-            mFriendsListAsyncTask = new FriendsListAsyncTask(this, FriendsListActivity.this);
+            mFriendsListAsyncTask = new FriendsListAsyncTask(this, this);
             mFriendsListAsyncTask.execute();
         } else {
-            mFriendsListAsyncTask.setFriendsListener(FriendsListActivity.this);
-            //noinspection ConstantConditions,unchecked
-            List<Friend> friends = (List<Friend>) savedInstanceState.getSerializable(FRIENDS_DATA);
-            if (friends.size() != 0) mFriends = friends;
+            mFriendsListAsyncTask.setFriendsListener(this);
         }
 
         // init swipe
@@ -95,8 +91,8 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onBackPressed() {
+        super.onBackPressed();
         if (mFriendsListAsyncTask != null) {
             mFriendsListAsyncTask.cancel(true);
         }
@@ -104,17 +100,8 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
+        if (mFriends.size() != 0) mFriendsListAsyncTask.setFriends(mFriends);
         return mFriendsListAsyncTask;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        ArrayList<Friend> friends = new ArrayList<>();
-        for (int i = 0; i < mFriendAdapter.getItemCount(); i++) {
-            friends.add(mFriendAdapter.getItem(i));
-        }
-        outState.putSerializable(FRIENDS_DATA, friends);
     }
 
     @Override
@@ -122,6 +109,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         mLoadingBar.setVisibility(View.VISIBLE);
         mProgressTextView.setVisibility(View.VISIBLE);
         mFriendsRecyclerView.setVisibility(View.GONE);
+        mNoDataTextView.setVisibility(View.GONE);
     }
 
     @Override
@@ -146,7 +134,10 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     @Override
     public void setResult(List<Friend> friends) {
         if (friends.isEmpty()) mNoDataTextView.setVisibility(View.VISIBLE);
-        else mFriendAdapter.setCollection(friends);
+        else {
+            mNoDataTextView.setVisibility(View.GONE);
+            mFriendAdapter.setCollection(friends);
+        }
     }
 
     static class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {

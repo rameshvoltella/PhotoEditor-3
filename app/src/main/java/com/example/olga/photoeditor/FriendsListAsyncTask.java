@@ -62,26 +62,25 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
     @Override
     protected List<Friend> doInBackground(Void... voids) {
 
-        publishProgress(0);
-
         try {
+            publishProgress(0);
             Response<FriendListRequest> friendsResponse = mFriendListRequest.execute();
+
             if (friendsResponse.isSuccessful()) {
                 mFriends = friendsResponse.body().getResponse().getFriends();
                 int currentProgress = 0;
-
                 for (int i = 0; i < mFriends.size(); i++) {
                     try {
-                        TimeUnit.MILLISECONDS.sleep(100);
+                        TimeUnit.SECONDS.sleep(1);
                         publishProgress(currentProgress);
                         currentProgress += 100 / mFriends.size();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        return Collections.emptyList();
                     }
                     publishProgress(currentProgress);
                 }
-
-                return friendsResponse.body().getResponse().getFriends();
+                return mFriends;
 
             } else {
                 mFriendsListener.failedProgress();
@@ -105,7 +104,7 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         super.onPostExecute(friends);
         mFriends = friends;
         mFriendsListener.stopProgress();
-        mFriendsListener.setResult(friends);
+        mFriendsListener.setResult(mFriends);
     }
 
     @Override
@@ -125,5 +124,13 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         void updateProgress(int progress);
 
         void setResult(List<Friend> friends);
+    }
+
+    public List<Friend> getFriends() {
+        return mFriends;
+    }
+
+    public void setFriends(List<Friend> friends) {
+        mFriends = friends;
     }
 }
