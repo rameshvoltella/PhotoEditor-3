@@ -19,8 +19,6 @@
 
         <activity android:name="com.example.olga.photoeditor.FriendsListActivity"/>
 
-        <activity android:name="com.vk.sdk.VKServiceActivity"/>
-
     </application>
 
 </manifest>

@@ -85,6 +85,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
                 mFriends.remove(viewHolder.getAdapterPosition());
                 mFriendAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                 if (mFriends.isEmpty()) mNoDataTextView.setVisibility(View.VISIBLE);
+                mFriendsListAsyncTask.setFriends(mFriends);
             }
         });
         swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
@@ -100,7 +101,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        if (mFriends.size() != 0) mFriendsListAsyncTask.setFriends(mFriends);
+        //if (mFriends.size() != 0) mFriendsListAsyncTask.setFriends(mFriends);
         return mFriendsListAsyncTask;
     }
 
