@@ -11,5 +11,10 @@
     <string name="online">В cети</string>
     <string name="offline">Не в сети</string>
     <string name="failedLoad">Во время загрузки произошла ошибка</string>
+    <string name="load_from_database">Загрузить из БД</string>
+    <string name="load_from_network">Загрузить из сети</string>
+    <string name="database_empty">База данных пуста</string>
+    <string name="only_online">Только OnLine</string>
+    <string name="save_all">Сохранить все</string>
 
 </resources>

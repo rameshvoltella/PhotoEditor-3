@@ -28,10 +28,32 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/friends_list_recycler_view_friends"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/friends_list_button_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/only_online"/>
+
+        <Button
+            android:id="@+id/friends_list_button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/save_all"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friends_list_recycler_view_friends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/friends_list_frame_layout_message"

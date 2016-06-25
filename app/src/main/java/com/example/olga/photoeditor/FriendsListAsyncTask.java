@@ -3,6 +3,7 @@ package com.example.olga.photoeditor;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.olga.photoeditor.models.vkfriends.FriendListRequest;
 import com.example.olga.photoeditor.network.RetrofitService;
@@ -28,11 +29,19 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
     private List<Friend> mFriends = new ArrayList<>();
     private Call<FriendListRequest> mFriendListRequest;
 
-    public FriendsListAsyncTask(Context context, FriendsListener friendsListener) {
+    public FriendsListAsyncTask(Context context, FriendsListener friendsListener, int count) {
         mFriendsListener = friendsListener;
         mFriendListRequest = RetrofitService.getInstance(context)
                 .createApiService(VkFriendsApi.class)
-                .getFriends(4283833, "random", 10, "photo_100,online", "5.52");
+                .getFriends(4283833, "random", count, "photo_100,online", "5.52");
+    }
+
+    public FriendsListAsyncTask(Context context, FriendsListener friendsListener) {
+        mFriendsListener = friendsListener;
+        FriendDataSource dataSource = new FriendDataSource(context);
+        dataSource.open();
+        mFriends = dataSource.getAllFriends();
+        dataSource.close();
     }
 
     public void setFriendsListener(FriendsListener friendsListener) {
@@ -61,36 +70,38 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
 
     @Override
     protected List<Friend> doInBackground(Void... voids) {
+        publishProgress(0);
+        if (mFriendListRequest != null) {
+            try {
+                Response<FriendListRequest> friendsResponse = mFriendListRequest.execute();
 
-        try {
-            publishProgress(0);
-            Response<FriendListRequest> friendsResponse = mFriendListRequest.execute();
+                if (friendsResponse.isSuccessful())
+                    mFriends = friendsResponse.body().getResponse().getFriends();
 
-            if (friendsResponse.isSuccessful()) {
-                mFriends = friendsResponse.body().getResponse().getFriends();
-                int currentProgress = 0;
-                for (int i = 0; i < mFriends.size(); i++) {
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                        publishProgress(currentProgress);
-                        currentProgress += 100 / mFriends.size();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        return Collections.emptyList();
-                    }
-                    publishProgress(currentProgress);
+                else {
+                    mFriendsListener.failedProgress();
+                    return Collections.emptyList();
                 }
-                return mFriends;
 
-            } else {
-                mFriendsListener.failedProgress();
+            } catch (IOException e) {
+                e.printStackTrace();
                 return Collections.emptyList();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
         }
+
+        int currentProgress = 0;
+        for (int i = 0; i < mFriends.size(); i++) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+                publishProgress(currentProgress);
+                currentProgress += 100 / mFriends.size();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
+            publishProgress(currentProgress);
+        }
+        return mFriends;
     }
 
     @Override
@@ -124,10 +135,6 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         void updateProgress(int progress);
 
         void setResult(List<Friend> friends);
-    }
-
-    public List<Friend> getFriends() {
-        return mFriends;
     }
 
     public void setFriends(List<Friend> friends) {

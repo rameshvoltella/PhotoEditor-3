@@ -1,24 +1,24 @@
 package com.example.olga.photoeditor;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.olga.photoeditor.adapter.FriendAdapter;
+import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.photoeditor.R;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,6 +31,12 @@ import butterknife.ButterKnife;
  * @author Olga
  */
 public class FriendsListActivity extends AppCompatActivity implements FriendsListAsyncTask.FriendsListener {
+
+    @BindView(R.id.friends_list_button_online)
+    Button mOnlineButton;
+
+    @BindView(R.id.friends_list_button_save)
+    Button mSaveAllButton;
 
     @BindView(R.id.friends_list_progress_bar_load)
     ProgressBar mLoadingBar;
@@ -47,48 +53,83 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     @BindView(R.id.friends_list_text_view_failed)
     TextView mFailedTextView;
 
-    private static List<Friend> mFriends;
     private FriendAdapter mFriendAdapter;
     private FriendsListAsyncTask mFriendsListAsyncTask;
+    private FriendDataSource dataSource;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friends_list);
         ButterKnife.bind(this);
+        mOnlineButton.setVisibility(View.GONE);
+        mSaveAllButton.setVisibility(View.GONE);
 
-        mFriends = new ArrayList<>();
+        dataSource = new FriendDataSource(this);
         mFriendAdapter = new FriendAdapter(this);
         mFriendsRecyclerView.setAdapter(mFriendAdapter);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
-        if (mFriendsListAsyncTask == null) {
-            mFriendsListAsyncTask = new FriendsListAsyncTask(this, this);
-            mFriendsListAsyncTask.execute();
-        } else {
-            mFriendsListAsyncTask.setFriendsListener(this);
-        }
+        saveState();
 
-        // init swipe
-        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                // callback for drag-n-drop, false to skip this feature
-                return false;
-            }
+        initSwipe();
+
+        mOnlineButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                mFriends.remove(viewHolder.getAdapterPosition());
-                mFriendAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                if (mFriends.isEmpty()) mNoDataTextView.setVisibility(View.VISIBLE);
-                mFriendsListAsyncTask.setFriends(mFriends);
+            public void onClick(View v) {
+                dataSource.open();
+                mFriendAdapter.setCollection(dataSource.getOnlineFriends());
+                if (dataSource.getOnlineFriends().isEmpty()) noData();
+                dataSource.close();
             }
         });
-        swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
+
+        mSaveAllButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mFriendAdapter.getFriends().size(); i++) {
+                    dataSource.open();
+                    dataSource.saveFriend(mFriendAdapter.getFriends().get(i));
+                    dataSource.close();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.friend_list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.load_from_database:
+                if (databaseIsEmpty()) {
+                    noData();
+                    dataSource.close();
+                    Toast.makeText(FriendsListActivity.this, R.string.database_empty, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    noData();
+                    dataSource.close();
+                    loadFromDatabase();
+                }
+                return true;
+
+            case R.id.load_from_network:
+                noData();
+                loadFromNetwork(10);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -101,7 +142,6 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        //if (mFriends.size() != 0) mFriendsListAsyncTask.setFriends(mFriends);
         return mFriendsListAsyncTask;
     }
 
@@ -111,6 +151,10 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         mProgressTextView.setVisibility(View.VISIBLE);
         mFriendsRecyclerView.setVisibility(View.GONE);
         mNoDataTextView.setVisibility(View.GONE);
+        mSaveAllButton.setVisibility(View.GONE);
+        mOnlineButton.setVisibility(View.GONE);
+        mOnlineButton.setEnabled(false);
+        mSaveAllButton.setEnabled(false);
     }
 
     @Override
@@ -138,71 +182,64 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         else {
             mNoDataTextView.setVisibility(View.GONE);
             mFriendAdapter.setCollection(friends);
+            mOnlineButton.setEnabled(true);
+            mSaveAllButton.setEnabled(true);
         }
     }
 
-    static class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
-
-        private Context mContext;
-        private int mAvatarSize = 60;
-
-        public FriendAdapter(Context context) {
-            mContext = context;
-        }
-
-        public void setCollection(List<Friend> collection) {
-            mFriends.addAll(collection);
-            notifyDataSetChanged();
-        }
-
-        public Friend getItem(int position) {
-            return mFriends.get(position);
-        }
-
-        @Override
-        public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new FriendViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_friend, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(FriendViewHolder holder, int position) {
-
-            Friend item = getItem(position);
-            Picasso.with(mContext)
-                    .load(item.getPhotoUrl())
-                    .placeholder(R.mipmap.ic_user)
-                    .resize(mAvatarSize, mAvatarSize).onlyScaleDown()
-                    .into(holder.avatarImageView);
-
-            holder.nameTextView.setText(item.getFirstName() + " " + item.getLastName());
-
-            if (item.getOnline().equals("0")) {
-                holder.onlineTextView.setText(R.string.offline);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mFriends.size();
-        }
+    private void noData() {
+        mLoadingBar.setVisibility(View.GONE);
+        mProgressTextView.setVisibility(View.GONE);
+        mFriendsRecyclerView.setVisibility(View.GONE);
+        mNoDataTextView.setVisibility(View.VISIBLE);
     }
 
-    static class FriendViewHolder extends RecyclerView.ViewHolder {
+    private boolean databaseIsEmpty() {
+        dataSource.open();
+        return (dataSource.getAllFriends().size() == 0);
+    }
 
-        @BindView(R.id.item_friend_image_view_avatar)
-        ImageView avatarImageView;
+    private void loadFromDatabase() {
+        mFriendsListAsyncTask = new FriendsListAsyncTask(this, this);
+        mFriendsListAsyncTask.execute();
+        mOnlineButton.setVisibility(View.VISIBLE);
+    }
 
-        @BindView(R.id.item_friend_text_view_name)
-        TextView nameTextView;
+    private void loadFromNetwork(int count) {
+        mFriendsListAsyncTask = new FriendsListAsyncTask(this, this, count);
+        mFriendsListAsyncTask.execute();
+        mSaveAllButton.setVisibility(View.VISIBLE);
+    }
 
-        @BindView(R.id.item_friend_text_view_online)
-        TextView onlineTextView;
+    private void saveState(){
+        mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
+        if (mFriendsListAsyncTask == null) noData();
+        else mFriendsListAsyncTask.setFriendsListener(this);
+    }
 
-        public FriendViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+    private void initSwipe() {
+        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                        dataSource.open();
+                        dataSource.deleteFriend(mFriendAdapter.getFriends().get(viewHolder.getAdapterPosition()));
+                        dataSource.close();
+
+                        mFriendAdapter.removeItem(viewHolder.getAdapterPosition());
+
+                        mFriendsListAsyncTask.setFriends(mFriendAdapter.getFriends());
+                        if (mFriendAdapter.getFriends().isEmpty()) noData();
+                    }
+                });
+        swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
     }
 
 }
