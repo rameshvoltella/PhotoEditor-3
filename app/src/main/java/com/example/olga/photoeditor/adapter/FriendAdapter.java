@@ -58,8 +58,8 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
         holder.nameTextView.setText(item.getFirstName() + " " + item.getLastName());
 
-        if (item.getOnline().equals("0")) {
-            holder.onlineTextView.setText(R.string.offline);
+        if (item.getOnline().equals("1")) {
+            holder.onlineTextView.setText(R.string.online);
         }
     }
 

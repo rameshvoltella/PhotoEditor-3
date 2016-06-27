@@ -39,9 +39,7 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
     public FriendsListAsyncTask(Context context, FriendsListener friendsListener) {
         mFriendsListener = friendsListener;
         FriendDataSource dataSource = new FriendDataSource(context);
-        dataSource.open();
         mFriends = dataSource.getAllFriends();
-        dataSource.close();
     }
 
     public void setFriendsListener(FriendsListener friendsListener) {

@@ -78,10 +78,8 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
             @Override
             public void onClick(View v) {
-                dataSource.open();
                 mFriendAdapter.setCollection(dataSource.getOnlineFriends());
                 if (dataSource.getOnlineFriends().isEmpty()) noData();
-                dataSource.close();
             }
         });
 
@@ -90,9 +88,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < mFriendAdapter.getFriends().size(); i++) {
-                    dataSource.open();
                     dataSource.saveFriend(mFriendAdapter.getFriends().get(i));
-                    dataSource.close();
                 }
             }
         });
@@ -112,12 +108,10 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             case R.id.load_from_database:
                 if (databaseIsEmpty()) {
                     noData();
-                    dataSource.close();
                     Toast.makeText(FriendsListActivity.this, R.string.database_empty, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     noData();
-                    dataSource.close();
                     loadFromDatabase();
                 }
                 return true;
@@ -195,7 +189,6 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     }
 
     private boolean databaseIsEmpty() {
-        dataSource.open();
         return (dataSource.getAllFriends().size() == 0);
     }
 
@@ -229,9 +222,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-                        dataSource.open();
                         dataSource.deleteFriend(mFriendAdapter.getFriends().get(viewHolder.getAdapterPosition()));
-                        dataSource.close();
 
                         mFriendAdapter.removeItem(viewHolder.getAdapterPosition());
 

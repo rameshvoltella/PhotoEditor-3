@@ -38,7 +38,7 @@
                 android:id="@+id/item_friend_text_view_online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/online"/>
+                android:text="@string/offline"/>
 
         </LinearLayout>
     </LinearLayout>
