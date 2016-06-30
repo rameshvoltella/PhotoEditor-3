@@ -38,6 +38,3 @@ captures/
 # Keystore files
 *.jks
 
-app/libs/
-app/src/main/java/com/example/olga/photoeditor/models/
-app/src/main/res/drawable/
