@@ -1,11 +1,11 @@
 package com.example.olga.photoeditor;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.olga.photoeditor.models.vkfriends.FriendListRequest;
+import com.example.olga.photoeditor.network.ListAsyncTask;
 import com.example.olga.photoeditor.network.RetrofitService;
 import com.example.olga.photoeditor.network.VkFriendsApi;
 
@@ -24,46 +24,27 @@ import retrofit2.Response;
  *
  * @author Olga
  */
-public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>> {
-    private FriendsListener mFriendsListener;
+public class FriendsListAsyncTask extends ListAsyncTask<Friend> {
+    private Listener mFriendsListener;
     private List<Friend> mFriends = new ArrayList<>();
     private Call<FriendListRequest> mFriendListRequest;
 
-    public FriendsListAsyncTask(Context context, FriendsListener friendsListener, int count) {
+    public FriendsListAsyncTask(Context context, Listener friendsListener, int count) {
         mFriendsListener = friendsListener;
         mFriendListRequest = RetrofitService.getInstance(context)
                 .createApiService(VkFriendsApi.class)
                 .getFriends(4283833, "random", count, "photo_100,online", "5.52");
     }
 
-    public FriendsListAsyncTask(Context context, FriendsListener friendsListener) {
+    public FriendsListAsyncTask(Context context, Listener friendsListener) {
         mFriendsListener = friendsListener;
         FriendDataSource dataSource = new FriendDataSource(context);
         mFriends = dataSource.getAllFriends();
     }
 
-    public void setFriendsListener(FriendsListener friendsListener) {
-        mFriendsListener = friendsListener;
-
-        switch (getStatus()) {
-            case PENDING:
-                break;
-
-            case RUNNING:
-                mFriendsListener.startProgress();
-                break;
-
-            case FINISHED:
-                mFriendsListener.stopProgress();
-                mFriendsListener.setResult(mFriends);
-                break;
-        }
-    }
-
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mFriendsListener.startProgress();
     }
 
     @Override
@@ -121,18 +102,6 @@ public class FriendsListAsyncTask extends AsyncTask<Void, Integer, List<Friend>>
         super.onCancelled();
         mFriendsListener.stopProgress();
         mFriendsListener.setResult(Collections.<Friend>emptyList());
-    }
-
-    public interface FriendsListener {
-        void startProgress();
-
-        void stopProgress();
-
-        void failedProgress();
-
-        void updateProgress(int progress);
-
-        void setResult(List<Friend> friends);
     }
 
     public void setFriends(List<Friend> friends) {
