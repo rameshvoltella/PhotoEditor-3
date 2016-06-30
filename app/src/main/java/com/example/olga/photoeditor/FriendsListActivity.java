@@ -6,15 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.olga.photoeditor.adapter.FriendAdapter;
+import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
+import com.example.olga.photoeditor.adapter.FriendViewHolder;
 import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.photoeditor.R;
@@ -53,7 +56,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     @BindView(R.id.friends_list_text_view_failed)
     TextView mFailedTextView;
 
-    private FriendAdapter mFriendAdapter;
+    private CollectionRecycleAdapter<Friend> mFriendAdapter;
     private FriendsListAsyncTask mFriendsListAsyncTask;
     private FriendDataSource dataSource;
 
@@ -66,7 +69,14 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         mSaveAllButton.setVisibility(View.GONE);
 
         dataSource = new FriendDataSource(this);
-        mFriendAdapter = new FriendAdapter(this);
+
+        mFriendAdapter = new CollectionRecycleAdapter<Friend>(this) {
+            @Override
+            public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new FriendViewHolder(LayoutInflater.from(FriendsListActivity.this).inflate(R.layout.item_friend, parent, false));
+            }
+        };
+
         mFriendsRecyclerView.setAdapter(mFriendAdapter);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -87,8 +97,8 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
 
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < mFriendAdapter.getFriends().size(); i++) {
-                    dataSource.saveFriend(mFriendAdapter.getFriends().get(i));
+                for (int i = 0; i < mFriendAdapter.getCollection().size(); i++) {
+                    dataSource.saveFriend(mFriendAdapter.getCollection().get(i));
                 }
             }
         });
@@ -222,12 +232,12 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-                        dataSource.deleteFriend(mFriendAdapter.getFriends().get(viewHolder.getAdapterPosition()));
+                        dataSource.deleteFriend(mFriendAdapter.getCollection().get(viewHolder.getAdapterPosition()));
 
                         mFriendAdapter.removeItem(viewHolder.getAdapterPosition());
 
-                        mFriendsListAsyncTask.setFriends(mFriendAdapter.getFriends());
-                        if (mFriendAdapter.getFriends().isEmpty()) noData();
+                        mFriendsListAsyncTask.setFriends(mFriendAdapter.getCollection());
+                        if (mFriendAdapter.getCollection().isEmpty()) noData();
                     }
                 });
         swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
