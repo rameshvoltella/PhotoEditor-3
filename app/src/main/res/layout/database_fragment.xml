@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/database_fragment_linear_layout_interface"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_padding">
+
+            <ImageView
+                android:id="@+id/database_fragment_image_view_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/photo_height"
+                android:src="@drawable/pinguin"/>
+
+            <Button
+                android:id="@+id/database_fragment_button_Send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send_photo"/>
+
+            <CheckBox
+                android:id="@+id/database_fragment_checkbox_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check_friends"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

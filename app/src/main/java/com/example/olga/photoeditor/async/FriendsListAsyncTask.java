@@ -1,15 +1,15 @@
-package com.example.olga.photoeditor;
+package com.example.olga.photoeditor.async;
 
 import android.content.Context;
 
 import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.olga.photoeditor.models.vkfriends.FriendListRequest;
-import com.example.olga.photoeditor.network.ListAsyncTask;
 import com.example.olga.photoeditor.network.RetrofitService;
 import com.example.olga.photoeditor.network.VkFriendsApi;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,21 +24,26 @@ import retrofit2.Response;
  *
  * @author Olga
  */
-public class FriendsListAsyncTask extends ListAsyncTask<Friend> {
-    private Listener mFriendsListener;
+public class FriendsListAsyncTask extends ListAsyncTask<List<Friend>> implements Serializable {
+    private final Context mContext;
+    private Listener<List<Friend>> mFriendsListener;
     private List<Friend> mFriends = new ArrayList<>();
     private Call<FriendListRequest> mFriendListRequest;
 
-    public FriendsListAsyncTask(Context context, Listener friendsListener, int count) {
+    public FriendsListAsyncTask(Context context, Listener<List<Friend>> friendsListener, int count) {
+        super(context, friendsListener);
+        mContext = context.getApplicationContext();
         mFriendsListener = friendsListener;
-        mFriendListRequest = RetrofitService.getInstance(context)
+        mFriendListRequest = RetrofitService.getInstance(mContext)
                 .createApiService(VkFriendsApi.class)
                 .getFriends(4283833, "random", count, "photo_100,online", "5.52");
     }
 
-    public FriendsListAsyncTask(Context context, Listener friendsListener) {
+    public FriendsListAsyncTask(Context context, Listener<List<Friend>> friendsListener) {
+        super(context, friendsListener);
+        mContext = context.getApplicationContext();
         mFriendsListener = friendsListener;
-        FriendDataSource dataSource = new FriendDataSource(context);
+        FriendDataSource dataSource = new FriendDataSource(mContext);
         mFriends = dataSource.getAllFriends();
     }
 
@@ -86,22 +91,16 @@ public class FriendsListAsyncTask extends ListAsyncTask<Friend> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        mFriendsListener.updateProgress(values[0]);
     }
 
     @Override
     protected void onPostExecute(List<Friend> friends) {
         super.onPostExecute(friends);
-        mFriends = friends;
-        mFriendsListener.stopProgress();
-        mFriendsListener.setResult(mFriends);
     }
 
     @Override
     protected void onCancelled() {
         super.onCancelled();
-        mFriendsListener.stopProgress();
-        mFriendsListener.setResult(Collections.<Friend>emptyList());
     }
 
     public void setFriends(List<Friend> friends) {

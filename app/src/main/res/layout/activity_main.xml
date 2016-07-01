@@ -1,41 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main_drawerlayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/activity_main_linear_layout_interface"
+        <FrameLayout
+            android:id="@+id/activity_main_frame_layout_fragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_padding">
+            android:layout_height="match_parent"/>
 
-            <ImageView
-                android:id="@+id/activity_main_image_view_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/photo_height"
-                android:src="@drawable/pinguin"/>
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/activity_main_button_Send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/send_photo"/>
+    <ListView
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        />
 
-            <CheckBox
-                android:id="@+id/activity_main_checkbox_friends"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/check_friends"/>
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</FrameLayout>
+</android.support.v4.widget.DrawerLayout>

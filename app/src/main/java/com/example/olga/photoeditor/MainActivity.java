@@ -1,53 +1,75 @@
 package com.example.olga.photoeditor;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.example.olga.photoeditor.async.FriendsListAsyncTask;
+import com.example.olga.photoeditor.fragment.DatabaseFragment;
+import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
+import com.example.olga.photoeditor.fragment.FriendListFragment;
+import com.example.olga.photoeditor.fragment.StandartPropertyFragment;
 import com.example.photoeditor.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.activity_main_image_view_photo)
-    ImageView mPhotoImageView;
-
-    @BindView(R.id.activity_main_button_Send)
-    Button mSendButton;
-
-    @BindView(R.id.activity_main_checkbox_friends)
-    CheckBox mFriendCheckBox;
+    private static final String FRIEND_LIST_TAG = "FRIEND_LIST_TAG";
+    private static final String ASYNC_TASK = "ASYNC_TASK";
+    private static DatabaseFragment mDatabaseFragment;
+    private static FriendListFragment mFriendListFragment;
+    private static StandartPropertyFragment mStandartPropertyFragment;
+    private static ExtendPropertyFragment mExtendPropertyFragment;
+    private static FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
-        mSendButton.setOnClickListener(new View.OnClickListener() {
+        mDatabaseFragment = new DatabaseFragment();
+        mStandartPropertyFragment = new StandartPropertyFragment();
+        mExtendPropertyFragment = new ExtendPropertyFragment();
+        mFriendListFragment = new FriendListFragment();
 
-            @Override
-            public void onClick(View v) {
-                if (mFriendCheckBox.isChecked()) {
-                    Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.publication, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        SaveInstanseArguments();
+        fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.findFragmentByTag(FRIEND_LIST_TAG) == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_main_frame_layout_fragment, mDatabaseFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else {
+            getFriendList();
+        }
+
+    }
+
+    public static void getFriendList() {
+        fragmentManager.beginTransaction()
+                .replace(R.id.activity_main_frame_layout_fragment, mFriendListFragment, FRIEND_LIST_TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void SaveInstanseArguments(){
+        FriendsListAsyncTask friendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
+        if (friendsListAsyncTask != null) {
+            Bundle arguments = new Bundle();
+            arguments.putSerializable(ASYNC_TASK, friendsListAsyncTask);
+            mFriendListFragment.setArguments(arguments);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mFriendListFragment.getFriendsListAsyncTask();
     }
 }

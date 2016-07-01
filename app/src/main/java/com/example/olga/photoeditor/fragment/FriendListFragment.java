@@ -1,13 +1,14 @@
-package com.example.olga.photoeditor;
+package com.example.olga.photoeditor.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FriendViewHolder;
+import com.example.olga.photoeditor.async.FriendsListAsyncTask;
 import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.photoeditor.R;
@@ -28,13 +30,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Date: 22.06.16
- * Time: 21:53
+ * Date: 01.07.16
+ * Time: 09:55
  *
  * @author Olga
  */
-public class FriendsListActivity extends AppCompatActivity implements FriendsListAsyncTask.FriendsListener {
+public class FriendListFragment  extends Fragment implements FriendsListAsyncTask.Listener<List<Friend>> {
 
+    private static final String ASYNC_TASK = "ASYNC_TASK";
     @BindView(R.id.friends_list_button_online)
     Button mOnlineButton;
 
@@ -57,30 +60,47 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     TextView mFailedTextView;
 
     private CollectionRecycleAdapter<Friend> mFriendAdapter;
+
     private FriendsListAsyncTask mFriendsListAsyncTask;
+
     private FriendDataSource dataSource;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.friends_list);
-        ButterKnife.bind(this);
+        setHasOptionsMenu(true);
+        setRetainInstance(true);
+        Bundle arguments = getArguments();
+        if (arguments != null){
+            mFriendsListAsyncTask = (FriendsListAsyncTask) arguments.getSerializable(ASYNC_TASK);
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view =  inflater.inflate(R.layout.friends_list, container, false);
+        ButterKnife.bind(this, view);
+
         mOnlineButton.setVisibility(View.GONE);
         mSaveAllButton.setVisibility(View.GONE);
+        noData();
 
-        dataSource = new FriendDataSource(this);
+        dataSource = new FriendDataSource(getActivity());
 
-        mFriendAdapter = new CollectionRecycleAdapter<Friend>(this) {
+        mFriendAdapter = new CollectionRecycleAdapter<Friend>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new FriendViewHolder(LayoutInflater.from(FriendsListActivity.this).inflate(R.layout.item_friend, parent, false));
+                return new FriendViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_friend, parent, false));
             }
         };
 
         mFriendsRecyclerView.setAdapter(mFriendAdapter);
-        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        saveState();
+        if (mFriendsListAsyncTask == null) noData();
+        else mFriendsListAsyncTask.setListener(this);
 
         initSwipe();
 
@@ -103,12 +123,13 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             }
         });
 
+        return  view;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.friend_list_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.friend_list_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -118,7 +139,7 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             case R.id.load_from_database:
                 if (databaseIsEmpty()) {
                     noData();
-                    Toast.makeText(FriendsListActivity.this, R.string.database_empty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.database_empty, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     noData();
@@ -134,19 +155,6 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (mFriendsListAsyncTask != null) {
-            mFriendsListAsyncTask.cancel(true);
-        }
-    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return mFriendsListAsyncTask;
     }
 
     @Override
@@ -203,21 +211,15 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
     }
 
     private void loadFromDatabase() {
-        mFriendsListAsyncTask = new FriendsListAsyncTask(this, this);
+        mFriendsListAsyncTask = new FriendsListAsyncTask(getContext(), this);
         mFriendsListAsyncTask.execute();
         mOnlineButton.setVisibility(View.VISIBLE);
     }
 
     private void loadFromNetwork(int count) {
-        mFriendsListAsyncTask = new FriendsListAsyncTask(this, this, count);
+        mFriendsListAsyncTask = new FriendsListAsyncTask(getContext(), this, count);
         mFriendsListAsyncTask.execute();
         mSaveAllButton.setVisibility(View.VISIBLE);
-    }
-
-    private void saveState(){
-        mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
-        if (mFriendsListAsyncTask == null) noData();
-        else mFriendsListAsyncTask.setFriendsListener(this);
     }
 
     private void initSwipe() {
@@ -243,4 +245,13 @@ public class FriendsListActivity extends AppCompatActivity implements FriendsLis
         swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(ASYNC_TASK, mFriendsListAsyncTask);
+        super.onSaveInstanceState(outState);
+    }
+
+    public FriendsListAsyncTask getFriendsListAsyncTask() {
+        return mFriendsListAsyncTask;
+    }
 }

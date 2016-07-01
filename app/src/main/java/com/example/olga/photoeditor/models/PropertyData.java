@@ -28,14 +28,14 @@ public class PropertyData implements Serializable {
     public  static final PropertyData FISHEYE = new PropertyData("Объектив", 0.0, 1.0, 0.0);
     public  static final PropertyData VIGNETTE = new PropertyData("Виньетка", 0.0, 1.0, 0.0);
 
-    public static List<PropertyData> standartProperties()
+    public static List<PropertyData> getStandartProperties()
     {
         List<PropertyData> products = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
         Collections.shuffle(products);
         return products;
     }
 
-    public static List<PropertyData> extendProperties()
+    public static List<PropertyData> getExtendProperties()
     {
         List<PropertyData> products = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
         Collections.shuffle(products);
