@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
-public class FriendListFragment  extends Fragment implements FriendsListAsyncTask.Listener<List<Friend>> {
+public class FriendListFragment extends Fragment implements FriendsListAsyncTask.Listener<List<Friend>> {
 
     private static final String ASYNC_TASK = "ASYNC_TASK";
     @BindView(R.id.friends_list_button_online)
@@ -71,7 +71,7 @@ public class FriendListFragment  extends Fragment implements FriendsListAsyncTas
         setHasOptionsMenu(true);
         setRetainInstance(true);
         Bundle arguments = getArguments();
-        if (arguments != null){
+        if (arguments != null) {
             mFriendsListAsyncTask = (FriendsListAsyncTask) arguments.getSerializable(ASYNC_TASK);
         }
     }
@@ -80,7 +80,7 @@ public class FriendListFragment  extends Fragment implements FriendsListAsyncTas
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view =  inflater.inflate(R.layout.friends_list, container, false);
+        View view = inflater.inflate(R.layout.friends_list, container, false);
         ButterKnife.bind(this, view);
 
         mOnlineButton.setVisibility(View.GONE);
@@ -123,7 +123,7 @@ public class FriendListFragment  extends Fragment implements FriendsListAsyncTas
             }
         });
 
-        return  view;
+        return view;
     }
 
     @Override
@@ -134,14 +134,13 @@ public class FriendListFragment  extends Fragment implements FriendsListAsyncTas
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.load_from_database:
                 if (databaseIsEmpty()) {
                     noData();
                     Toast.makeText(getContext(), R.string.database_empty, Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     noData();
                     loadFromDatabase();
                 }
@@ -249,6 +248,12 @@ public class FriendListFragment  extends Fragment implements FriendsListAsyncTas
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(ASYNC_TASK, mFriendsListAsyncTask);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFriendsListAsyncTask.setListener(null);
     }
 
     public FriendsListAsyncTask getFriendsListAsyncTask() {

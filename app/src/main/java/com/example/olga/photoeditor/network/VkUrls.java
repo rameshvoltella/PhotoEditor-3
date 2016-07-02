@@ -13,11 +13,11 @@ import com.example.photoeditor.R;
 public final class VkUrls {
     static final String API = "https://api.vk.com/method";
 
-    public  static class Friends {
-        public static  final  String GET_FRIENDS = API + "/friends.get";
+    public static class Friends {
+        public static final String GET_FRIENDS = API + "/friends.get";
     }
 
-    public static String  getApiBaseUrl(Context context){
+    public static String getApiBaseUrl(Context context) {
         return context.getString(R.string.base_api_url);
     }
 }

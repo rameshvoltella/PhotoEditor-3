@@ -16,9 +16,10 @@ import java.util.List;
 public class PropertyAsyncTask extends ListAsyncTask<List<PropertyData>> {
     private List<PropertyData> mProperties = new ArrayList<>();
 
-    public PropertyAsyncTask (Context context, Listener<List<PropertyData>> propertyListener, List<PropertyData> properties) {
+    public PropertyAsyncTask(Context context, Listener<List<PropertyData>> propertyListener, List<PropertyData> properties) {
         super(context, propertyListener);
-        mProperties = properties;
+        mProperties.clear();
+        mProperties.addAll(properties);
     }
 
     @Override

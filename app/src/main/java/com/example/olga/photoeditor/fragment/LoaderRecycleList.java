@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor;
+package com.example.olga.photoeditor.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
-import com.example.olga.photoeditor.adapter.FriendViewHolder;
+import com.example.olga.photoeditor.adapter.PropertyViewHolder;
 import com.example.olga.photoeditor.async.PropertyAsyncTask;
 import com.example.olga.photoeditor.models.PropertyData;
 import com.example.photoeditor.R;
@@ -46,38 +46,23 @@ public abstract class LoaderRecycleList extends Fragment implements PropertyAsyn
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.property_list, container, false);
+        View view = inflater.inflate(R.layout.property_list, container, false);
         ButterKnife.bind(this, view);
 
-        //setContentView(R.layout.property_list);
-
-        mAdapter = new CollectionRecycleAdapter<PropertyData>(getContext()) {
+        mAdapter = new CollectionRecycleAdapter<PropertyData>(getActivity()) {
             @Override
-            public CollectionRecycleAdapter.RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new FriendViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_friend, parent, false));
+            public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.photo_item_property, parent, false));
             }
         };
 
         mPropertyRecyclerView.setAdapter(mAdapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        //saveState();
+        mPropertyAsyncTask = createPropertyAsyncTask();
+        mPropertyAsyncTask.execute();
 
         return view;
     }
-
-    /*@Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (mPropertyAsyncTask != null) {
-            mPropertyAsyncTask.cancel(true);
-        }
-    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return mPropertyAsyncTask;
-    }*/
 
     @Override
     public void startProgress() {
@@ -102,10 +87,12 @@ public abstract class LoaderRecycleList extends Fragment implements PropertyAsyn
         mAdapter.setCollection(data);
     }
 
+    @SuppressWarnings("unused")
     protected void reuseAsyncTask() {
         mPropertyAsyncTask.setListener(this);
     }
 
+    @SuppressWarnings("unused")
     protected void restartAsyncTask() {
         if (mPropertyAsyncTask != null) {
             mPropertyAsyncTask.cancel(true);
@@ -114,15 +101,5 @@ public abstract class LoaderRecycleList extends Fragment implements PropertyAsyn
         mPropertyAsyncTask = createPropertyAsyncTask();
         mPropertyAsyncTask.execute();
     }
-
-    /*protected  void saveState(){
-        mPropertyAsyncTask = (PropertyAsyncTask) getLastCustomNonConfigurationInstance();
-
-        if (mPropertyAsyncTask == null) {
-            restartAsyncTask();
-        } else {
-            reuseAsyncTask();
-        }
-    }*/
 
 }

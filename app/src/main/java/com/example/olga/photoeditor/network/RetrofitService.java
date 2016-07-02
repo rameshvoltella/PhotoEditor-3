@@ -19,9 +19,9 @@ public class RetrofitService {
     private static RetrofitService sInstance;
 
     public static RetrofitService getInstance(Context context) {
-        if (sInstance == null){
-            synchronized (RetrofitService.class){
-                if (sInstance == null){
+        if (sInstance == null) {
+            synchronized (RetrofitService.class) {
+                if (sInstance == null) {
                     sInstance = new RetrofitService(context);
                 }
             }
@@ -45,7 +45,7 @@ public class RetrofitService {
     }
 
     @NonNull
-    public  <S> S createApiService(@NonNull final  Class<S> apiClass){
+    public <S> S createApiService(@NonNull final Class<S> apiClass) {
         return mRetrofit.create(apiClass);
     }
 

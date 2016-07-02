@@ -2,59 +2,155 @@ package com.example.olga.photoeditor;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.example.olga.photoeditor.async.FriendsListAsyncTask;
 import com.example.olga.photoeditor.fragment.DatabaseFragment;
 import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
 import com.example.olga.photoeditor.fragment.FriendListFragment;
-import com.example.olga.photoeditor.fragment.StandartPropertyFragment;
+import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
 import com.example.photoeditor.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String FRIEND_LIST_TAG = "FRIEND_LIST_TAG";
+    @BindView(R.id.activity_main_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.activity_main_viewpager)
+    ViewPager viewPager;
+
+    @BindView(R.id.activity_main_tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.activity_main_nav_view)
+    NavigationView navigationView;
+
+    @BindView((R.id.activity_main_drawerlayout))
+    DrawerLayout mDrawerLayout;
+
     private static final String ASYNC_TASK = "ASYNC_TASK";
-    private static DatabaseFragment mDatabaseFragment;
+    private static String FRIEND_LIST_TAG = "FRIEND_LIST_TAG";
     private static FriendListFragment mFriendListFragment;
-    private static StandartPropertyFragment mStandartPropertyFragment;
+    private static DatabaseFragment mDatabaseFragment;
+    private static StandardPropertyFragment mStandardPropertyFragment;
     private static ExtendPropertyFragment mExtendPropertyFragment;
     private static FragmentManager fragmentManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mDatabaseFragment = new DatabaseFragment();
-        mStandartPropertyFragment = new StandartPropertyFragment();
+        mStandardPropertyFragment = new StandardPropertyFragment();
         mExtendPropertyFragment = new ExtendPropertyFragment();
         mFriendListFragment = new FriendListFragment();
-
-        SaveInstanseArguments();
         fragmentManager = getSupportFragmentManager();
 
-        if (fragmentManager.findFragmentByTag(FRIEND_LIST_TAG) == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.activity_main_frame_layout_fragment, mDatabaseFragment)
-                    .addToBackStack(null)
-                    .commit();
+        setSupportActionBar(toolbar);
+
+        // Setting ViewPager for each Tabs
+        setupViewPager(viewPager);
+
+        // Set Tabs inside Toolbar
+        tabs.setupWithViewPager(viewPager);
+
+        // Adding menu icon to Toolbar
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            //supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
+            indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
+            supportActionBar.setHomeAsUpIndicator(indicator);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        else {
-            getFriendList();
-        }
+
+        // Set behavior of Navigation drawer
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        if (menuItem.isChecked()) menuItem.setChecked(false);
+                        else menuItem.setChecked(true);
+
+                        switch (menuItem.getItemId()) {
+
+                            case R.id.navigation_menu_item_database: {
+                                viewPager.setCurrentItem(0, false);
+                                mDrawerLayout.closeDrawers();
+                                return true;
+                            }
+
+                            case R.id.navigation_menu_item_standart_properties: {
+                                viewPager.setCurrentItem(1, false);
+                                mDrawerLayout.closeDrawers();
+                                return true;
+                            }
+
+                            case R.id.navigation_menu_item_extend_properties: {
+                                viewPager.setCurrentItem(2, false);
+                                mDrawerLayout.closeDrawers();
+                                return true;
+                            }
+
+                            default:
+                                mDrawerLayout.closeDrawers();
+                                return true;
+                        }
+                    }
+                });
+
+        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                checkFriendList();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 
-    public static void getFriendList() {
-        fragmentManager.beginTransaction()
-                .replace(R.id.activity_main_frame_layout_fragment, mFriendListFragment, FRIEND_LIST_TAG)
-                .addToBackStack(null)
-                .commit();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    public void SaveInstanseArguments(){
+    public void SaveInstanceArguments() {
         FriendsListAsyncTask friendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
         if (friendsListAsyncTask != null) {
             Bundle arguments = new Bundle();
@@ -71,5 +167,66 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return mFriendListFragment.getFriendsListAsyncTask();
+    }
+
+    public static void getFriendList() {
+        fragmentManager.beginTransaction()
+                .replace(R.id.database_fragment_frame_layout_container, mFriendListFragment, FRIEND_LIST_TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void checkFriendList() {
+        if (fragmentManager.findFragmentByTag(FRIEND_LIST_TAG) != null) {
+            SaveInstanceArguments();
+            getFriendList();
+        }
+    }
+
+    // Add Fragments to Tabs
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter.addFragment(mDatabaseFragment, "Database");
+        adapter.addFragment(mStandardPropertyFragment, "Standart");
+        adapter.addFragment(mExtendPropertyFragment, "Extend");
+        viewPager.setAdapter(adapter);
+    }
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

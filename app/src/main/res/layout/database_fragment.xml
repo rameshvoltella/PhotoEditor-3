@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -20,7 +21,8 @@
                 android:id="@+id/database_fragment_image_view_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/photo_height"
-                android:src="@drawable/pinguin"/>
+                android:src="@drawable/pinguin"
+                tools:ignore="ContentDescription"/>
 
             <Button
                 android:id="@+id/database_fragment_button_Send"
@@ -38,4 +40,10 @@
 
     </ScrollView>
 
+    <FrameLayout
+        android:id="@+id/database_fragment_frame_layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </FrameLayout>
+

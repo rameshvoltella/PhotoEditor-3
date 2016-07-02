@@ -16,5 +16,7 @@
     <string name="database_empty">База данных пуста</string>
     <string name="only_online">Только OnLine</string>
     <string name="save_all">Сохранить все</string>
+    <string name="standart_properties">Стандартные настройки</string>
+    <string name="extend_properties">Расширеные настройки</string>
 
 </resources>

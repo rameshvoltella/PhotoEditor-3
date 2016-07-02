@@ -1,6 +1,5 @@
 package com.example.olga.photoeditor.fragment;
 
-import com.example.olga.photoeditor.LoaderRecycleList;
 import com.example.olga.photoeditor.async.PropertyAsyncTask;
 import com.example.olga.photoeditor.models.PropertyData;
 

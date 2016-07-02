@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.olga.photoeditor.MainActivity;
+import com.example.olga.photoeditor.async.FriendsListAsyncTask;
 import com.example.photoeditor.R;
 
 import butterknife.BindView;
@@ -25,8 +27,6 @@ import butterknife.ButterKnife;
  */
 public class DatabaseFragment extends Fragment {
 
-    private String FRIEND_BUTTON = "FRIEND_BUTTON";
-
     @BindView(R.id.database_fragment_image_view_photo)
     ImageView mPhotoImageView;
 
@@ -35,6 +35,9 @@ public class DatabaseFragment extends Fragment {
 
     @BindView(R.id.database_fragment_checkbox_friends)
     CheckBox mFriendCheckBox;
+
+    @BindView(R.id.database_fragment_frame_layout_container)
+    FrameLayout mContainerLayuot;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,8 +48,10 @@ public class DatabaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view =  inflater.inflate(R.layout.database_fragment, container, false);
+        View view = inflater.inflate(R.layout.database_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        saveState();
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
 
@@ -59,12 +64,15 @@ public class DatabaseFragment extends Fragment {
                 }
             }
         });
-
         return view;
     }
 
-    /* @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-    }*/
+    public void saveState() {
+        FriendsListAsyncTask friendsListAsyncTask = (FriendsListAsyncTask) getActivity().getLastCustomNonConfigurationInstance();
+        if (friendsListAsyncTask != null) {
+            mContainerLayuot.setVisibility(View.VISIBLE);
+        }
+    }
+
 }
+

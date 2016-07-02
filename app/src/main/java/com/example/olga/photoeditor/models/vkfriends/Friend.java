@@ -12,6 +12,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.io.Serializable;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @DatabaseTable(tableName = Friend.TABLE)
 public class Friend implements Serializable {
     public static final String TABLE = "Friend";

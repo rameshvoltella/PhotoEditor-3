@@ -17,6 +17,7 @@ public class FriendListRequest {
         return mResponse;
     }
 
+    @SuppressWarnings("unused")
     public void setResponse(Response response) {
         mResponse = response;
     }
