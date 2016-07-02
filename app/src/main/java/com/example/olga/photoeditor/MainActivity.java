@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static StandardPropertyFragment mStandardPropertyFragment;
     private static ExtendPropertyFragment mExtendPropertyFragment;
     private static FragmentManager fragmentManager;
+    private static  FriendsListAsyncTask mFriendsListAsyncTask;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -78,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            //supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
+            //noinspection ConstantConditions
             indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
@@ -120,22 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                checkFriendList();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        mFriendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
 
     }
 
@@ -150,15 +136,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void SaveInstanceArguments() {
-        FriendsListAsyncTask friendsListAsyncTask = (FriendsListAsyncTask) getLastCustomNonConfigurationInstance();
-        if (friendsListAsyncTask != null) {
-            Bundle arguments = new Bundle();
-            arguments.putSerializable(ASYNC_TASK, friendsListAsyncTask);
-            mFriendListFragment.setArguments(arguments);
-        }
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
@@ -167,13 +144,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return mFriendListFragment.getFriendsListAsyncTask();
-    }
-
-    public static void getFriendList() {
-        fragmentManager.beginTransaction()
-                .replace(R.id.database_fragment_frame_layout_container, mFriendListFragment, FRIEND_LIST_TAG)
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
@@ -185,10 +155,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkFriendList() {
+    public static void checkFriendList() {
         if (fragmentManager.findFragmentByTag(FRIEND_LIST_TAG) != null) {
-            SaveInstanceArguments();
+            if (mFriendsListAsyncTask != null && !mFriendListFragment.isAdded()) {
+                Bundle arguments = new Bundle();
+                arguments.putSerializable(ASYNC_TASK, mFriendsListAsyncTask);
+                mFriendListFragment.setArguments(arguments);
+            }
             getFriendList();
+        }
+    }
+
+    public static void getFriendList() {
+        fragmentManager.beginTransaction()
+                .add(R.id.database_fragment_frame_layout_container, mFriendListFragment, FRIEND_LIST_TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public static void removeFriendList() {
+        if (mFriendListFragment.isAdded()) {
+            fragmentManager.beginTransaction()
+                    .remove(mFriendListFragment)
+                    .commit();
         }
     }
 
@@ -229,4 +218,11 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeFriendList();
+    }
 }
+

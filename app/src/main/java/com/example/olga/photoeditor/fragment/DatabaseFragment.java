@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.olga.photoeditor.MainActivity;
-import com.example.olga.photoeditor.async.FriendsListAsyncTask;
 import com.example.photoeditor.R;
 
 import butterknife.BindView;
@@ -51,7 +50,7 @@ public class DatabaseFragment extends Fragment {
         View view = inflater.inflate(R.layout.database_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        saveState();
+        MainActivity.checkFriendList();
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
 
@@ -67,12 +66,10 @@ public class DatabaseFragment extends Fragment {
         return view;
     }
 
-    public void saveState() {
-        FriendsListAsyncTask friendsListAsyncTask = (FriendsListAsyncTask) getActivity().getLastCustomNonConfigurationInstance();
-        if (friendsListAsyncTask != null) {
-            mContainerLayuot.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void onPause() {
+        super.onPause();
+        MainActivity.removeFriendList();
     }
-
 }
 

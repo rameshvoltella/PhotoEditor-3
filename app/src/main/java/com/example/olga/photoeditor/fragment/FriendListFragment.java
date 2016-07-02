@@ -254,9 +254,11 @@ public class FriendListFragment extends Fragment implements FriendsListAsyncTask
     public void onDestroy() {
         super.onDestroy();
         mFriendsListAsyncTask.setListener(null);
+        mFriendsListAsyncTask.cancel(true);
     }
 
     public FriendsListAsyncTask getFriendsListAsyncTask() {
         return mFriendsListAsyncTask;
     }
+
 }
