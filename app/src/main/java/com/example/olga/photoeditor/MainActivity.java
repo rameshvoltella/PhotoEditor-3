@@ -103,18 +103,21 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             case R.id.navigation_menu_item_standart_properties: {
+                                removeFriendList();
                                 viewPager.setCurrentItem(1, false);
                                 mDrawerLayout.closeDrawers();
                                 return true;
                             }
 
                             case R.id.navigation_menu_item_extend_properties: {
+                                removeFriendList();
                                 viewPager.setCurrentItem(2, false);
                                 mDrawerLayout.closeDrawers();
                                 return true;
                             }
 
                             default:
+                                removeFriendList();
                                 mDrawerLayout.closeDrawers();
                                 return true;
                         }
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void checkFriendList() {
         if (fragmentManager.findFragmentByTag(FRIEND_LIST_TAG) != null) {
-            if (mFriendsListAsyncTask != null && !mFriendListFragment.isAdded()) {
+            if (mFriendsListAsyncTask != null && !mFriendListFragment.isInLayout()) {
                 Bundle arguments = new Bundle();
                 arguments.putSerializable(ASYNC_TASK, mFriendsListAsyncTask);
                 mFriendListFragment.setArguments(arguments);
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void getFriendList() {
         fragmentManager.beginTransaction()
-                .add(R.id.database_fragment_frame_layout_container, mFriendListFragment, FRIEND_LIST_TAG)
+                .replace(R.id.database_fragment_frame_layout_container, mFriendListFragment, FRIEND_LIST_TAG)
                 .addToBackStack(null)
                 .commit();
     }
