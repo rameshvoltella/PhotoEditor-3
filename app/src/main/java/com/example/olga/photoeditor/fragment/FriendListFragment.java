@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,8 +39,11 @@ import butterknife.ButterKnife;
 public class FriendListFragment extends Fragment implements FriendsListAsyncTask.Listener<List<Friend>> {
 
     private static final String ASYNC_TASK = "ASYNC_TASK";
-    @BindView(R.id.friends_list_button_online)
+    @BindView(R.id.friends_list_button_search)
     Button mOnlineButton;
+
+    @BindView(R.id.friends_list_search_view)
+    SearchView mSearchView;
 
     @BindView(R.id.friends_list_button_save)
     Button mSaveAllButton;
@@ -104,12 +108,17 @@ public class FriendListFragment extends Fragment implements FriendsListAsyncTask
 
         initSwipe();
 
-        mOnlineButton.setOnClickListener(new View.OnClickListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mFriendAdapter.setCollection(dataSource.findFriends(query));
+                if (dataSource.findFriends(query).isEmpty()) noData();
+                return true;
+            }
 
             @Override
-            public void onClick(View v) {
-                mFriendAdapter.setCollection(dataSource.getOnlineFriends());
-                if (dataSource.getOnlineFriends().isEmpty()) noData();
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
 

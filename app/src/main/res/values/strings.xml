@@ -18,5 +18,8 @@
     <string name="save_all">Сохранить все</string>
     <string name="standart_properties">Стандартные настройки</string>
     <string name="extend_properties">Расширеные настройки</string>
+    <string name="search">Найти</string>
+    <string name="check">Выбрать</string>
+    <string name="cancel">Отмена</string>
 
 </resources>

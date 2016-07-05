@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,9 +47,12 @@ public class FriendDataSource {
         }
     }
 
-    public List<Friend> getOnlineFriends() {
+    public List<Friend> findFriends(String string) {
         try {
-            return mDbHelper.getFriemdDao().queryForEq(Friend.Column.ONLINE, "1");
+            List<Friend> friends = new ArrayList<>();
+            friends.addAll(mDbHelper.getFriemdDao().queryForEq(Friend.Column.FIRST_NAME, string));
+            friends.addAll(mDbHelper.getFriemdDao().queryForEq(Friend.Column.LAST_NAME, string));
+            return friends;
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
