@@ -22,7 +22,6 @@ import com.example.olga.photoeditor.fragment.DatabaseFragment;
 import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
 import com.example.olga.photoeditor.fragment.FriendListFragment;
 import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
-import com.example.photoeditor.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,11 +185,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        /*Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(mDatabaseFragment, "Database");
         adapter.addFragment(mStandardPropertyFragment, "Standart");
         adapter.addFragment(mExtendPropertyFragment, "Extend");
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(adapter);*/
+
     }
 
     static class Adapter extends FragmentPagerAdapter {

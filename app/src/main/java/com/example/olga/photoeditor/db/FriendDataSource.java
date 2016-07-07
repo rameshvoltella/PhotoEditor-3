@@ -39,11 +39,11 @@ public class FriendDataSource {
     }
 
     public void deleteAll() {
-        try {
+     /*   try {
             mDbHelper.getFriemdDao().delete();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public List<Friend> getAllFriends() {

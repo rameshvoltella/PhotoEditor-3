@@ -2,7 +2,7 @@ package com.example.olga.photoeditor.network;
 
 import android.content.Context;
 
-import com.example.photoeditor.R;
+import com.example.olga.photoeditor.R;
 
 /**
  * Date: 23.06.16

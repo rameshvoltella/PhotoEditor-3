@@ -18,12 +18,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FriendViewHolder;
 import com.example.olga.photoeditor.async.FriendsListAsyncTask;
 import com.example.olga.photoeditor.db.FriendDataSource;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
-import com.example.photoeditor.R;
 
 import java.util.List;
 
@@ -39,13 +39,13 @@ import butterknife.ButterKnife;
 public class FriendListFragment extends Fragment implements FriendsListAsyncTask.Listener<List<Friend>> {
 
     private static final String ASYNC_TASK = "ASYNC_TASK";
-    @BindView(R.id.friends_list_button_search)
+    //@BindView(R.id.friends_list_button_search)
     Button mOnlineButton;
 
     @BindView(R.id.friends_list_search_view)
     SearchView mSearchView;
 
-    @BindView(R.id.friends_list_button_save)
+    //@BindView(R.id.friends_list_button_save)
     Button mSaveAllButton;
 
     @BindView(R.id.friends_list_progress_bar_load)

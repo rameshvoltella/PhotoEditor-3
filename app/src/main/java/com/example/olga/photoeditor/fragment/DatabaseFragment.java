@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.olga.photoeditor.MainActivity;
-import com.example.photoeditor.R;
+import com.example.olga.photoeditor.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

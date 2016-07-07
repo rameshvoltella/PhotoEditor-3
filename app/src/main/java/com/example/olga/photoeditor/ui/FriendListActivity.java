@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FriendViewHolder;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.example.olga.photoeditor.mvp.presenter.FriendListPresenter;
 import com.example.olga.photoeditor.mvp.view.FriendListView;
-import com.example.photoeditor.R;
 
 import java.util.List;
 

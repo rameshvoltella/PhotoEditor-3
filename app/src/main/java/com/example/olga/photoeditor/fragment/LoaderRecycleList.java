@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.PropertyViewHolder;
 import com.example.olga.photoeditor.models.PropertyData;
 import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
-import com.example.photoeditor.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
-import com.example.photoeditor.R;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
