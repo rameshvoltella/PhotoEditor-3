@@ -38,6 +38,14 @@ public class FriendDataSource {
         }
     }
 
+    public void deleteAll() {
+        try {
+            mDbHelper.getFriemdDao().delete();
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Friend> getAllFriends() {
         try {
             return mDbHelper.getFriemdDao().queryForAll();

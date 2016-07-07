@@ -27,8 +27,13 @@ public interface FriendListView extends MvpView {
 
     void setData(List<Friend> friends);
 
-
+    //Empty and error
     void showEmpty();
+
+    void hideEmpty();
+
     void showError();
+
+    void hideError();
 
 }

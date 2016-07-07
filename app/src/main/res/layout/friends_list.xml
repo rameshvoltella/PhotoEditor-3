@@ -34,32 +34,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/friends_list_button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/save_all"/>
-
-        <LinearLayout
+        <SearchView
+            android:id="@+id/friends_list_search_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <SearchView
-                android:id="@+id/friends_list_search_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/friends_list_button_search"
-                style="@style/Widget.AppCompat.ButtonBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/search"/>
-
-        </LinearLayout>
+            android:layout_height="wrap_content"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/friends_list_recycler_view_friends"

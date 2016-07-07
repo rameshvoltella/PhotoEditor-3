@@ -1,6 +1,5 @@
 package com.example.olga.photoeditor.fragment;
 
-import com.example.olga.photoeditor.async.PropertyAsyncTask;
 import com.example.olga.photoeditor.models.PropertyData;
 
 import java.util.List;
@@ -13,17 +12,8 @@ import java.util.List;
  */
 public class StandardPropertyFragment extends LoaderRecycleList {
 
-    private PropertyAsyncTask mPropertyAsyncTask;
-
     @Override
-    protected PropertyAsyncTask createPropertyAsyncTask() {
-        final List<PropertyData> standartProperties = PropertyData.getStandartProperties();
-        return mPropertyAsyncTask = new PropertyAsyncTask(getContext(), this, standartProperties);
-    }
-
-    @Override
-    protected void reuseAsyncTask() {
-        mPropertyAsyncTask = createPropertyAsyncTask();
-        mPropertyAsyncTask.execute();
+    public void setData(List<PropertyData> properties) {
+        mPresenter.userSelectStandardProperties();
     }
 }

@@ -100,4 +100,6 @@ public abstract class CollectionRecycleAdapter<T> extends RecyclerView.Adapter<C
             return itemView;
         }
     }
+
+
 }

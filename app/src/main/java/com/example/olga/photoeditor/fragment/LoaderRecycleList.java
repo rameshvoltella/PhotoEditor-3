@@ -1,21 +1,23 @@
 package com.example.olga.photoeditor.fragment;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.MvpFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.PropertyViewHolder;
-import com.example.olga.photoeditor.async.PropertyAsyncTask;
 import com.example.olga.photoeditor.models.PropertyData;
+import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
+import com.example.olga.photoeditor.mvp.view.PropertyListView;
 import com.example.photoeditor.R;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,16 +28,14 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
-public abstract class LoaderRecycleList extends Fragment implements PropertyAsyncTask.Listener<List<PropertyData>> {
+public abstract class LoaderRecycleList extends MvpFragment implements PropertyListView {
 
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
-    private CollectionRecycleAdapter<PropertyData> mAdapter;
+    @InjectPresenter
 
-    private PropertyAsyncTask mPropertyAsyncTask;
-
-    protected abstract PropertyAsyncTask createPropertyAsyncTask();
+    PropertyListPresenter mPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,63 +43,34 @@ public abstract class LoaderRecycleList extends Fragment implements PropertyAsyn
 
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.property_list, container, false);
         ButterKnife.bind(this, view);
 
-        mAdapter = new CollectionRecycleAdapter<PropertyData>(getActivity()) {
+        CollectionRecycleAdapter<PropertyData> adapter = new CollectionRecycleAdapter<PropertyData>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.photo_item_property, parent, false));
             }
         };
 
-        mPropertyRecyclerView.setAdapter(mAdapter);
+        mPropertyRecyclerView.setAdapter(adapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mPropertyAsyncTask = createPropertyAsyncTask();
-        mPropertyAsyncTask.execute();
 
         return view;
     }
 
     @Override
-    public void startProgress() {
-        mPropertyRecyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void stopProgress() {
+    public void showProperties() {
         mPropertyRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void failedProgress() {
-    }
-
-    @Override
-    public void updateProgress(int progress) {
-    }
-
-    @Override
-    public void setResult(List<PropertyData> data) {
-        mAdapter.setCollection(data);
-    }
-
-    @SuppressWarnings("unused")
-    protected void reuseAsyncTask() {
-        mPropertyAsyncTask.setListener(this);
-    }
-
-    @SuppressWarnings("unused")
-    protected void restartAsyncTask() {
-        if (mPropertyAsyncTask != null) {
-            mPropertyAsyncTask.cancel(true);
-            mPropertyAsyncTask.setListener(null);
-        }
-        mPropertyAsyncTask = createPropertyAsyncTask();
-        mPropertyAsyncTask.execute();
+    public void hideProperties() {
+        mPropertyRecyclerView.setVisibility(View.GONE);
     }
 
 }

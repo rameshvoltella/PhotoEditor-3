@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
-public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<Friend> {
+public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<Friend>  implements View.OnClickListener{
 
     @BindView(R.id.item_friend_image_view_avatar)
     ImageView avatarImageView;
@@ -27,6 +27,8 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
 
     @BindView(R.id.item_friend_text_view_online)
     TextView onlineTextView;
+
+    public IMyViewHolderClicks mListener;
 
     public FriendViewHolder(View itemView) {
         super(itemView);
@@ -38,7 +40,6 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
     }
 
     @Override
-
     public void bind(Friend model) {
         int avatarSize = 60;
         Picasso.with(getRoot().getContext())
@@ -52,6 +53,15 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
         if (model.getOnline().equals("1")) {
             onlineTextView.setText(R.string.online);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        mListener.selectItem();
+    }
+
+    public interface IMyViewHolderClicks {
+        public void selectItem();
     }
 }
 

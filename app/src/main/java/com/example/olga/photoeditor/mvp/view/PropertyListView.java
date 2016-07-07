@@ -14,6 +14,7 @@ import java.util.List;
 public interface PropertyListView extends MvpView {
 
     void showProperties();
+    void hideProperties();
     void setData(List<PropertyData> properties);
 
 
