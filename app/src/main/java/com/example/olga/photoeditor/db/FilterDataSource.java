@@ -37,7 +37,7 @@ public class FilterDataSource {
         }
     }
 
-    public List<Filter> getAllFiltres() {
+    public List<Filter> getAllFilters() {
         try {
             return mDbHelper.getFilterDao().queryForAll();
         } catch (java.sql.SQLException e) {

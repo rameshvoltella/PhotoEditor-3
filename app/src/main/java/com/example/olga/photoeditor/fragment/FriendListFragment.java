@@ -84,7 +84,7 @@ public class FriendListFragment extends Fragment implements FriendsListAsyncTask
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.friends_list, container, false);
+        View view = inflater.inflate(R.layout.activity_friends_list, container, false);
         ButterKnife.bind(this, view);
 
         mOnlineButton.setVisibility(View.GONE);

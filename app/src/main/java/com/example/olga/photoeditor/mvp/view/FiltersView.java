@@ -6,12 +6,12 @@ import com.example.olga.photoeditor.models.vkfriends.Friend;
 import java.util.List;
 
 /**
- * Date: 05.07.16
- * Time: 18:59
+ * Date: 08.07.16
+ * Time: 16:15
  *
  * @author Olga
  */
-public interface FriendListView extends MvpView {
+public interface FiltersView extends MvpView {
 
     // ProgressBar
     void showProgress();
@@ -19,9 +19,9 @@ public interface FriendListView extends MvpView {
     void hideProgress();
 
     //RecyclerView
-    void showFriendList();
+    void showFiltersList();
 
-    void hideFriendList();
+    void hideFiltersList();
 
     void setData(List<Friend> friends);
 
@@ -30,8 +30,5 @@ public interface FriendListView extends MvpView {
 
     void hideEmpty();
 
-    void showError();
-
-    void hideError();
 
 }

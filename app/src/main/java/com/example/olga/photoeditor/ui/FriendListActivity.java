@@ -67,7 +67,7 @@ public class FriendListActivity extends MvpActivity implements FriendListView {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        setContentView(R.layout.friends_list);
+        setContentView(R.layout.activity_friends_list);
         ButterKnife.bind(this);
 
         //Search config

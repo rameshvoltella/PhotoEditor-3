@@ -46,13 +46,13 @@ public abstract class LoaderRecycleList extends MvpFragment implements PropertyL
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.property_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_property_list, container, false);
         ButterKnife.bind(this, view);
 
         mAdapter = new CollectionRecycleAdapter<PropertyData>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.photo_item_property, parent, false));
+                return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_property, parent, false));
             }
         };
 
