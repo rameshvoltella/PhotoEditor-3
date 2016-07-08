@@ -1,8 +1,11 @@
 package com.example.olga.photoeditor.mvp.presenter;
 
+import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.models.PropertyData;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
+
+import java.util.List;
 
 /**
  * Date: 05.07.16
@@ -10,14 +13,24 @@ import com.example.olga.photoeditor.mvp.view.PropertyListView;
  *
  * @author Olga
  */
+
+@InjectViewState
 public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
+    List<PropertyData> mList;
 
-   public void userSelectStandardProperties(){
-        getViewState().setData(PropertyData.getStandardProperties());
-   }
+    @Override
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
+    }
 
-    public void userSelectExtendProperties(){
-        getViewState().setData(PropertyData.getExtendProperties());
+    public void userSelectStandardProperties() {
+        mList = PropertyData.getStandardProperties();
+        getViewState().setData(mList);
+    }
+
+    public void userSelectExtendProperties() {
+        mList = PropertyData.getExtendProperties();
+        getViewState().setData(mList);
     }
 
 

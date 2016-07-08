@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_menu_standard"
+        android:icon="@drawable/ic_tune"
+        android:title="@string/standard"/>
+
+    <item
+        android:id="@+id/bottom_menu_extend"
+        android:icon="@drawable/ic_extend"
+        android:title="@string/extend"/>
+
+    <item
+        android:id="@+id/bottom_menu_filter"
+        android:icon="@drawable/ic_photo_filter"
+        android:title="@string/filter"/>
+
+</menu>

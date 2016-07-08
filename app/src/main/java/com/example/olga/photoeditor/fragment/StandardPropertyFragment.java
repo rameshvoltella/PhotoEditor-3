@@ -1,8 +1,7 @@
 package com.example.olga.photoeditor.fragment;
 
-import com.example.olga.photoeditor.models.PropertyData;
-
-import java.util.List;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 /**
  * Date: 30.06.16
@@ -13,7 +12,9 @@ import java.util.List;
 public class StandardPropertyFragment extends LoaderRecycleList {
 
     @Override
-    public void setData(List<PropertyData> properties) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mPresenter.userSelectStandardProperties();
     }
+
 }

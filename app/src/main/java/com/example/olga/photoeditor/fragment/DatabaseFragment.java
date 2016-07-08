@@ -1,18 +1,16 @@
 package com.example.olga.photoeditor.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.olga.photoeditor.MainActivity;
 import com.example.olga.photoeditor.R;
 
 import butterknife.BindView;
@@ -25,9 +23,6 @@ import butterknife.ButterKnife;
  * @author Olga
  */
 public class DatabaseFragment extends Fragment {
-
-    @BindView(R.id.database_fragment_image_view_photo)
-    ImageView mPhotoImageView;
 
     @BindView(R.id.database_fragment_button_Send)
     Button mSendButton;
@@ -50,16 +45,14 @@ public class DatabaseFragment extends Fragment {
         View view = inflater.inflate(R.layout.database_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        MainActivity.checkFriendList();
-
         mSendButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 if (mFriendCheckBox.isChecked()) {
-                    MainActivity.getFriendList();
+                    //MainActivity.getFriendList();
                 } else {
-                    Toast.makeText(getContext(), R.string.publication, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.publication, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -69,7 +62,7 @@ public class DatabaseFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        MainActivity.removeFriendList();
+        //MainActivity.removeFriendList();
     }
 }
 

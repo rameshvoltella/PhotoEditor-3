@@ -3,45 +3,49 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:padding="@dimen/activity_vertical_padding">
+
+    <ImageView
+        android:id="@+id/photo_item_property_image_view_property"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:src="@drawable/photo_property"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/photo_item_property_image_view_property"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:src="@drawable/photo_property"/>
-
-        <TextView
-            android:id="@+id/photo_item_property_textview_property"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="Свойство"
-            />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/photo_item_property_textview_percent"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/photo_item_property_textview_property"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/iten_view_margin"
+                tools:text="Свойство"/>
+
+            <TextView
+                android:id="@+id/photo_item_property_textview_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                tools:text="XX %"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/photo_item_property_seekbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
-            tools:text="XX %"
-            />
+            android:layout_marginTop="@dimen/iten_view_margin"/>
 
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/photo_item_property_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        />
 
 </LinearLayout>

@@ -2,14 +2,21 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
+
         <item
-            android:id="@+id/navigation_menu_item_database"
-            android:title="Работа с БД" />
+            android:id="@+id/navigation_menu_item_select"
+            android:icon="@drawable/ic_add_a_photo"
+            android:title="@string/select_photo"/>
+
         <item
-            android:id="@+id/navigation_menu_item_standart_properties"
-            android:title="@string/standart_properties" />
+            android:id="@+id/navigation_menu_item_save"
+            android:icon="@drawable/ic_save"
+            android:title="@string/save"/>
+
         <item
-            android:id="@+id/navigation_menu_item_extend_properties"
-            android:title="@string/extend_properties" />
+            android:id="@+id/navigation_menu_item_publicate"
+            android:icon="@drawable/ic_upload"
+            android:title="@string/publication"/>
+
     </group>
 </menu>

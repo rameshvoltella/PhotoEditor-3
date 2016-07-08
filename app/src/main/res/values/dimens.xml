@@ -8,4 +8,5 @@
     <dimen name="friend_name_textsize">20sp</dimen>
     <dimen name="activity_vertical_padding">16dp</dimen>
     <dimen name="photo_height">300dp</dimen>
+    <dimen name="iten_view_margin">10dp</dimen>
 </resources>

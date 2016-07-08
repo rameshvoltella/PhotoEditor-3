@@ -21,5 +21,10 @@
     <string name="search">Найти</string>
     <string name="check">Выбрать</string>
     <string name="cancel">Отмена</string>
+    <string name="select_photo">Выбрать фото</string>
+    <string name="save">Сохранить</string>
+    <string name="standard">Стандартные</string>
+    <string name="extend">Расширенные</string>
+    <string name="filter">Фильтры</string>
 
 </resources>
