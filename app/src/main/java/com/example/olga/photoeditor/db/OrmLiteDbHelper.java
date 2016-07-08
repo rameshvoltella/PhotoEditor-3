@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -24,6 +25,7 @@ public class OrmLiteDbHelper extends OrmLiteSqliteOpenHelper {
     private static OrmLiteDbHelper sInstance;
 
     private Dao<Friend, Integer> mFriendDao;
+    private Dao<Filter, Integer> mFilterDao;
 
     public static OrmLiteDbHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -56,7 +58,14 @@ public class OrmLiteDbHelper extends OrmLiteSqliteOpenHelper {
         Friend.onUpgrade(db, connectionSource, oldVersion, newVersion);
     }
 
-    public Dao<Friend, Integer> getFriemdDao() throws SQLException, java.sql.SQLException {
+    public Dao<Filter, Integer> getFilterDao() throws SQLException, java.sql.SQLException {
+        if (mFilterDao == null) {
+            mFilterDao = getDao(Filter.class);
+        }
+        return mFilterDao;
+    }
+
+    public Dao<Friend, Integer> getFriendDao() throws SQLException, java.sql.SQLException {
         if (mFriendDao == null) {
             mFriendDao = getDao(Friend.class);
         }

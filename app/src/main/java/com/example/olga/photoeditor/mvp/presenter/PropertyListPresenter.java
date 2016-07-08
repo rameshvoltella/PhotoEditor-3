@@ -2,6 +2,7 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.models.PropertyData;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
@@ -24,12 +25,12 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public void userSelectStandardProperties() {
-        mList = PropertyData.getStandardProperties();
+        mList = Filter.getStandardProperties();
         getViewState().setData(mList);
     }
 
     public void userSelectExtendProperties() {
-        mList = PropertyData.getExtendProperties();
+        mList = Filter.getExtendProperties();
         getViewState().setData(mList);
     }
 

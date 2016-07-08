@@ -24,7 +24,7 @@ public class FriendDataSource {
 
     public void saveFriend(Friend friend) {
         try {
-            mDbHelper.getFriemdDao().createOrUpdate(friend);
+            mDbHelper.getFriendDao().createOrUpdate(friend);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -32,23 +32,15 @@ public class FriendDataSource {
 
     public void deleteFriend(Friend friend) {
         try {
-            mDbHelper.getFriemdDao().delete(friend);
+            mDbHelper.getFriendDao().delete(friend);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void deleteAll() {
-     /*   try {
-            mDbHelper.getFriemdDao().delete();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }*/
-    }
-
     public List<Friend> getAllFriends() {
         try {
-            return mDbHelper.getFriemdDao().queryForAll();
+            return mDbHelper.getFriendDao().queryForAll();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -58,8 +50,8 @@ public class FriendDataSource {
     public List<Friend> findFriends(String string) {
         try {
             List<Friend> friends = new ArrayList<>();
-            friends.addAll(mDbHelper.getFriemdDao().queryForEq(Friend.Column.FIRST_NAME, string));
-            friends.addAll(mDbHelper.getFriemdDao().queryForEq(Friend.Column.LAST_NAME, string));
+            friends.addAll(mDbHelper.getFriendDao().queryForEq(Friend.Column.FIRST_NAME, string));
+            friends.addAll(mDbHelper.getFriendDao().queryForEq(Friend.Column.LAST_NAME, string));
             return friends;
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

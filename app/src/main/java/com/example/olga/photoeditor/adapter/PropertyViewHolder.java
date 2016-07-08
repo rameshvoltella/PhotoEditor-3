@@ -1,6 +1,7 @@
 package com.example.olga.photoeditor.adapter;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -18,8 +19,6 @@ import butterknife.ButterKnife;
  */
 public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<PropertyData> {
 
-    private static final int sResizeImageSize = 40;
-
     @BindView(R.id.photo_item_property_textview_property)
     TextView mTextViewProperty;
 
@@ -28,6 +27,9 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
     @BindView(R.id.photo_item_property_seekbar)
     SeekBar mSeekBarPercent;
+
+    @BindView(R.id.photo_item_property_image_view_property)
+    ImageView mImageView;
 
     public PropertyViewHolder(View itemView) {
         super(itemView);
@@ -46,6 +48,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
         mTextViewProperty.setText(model.getPropertyName());
         mTextViewPercent.setText(progress + " %");
         mSeekBarPercent.setProgress(progress);
+        mImageView.setImageResource(model.getImageId());
 
         mSeekBarPercent.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
