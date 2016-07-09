@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navigation_menu_item_select"
+            android:icon="@drawable/ic_add_a_photo"
+            android:title="@string/select_photo"/>
+
+        <item
+            android:id="@+id/navigation_menu_item_save"
+            android:icon="@drawable/ic_save"
+            android:title="@string/save"/>
+
+        <item
+            android:id="@+id/navigation_menu_item_publicate"
+            android:icon="@drawable/ic_upload"
+            android:title="@string/send_photo"/>
+
+    </group>
+</menu>

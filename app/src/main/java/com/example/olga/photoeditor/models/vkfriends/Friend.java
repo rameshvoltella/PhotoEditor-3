@@ -12,6 +12,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.io.Serializable;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @DatabaseTable(tableName = Friend.TABLE)
 public class Friend implements Serializable {
     public static final String TABLE = "Friend";
@@ -49,6 +50,8 @@ public class Friend implements Serializable {
 
     @SerializedName("lists")
     private List<Integer> mLists;
+
+    private boolean mCheckFriend;
 
     public Friend() {/**/}
 
@@ -92,14 +95,12 @@ public class Friend implements Serializable {
         mPhotoUrl = photoUrl;
     }
 
-    @SuppressWarnings("unused")
-    public int getHidden() {
-        return mHidden;
+    public boolean isCheckFriend() {
+        return mCheckFriend;
     }
 
-    @SuppressWarnings("unused")
-    public void setHidden(int hidden) {
-        mHidden = hidden;
+    public void setCheckFriend(boolean checkFriend) {
+        mCheckFriend = checkFriend;
     }
 
     @SuppressWarnings("unused")

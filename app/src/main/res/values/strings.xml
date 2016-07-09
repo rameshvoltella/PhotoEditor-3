@@ -16,5 +16,20 @@
     <string name="database_empty">База данных пуста</string>
     <string name="only_online">Только OnLine</string>
     <string name="save_all">Сохранить все</string>
+    <string name="standart_properties">Стандартные настройки</string>
+    <string name="extend_properties">Расширеные настройки</string>
+    <string name="search">Найти</string>
+    <string name="check">Выбрать</string>
+    <string name="cancel">Отмена</string>
+    <string name="select_photo">Выбрать фото</string>
+    <string name="save">Сохранить</string>
+    <string name="standard">Стандартные</string>
+    <string name="extend">Расширенные</string>
+    <string name="filter">Фильтры</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="filtername">FilterName</string>
+    <string name="property">Свойство</string>
 
 </resources>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -19,9 +20,9 @@ public class RetrofitService {
     private static RetrofitService sInstance;
 
     public static RetrofitService getInstance(Context context) {
-        if (sInstance == null){
-            synchronized (RetrofitService.class){
-                if (sInstance == null){
+        if (sInstance == null) {
+            synchronized (RetrofitService.class) {
+                if (sInstance == null) {
                     sInstance = new RetrofitService(context);
                 }
             }
@@ -39,13 +40,14 @@ public class RetrofitService {
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(VkUrls.getApiBaseUrl(context))
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(new OkHttpClient.Builder().addInterceptor(logInterceptor).build())
                 .build();
 
     }
 
     @NonNull
-    public  <S> S createApiService(@NonNull final  Class<S> apiClass){
+    public <S> S createApiService(@NonNull final Class<S> apiClass) {
         return mRetrofit.create(apiClass);
     }
 

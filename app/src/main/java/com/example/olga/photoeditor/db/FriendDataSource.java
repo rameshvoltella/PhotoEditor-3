@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class FriendDataSource {
 
     public void saveFriend(Friend friend) {
         try {
-            mDbHelper.getFriemdDao().createOrUpdate(friend);
+            mDbHelper.getFriendDao().createOrUpdate(friend);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -31,7 +32,18 @@ public class FriendDataSource {
 
     public void deleteFriend(Friend friend) {
         try {
-            mDbHelper.getFriemdDao().delete(friend);
+            mDbHelper.getFriendDao().delete(friend);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAllFriends() {
+        try {
+            List<Friend> friends = mDbHelper.getFriendDao().queryForAll();
+            for (int i = 0; i < friends.size(); i++) {
+                mDbHelper.getFriendDao().delete(friends.get(i));
+            }
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -39,16 +51,19 @@ public class FriendDataSource {
 
     public List<Friend> getAllFriends() {
         try {
-            return mDbHelper.getFriemdDao().queryForAll();
+            return mDbHelper.getFriendDao().queryForAll();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
-    public List<Friend> getOnlineFriends() {
+    public List<Friend> findFriends(String string) {
         try {
-            return mDbHelper.getFriemdDao().queryForEq(Friend.Column.ONLINE, "1");
+            List<Friend> friends = new ArrayList<>();
+            friends.addAll(mDbHelper.getFriendDao().queryForEq(Friend.Column.FIRST_NAME, string));
+            friends.addAll(mDbHelper.getFriendDao().queryForEq(Friend.Column.LAST_NAME, string));
+            return friends;
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
