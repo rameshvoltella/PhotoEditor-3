@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.olga.photoeditor.models.Filter;
+import com.example.olga.photoeditor.models.Effects.Filter;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;

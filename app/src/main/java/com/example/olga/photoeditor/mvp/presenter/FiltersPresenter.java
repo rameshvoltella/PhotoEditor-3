@@ -5,7 +5,7 @@ import android.content.Context;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.db.FilterDataSource;
-import com.example.olga.photoeditor.models.Filter;
+import com.example.olga.photoeditor.models.Effects.Filter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
 
 import java.util.List;

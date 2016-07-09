@@ -31,5 +31,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="filtername">FilterName</string>
     <string name="property">Свойство</string>
+    <string name="documentary">documentary</string>
+    <string name="posterize">posterize</string>
+    <string name="lomoish">lomoish</string>
+    <string name="negative">negative</string>
+    <string name="grayscale">grayscale</string>
+    <string name="sepia">sepia</string>
 
 </resources>

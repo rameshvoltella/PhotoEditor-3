@@ -5,7 +5,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Filter;
+import com.example.olga.photoeditor.models.Effects.Filter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -11,4 +11,6 @@
     <dimen name="item_view_margin">8dp</dimen>
     <dimen name="icon_size">36dp</dimen>
     <dimen name="item_text_size">7pt</dimen>
+    <dimen name="button_properties_one_size">65dp</dimen>
+    <dimen name="button_text_size">12sp</dimen>
 </resources>

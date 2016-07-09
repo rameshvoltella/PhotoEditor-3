@@ -2,7 +2,7 @@ package com.example.olga.photoeditor.db;
 
 import android.content.Context;
 
-import com.example.olga.photoeditor.models.Filter;
+import com.example.olga.photoeditor.models.Effects.Filter;
 
 import java.util.Collections;
 import java.util.List;

@@ -8,6 +8,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -16,8 +17,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FilterViewHolder;
-import com.example.olga.photoeditor.models.Filter;
+import com.example.olga.photoeditor.models.Effects.Filter;
 import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
+import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
 
 import java.util.List;
@@ -27,6 +29,24 @@ import butterknife.ButterKnife;
 
 
 public class FilterFragment extends MvpFragment implements FiltersView {
+
+    @BindView(R.id.fragment_filter_button_documentary)
+    Button mDocumentaryButton;
+
+    @BindView(R.id.fragment_filter_button_grayscale)
+    Button mGrayscaleButton;
+
+    @BindView(R.id.fragment_filter_button_lomoish)
+    Button mLomoishButton;
+
+    @BindView(R.id.fragment_filter_button_negative)
+    Button mNegativeButton;
+
+    @BindView(R.id.fragment_filter_button_posterize)
+    Button mPosterizeButton;
+
+    @BindView(R.id.fragment_filter_button_sepia)
+    Button mSepiaButton;
 
     @BindView(R.id.fragment_filter_recycler_view_filters)
     RecyclerView mFilterRecyclerView;
@@ -39,6 +59,7 @@ public class FilterFragment extends MvpFragment implements FiltersView {
 
     @InjectPresenter
     FiltersPresenter mPresenter;
+    PropertyListPresenter mPropertyListPresenter;
 
     CollectionRecycleAdapter<Filter> mAdapter;
 
@@ -70,6 +91,54 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         mPresenter.userLoadFilters(getActivity());
 
         initSwipe();
+
+        mDocumentaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("DOCUMENTARY", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
+
+        mGrayscaleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("GRAYSCALE", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
+
+        mLomoishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("LOMOISH", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
+
+        mNegativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("NEGATIVE", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
+
+        mPosterizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("POSTERIZE", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
+
+        mSepiaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPropertyListPresenter.userChangeValue("SEPIA", 0, 0);
+                mPropertyListPresenter.applyEffect();
+            }
+        });
 
         return view;
     }

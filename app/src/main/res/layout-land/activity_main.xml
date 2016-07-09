@@ -41,13 +41,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="right">
 
-                <ImageView
+                <android.opengl.GLSurfaceView
                     android:id="@+id/activity_main_image_view_photo"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/photo_height"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/pinguin"
-                    tools:ignore="ContentDescription"/>
+                    android:src="@drawable/pinguin"/>
 
             </FrameLayout>
 

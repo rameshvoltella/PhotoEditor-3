@@ -3,6 +3,8 @@ package com.example.olga.photoeditor.ui;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.effect.EffectContext;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
@@ -25,13 +27,25 @@ import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
 import com.example.olga.photoeditor.fragment.FilterFragment;
 import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
+import com.example.olga.photoeditor.models.Effects.TextureRenderer;
+import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Date: 25.06.16
+ * Time: 13:38
+ *
+ * @author Olga
+ */
+
+public class MainActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
@@ -42,8 +56,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.activity_main_nav_view)
     NavigationView navigationView;
 
-    @BindView((R.id.activity_main_drawerlayout))
+    @BindView(R.id.activity_main_drawerlayout)
     DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.activity_main_image_view_photo)
+    GLSurfaceView mEffectView;
 
     private static FilterFragment mFilterFragment;
     private static StandardPropertyFragment mStandardPropertyFragment;
@@ -55,11 +72,22 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog mPublicateDialog;
 
+    //EffectFactory
+    PropertyListPresenter mPresenter;
+    private EffectContext mEffectContext;
+    private boolean mInitialized = false;
+    private TextureRenderer mTexRenderer = new TextureRenderer();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        //EffectFactory
+        mEffectView.setEGLContextClientVersion(2);
+        mEffectView.setRenderer(this);
+        mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);      
 
         mFilterFragment = new FilterFragment();
         mStandardPropertyFragment = new StandardPropertyFragment();
@@ -196,6 +224,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideDialog();
+    }
+
     private void showFriendList() {
         if (mCheckBox.isChecked()) {
             Intent intent = new Intent(this, FriendListActivity.class);
@@ -214,10 +248,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideDialog();
+    public void onDrawFrame(GL10 gl) {
+        if (!mInitialized) {
+            //Only need to do this once
+            mEffectContext = EffectContext.createWithCurrentGlContext();
+            mTexRenderer.init();
+            mPresenter.userLoadPhoto();
+            mInitialized = true;
+        }
+        mPresenter.renderResult();
+    }
 
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        if (mTexRenderer != null) {
+            mTexRenderer.updateViewSize(width, height);
+        }
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
 }
 

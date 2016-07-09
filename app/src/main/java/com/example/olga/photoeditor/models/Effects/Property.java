@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.models;
+package com.example.olga.photoeditor.models.Effects;
 
 import java.io.Serializable;
 

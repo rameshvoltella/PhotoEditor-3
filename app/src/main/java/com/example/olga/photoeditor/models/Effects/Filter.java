@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.models;
+package com.example.olga.photoeditor.models.Effects;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
