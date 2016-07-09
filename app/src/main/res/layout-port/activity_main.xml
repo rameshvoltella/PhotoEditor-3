@@ -29,43 +29,41 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <RelativeLayout
+            android:id="@+id/activity_main_relative_layout_scroll_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <FrameLayout
+                android:id="@+id/activity_main_frame_layout_photo_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/photo_height"
+                android:layout_gravity="top">
 
-            <RelativeLayout
+                <ImageView
+                    android:id="@+id/activity_main_image_view_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/photo_height"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pinguin"
+                    tools:ignore="ContentDescription"/>
+
+            </FrameLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_below="@id/activity_main_frame_layout_photo_container">
 
                 <FrameLayout
-                    android:id="@+id/activity_main_frame_layout_photo_container"
+                    android:id="@+id/activity_main_frame_layout_container"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_gravity="top">
+                    android:layout_height="match_parent"/>
 
-                    <ImageView
-                        android:id="@+id/activity_main_image_view_photo"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/photo_height"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/pinguin"
-                        tools:ignore="ContentDescription"/>
+            </LinearLayout>
 
-                </FrameLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/activity_main_frame_layout_photo_container">
-
-                    <FrameLayout
-                        android:id="@+id/activity_main_frame_layout_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
+        </RelativeLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>

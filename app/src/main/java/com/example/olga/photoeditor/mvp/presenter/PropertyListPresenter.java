@@ -3,7 +3,7 @@ package com.example.olga.photoeditor.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.models.PropertyData;
+import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @InjectViewState
 public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
-    List<PropertyData> mList;
+    List<Property> mList;
 
     @Override
     protected void onFirstViewAttach() {

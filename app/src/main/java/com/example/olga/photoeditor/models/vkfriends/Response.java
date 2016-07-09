@@ -22,7 +22,8 @@ public class Response {
         mCount = count;
     }
 
-    public List<Friend> getFriends() {
+    public List<Friend>
+    getFriends() {
         return mFriends;
     }
 

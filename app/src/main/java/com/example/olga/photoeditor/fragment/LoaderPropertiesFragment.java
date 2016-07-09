@@ -13,7 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.PropertyViewHolder;
-import com.example.olga.photoeditor.models.PropertyData;
+import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
@@ -28,15 +28,14 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
-public abstract class LoaderRecycleList extends MvpFragment implements PropertyListView {
+public abstract class LoaderPropertiesFragment extends MvpFragment implements PropertyListView {
 
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
     @InjectPresenter
-
     PropertyListPresenter mPresenter;
-    CollectionRecycleAdapter<PropertyData> mAdapter;
+    CollectionRecycleAdapter<Property> mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +48,7 @@ public abstract class LoaderRecycleList extends MvpFragment implements PropertyL
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
         ButterKnife.bind(this, view);
 
-        mAdapter = new CollectionRecycleAdapter<PropertyData>(getActivity()) {
+        mAdapter = new CollectionRecycleAdapter<Property>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_property, parent, false));
@@ -73,7 +72,7 @@ public abstract class LoaderRecycleList extends MvpFragment implements PropertyL
     }
 
     @Override
-    public void setData(List<PropertyData> properties) {
+    public void setData(List<Property> properties) {
         mAdapter.setCollection(properties);
     }
 }

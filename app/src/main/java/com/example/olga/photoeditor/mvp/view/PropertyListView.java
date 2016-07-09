@@ -1,7 +1,9 @@
 package com.example.olga.photoeditor.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.olga.photoeditor.models.PropertyData;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+import com.example.olga.photoeditor.models.Property;
 
 import java.util.List;
 
@@ -11,11 +13,14 @@ import java.util.List;
  *
  * @author Olga
  */
+
+@StateStrategyType(AddToEndSingleStrategy.class)
 public interface PropertyListView extends MvpView {
 
     void showProperties();
-    void hideProperties();
-    void setData(List<PropertyData> properties);
 
+    void hideProperties();
+
+    void setData(List<Property> properties);
 
 }

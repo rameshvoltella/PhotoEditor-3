@@ -1,7 +1,9 @@
 package com.example.olga.photoeditor.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.olga.photoeditor.models.vkfriends.Friend;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+import com.example.olga.photoeditor.models.Filter;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  *
  * @author Olga
  */
+
+@StateStrategyType(AddToEndSingleStrategy.class)
 public interface FiltersView extends MvpView {
 
     // ProgressBar
@@ -23,7 +27,7 @@ public interface FiltersView extends MvpView {
 
     void hideFiltersList();
 
-    void setData(List<Friend> friends);
+    void setData(List<Filter> filters);
 
     //Empty and error
     void showEmpty();

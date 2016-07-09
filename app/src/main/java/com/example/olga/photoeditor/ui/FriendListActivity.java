@@ -1,7 +1,8 @@
 package com.example.olga.photoeditor.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -33,31 +34,30 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
+
+
 public class FriendListActivity extends MvpActivity implements FriendListView {
 
-    @BindView(R.id.friends_list_search_view)
+    @BindView(R.id.activity_friends_list_search_view)
     SearchView mSearchView;
 
-    @BindView(R.id.friends_list_progress_bar_load)
-    ProgressBar mLoadingBar;
-
-    @BindView(R.id.friends_list_button_ok)
-    Button mOkButton;
-
-    @BindView(R.id.friends_list_button_cancel)
-    Button mCancelButton;
-
-    @BindView(R.id.friends_list_text_view_progress)
-    TextView mProgressTextView;
-
-    @BindView(R.id.friends_list_recycler_view_friends)
+    @BindView(R.id.activity_friends_list_recycler_view_friends)
     RecyclerView mFriendsRecyclerView;
 
-    @BindView(R.id.friends_list_text_view_nodata)
+    @BindView(R.id.activity_friends_list_button_ok)
+    Button mOkButton;
+
+    @BindView(R.id.activity_friends_list_button_cancel)
+    Button mCancelButton;
+
+    @BindView(R.id.activity_friends_list_text_view_nodata)
     TextView mNoDataTextView;
 
-    @BindView(R.id.friends_list_text_view_failed)
+    @BindView(R.id.activity_friends_list_text_view_failed)
     TextView mFailedTextView;
+
+    @BindView(R.id.activity_friends_list_progress_bar_loading)
+    ProgressBar mProgress;
 
     private CollectionRecycleAdapter<Friend> mFriendAdapter;
 
@@ -65,15 +65,35 @@ public class FriendListActivity extends MvpActivity implements FriendListView {
     FriendListPresenter mPresenter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
         ButterKnife.bind(this);
 
-        //Search config
+        mProgress.setVisibility(View.GONE);
+        mNoDataTextView.setVisibility(View.GONE);
+        mFailedTextView.setVisibility(View.GONE);
 
+        //Search config
         mSearchView.setSubmitButtonEnabled(true);
         mSearchView.setIconifiedByDefault(false);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        if (searchManager != null) {
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        }
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mPresenter.userClickFindFriend(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         //Create adapter
         mFriendAdapter = new CollectionRecycleAdapter<Friend>(this) {
@@ -83,8 +103,8 @@ public class FriendListActivity extends MvpActivity implements FriendListView {
             }
         };
 
-        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecyclerView.setAdapter(mFriendAdapter);
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         initSwipe();
 
@@ -101,21 +121,19 @@ public class FriendListActivity extends MvpActivity implements FriendListView {
             @Override
             public void onClick(View v) {
                 mPresenter.userClickCancel();
+                finish();
             }
         });
-
     }
 
     @Override
     public void showProgress() {
-        mLoadingBar.setVisibility(View.VISIBLE);
-        mProgressTextView.setVisibility(View.VISIBLE);
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mLoadingBar.setVisibility(View.GONE);
-        mProgressTextView.setVisibility(View.GONE);
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -174,6 +192,13 @@ public class FriendListActivity extends MvpActivity implements FriendListView {
                     }
                 });
         swipeToDismissTouchHelper.attachToRecyclerView(mFriendsRecyclerView);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        mPresenter.userLeaveScreen();
+        super.onBackPressed();
     }
 }
 

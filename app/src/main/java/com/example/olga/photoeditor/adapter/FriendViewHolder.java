@@ -1,6 +1,9 @@
 package com.example.olga.photoeditor.adapter;
 
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +20,10 @@ import butterknife.ButterKnife;
  *
  * @author Olga
  */
-public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<Friend>  implements View.OnClickListener{
+public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<Friend> {
+
+    @BindView(R.id.item_friend_cardview)
+    CardView mItemCardView;
 
     @BindView(R.id.item_friend_image_view_avatar)
     ImageView avatarImageView;
@@ -28,7 +34,8 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
     @BindView(R.id.item_friend_text_view_online)
     TextView onlineTextView;
 
-    public IMyViewHolderClicks mListener;
+    @BindView(R.id.item_friend_check_friend)
+    CheckBox mCheckBox;
 
     public FriendViewHolder(View itemView) {
         super(itemView);
@@ -40,7 +47,7 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
     }
 
     @Override
-    public void bind(Friend model) {
+    public void bind(final Friend model) {
         int avatarSize = 60;
         Picasso.with(getRoot().getContext())
                 .load(model.getPhotoUrl())
@@ -53,15 +60,17 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
         if (model.getOnline().equals("1")) {
             onlineTextView.setText(R.string.online);
         }
-    }
 
-    @Override
-    public void onClick(View v) {
-        mListener.selectItem();
-    }
-
-    public interface IMyViewHolderClicks {
-        public void selectItem();
+        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    model.setCheckFriend(true);
+                } else {
+                    model.setCheckFriend(false);
+                }
+            }
+        });
     }
 }
 

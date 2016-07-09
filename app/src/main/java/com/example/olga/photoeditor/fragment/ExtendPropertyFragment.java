@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
  *
  * @author Olga
  */
-public class ExtendPropertyFragment extends LoaderRecycleList {
+public class ExtendPropertyFragment extends LoaderPropertiesFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

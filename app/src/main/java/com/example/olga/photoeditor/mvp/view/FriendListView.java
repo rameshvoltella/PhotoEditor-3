@@ -1,6 +1,8 @@
 package com.example.olga.photoeditor.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.example.olga.photoeditor.models.vkfriends.Friend;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.List;
  *
  * @author Olga
  */
+
+@StateStrategyType(AddToEndSingleStrategy.class)
 public interface FriendListView extends MvpView {
 
     // ProgressBar

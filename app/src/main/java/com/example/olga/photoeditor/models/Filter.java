@@ -4,10 +4,12 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.vkfriends.Friend;
+import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,158 +21,249 @@ import java.util.List;
  *
  * @author Olga
  */
-public class Filter {
 
-    public String filterName;
+@DatabaseTable(tableName = Filter.TABLE)
+public class Filter implements Serializable {
+    public static final String TABLE = "Filter";
 
-    public static final PropertyData BRIGHTNESS = new PropertyData("Яркость", 1.0, 100.0, 1.0, R.drawable.ic_brightness);
-    public static final PropertyData CONTRAST = new PropertyData("Контрастность", 1.0, 100.0, 1.0, R.drawable.ic_contrast);
-    public static final PropertyData SATURATE = new PropertyData("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
-    public static final PropertyData SHARPEN = new PropertyData("Резкость", 0.0, 1.0, 0.5, R.drawable.ic_sharpen);
+    //Standard properties
+    public static final Property BRIGHTNESS = new Property("Яркость", 1.0, 100.0, 1.0, R.drawable.ic_brightness);
+    public static final Property CONTRAST = new Property("Контрастность", 1.0, 100.0, 1.0, R.drawable.ic_contrast);
+    public static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
+    public static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.5, R.drawable.ic_sharpen);
 
-    public static final PropertyData AUTOFIX = new PropertyData("Автокоррекция", 0.0, 1.0, 0.0, R.drawable.ic_fix);
-    public static final PropertyData BLACK = new PropertyData("Уровень черного", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
-    public static final PropertyData WHITE = new PropertyData("Уровень белого", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
-    public static final PropertyData FILLIGHT = new PropertyData("Заполняющий свет", 0.0, 1.0, 0.0, R.drawable.ic_fillight);
-    public static final PropertyData GRAIN = new PropertyData("Зернистость", 0.0, 1.0, 0.0, R.drawable.ic_grain);
-    public static final PropertyData TEMPERATURE = new PropertyData("Температура", 0.0, 1.0, 0.5, R.drawable.ic_sunny);
-    public static final PropertyData FISHEYE = new PropertyData("Объектив", 0.0, 1.0, 0.0, R.drawable.ic_camera);
-    public static final PropertyData VIGNETTE = new PropertyData("Виньетка", 0.0, 1.0, 0.0, R.drawable.ic_vignette);
+    //Extend properties
+    public static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, R.drawable.ic_fix);
+    public static final Property BLACK = new Property("Уровень черного", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
+    public static final Property WHITE = new Property("Уровень белого", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
+    public static final Property FILLIGHT = new Property("Заполняющий свет", 0.0, 1.0, 0.0, R.drawable.ic_fillight);
+    public static final Property GRAIN = new Property("Зернистость", 0.0, 1.0, 0.0, R.drawable.ic_grain);
+    public static final Property TEMPERATURE = new Property("Температура", 0.0, 1.0, 0.5, R.drawable.ic_sunny);
+    public static final Property FISHEYE = new Property("Объектив", 0.0, 1.0, 0.0, R.drawable.ic_camera);
+    public static final Property VIGNETTE = new Property("Виньетка", 0.0, 1.0, 0.0, R.drawable.ic_vignette);
 
-    public Filter(String name, double brightness, double contrast, double saturate, double sharpen, double autofix, double black,
-                  double white, double fillight, double grain, double temperature, double fisheye, double vignette) {
-        filterName = name;
-        BRIGHTNESS.setDefaultValue(brightness);
-        CONTRAST.setDefaultValue(contrast);
-        SATURATE.setDefaultValue(saturate);
-        SHARPEN.setDefaultValue(sharpen);
-        AUTOFIX.setDefaultValue(autofix);
-        BLACK.setDefaultValue(black);
-        WHITE.setDefaultValue(white);
-        FILLIGHT.setDefaultValue(fillight);
-        GRAIN.setDefaultValue(grain);
-        TEMPERATURE.setDefaultValue(temperature);
-        FISHEYE.setDefaultValue(fisheye);
-        VIGNETTE.setDefaultValue(vignette);
+    //Table constructor
+    public static class Column {
+        public static final String ID = "id";
+        public static final String FILTER_NAME = "filter_name";
+        public static final String BRIGHTNESS = "Яркость";
+        public static final String CONTRAST = "Контрастность";
+        public static final String SATURATE = "Насыщенность";
+        public static final String SHARPEN = "Резкость";
+
+        public static final String AUTOFIX = "Автокоррекция";
+        public static final String BLACK = "Уровень черного";
+        public static final String WHITE = "Уровень белого";
+        public static final String FILLIGHT = "Заполняющий свет";
+        public static final String GRAIN = "Зернистость";
+        public static final String TEMPERATURE = "Температура";
+        public static final String FISHEYE = "Объектив";
+        public static final String VIGNETTE = "Виньетка";
+
     }
 
-    public static List<PropertyData> getStandardProperties() {
-        List<PropertyData> products = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
+    @DatabaseField(columnName = Column.ID, generatedId = true)
+    private int id;
+
+    @DatabaseField(columnName = Column.FILTER_NAME)
+    private String filterName;
+
+    @DatabaseField(columnName = Column.BRIGHTNESS)
+    private double brightnessValue;
+
+    @DatabaseField(columnName = Column.CONTRAST)
+    private double contrastValue;
+
+    @DatabaseField(columnName = Column.SATURATE)
+    private double saturateValue;
+
+    @DatabaseField(columnName = Column.SHARPEN)
+    private double sharpenValue;
+
+    @DatabaseField(columnName = Column.AUTOFIX)
+    private double autofixValue;
+
+    @DatabaseField(columnName = Column.BLACK)
+    private double blackValue;
+
+    @DatabaseField(columnName = Column.WHITE)
+    private double whiteValue;
+
+    @DatabaseField(columnName = Column.FILLIGHT)
+    private double fillightValue;
+
+    @DatabaseField(columnName = Column.GRAIN)
+    private double grainValue;
+
+    @DatabaseField(columnName = Column.TEMPERATURE)
+    private double temperatureValue;
+
+    @DatabaseField(columnName = Column.FISHEYE)
+    private double fisheyeValue;
+
+    @DatabaseField(columnName = Column.VIGNETTE)
+    private double vignetteValue;
+
+
+    public Filter() {/**/}
+
+    public Filter(String filterName, double brightnessValue, double contrastValue, double saturateValue,
+                  double sharpenValue, double autofixValue, double blackValue, double whiteValue,
+                  double fillightValue, double grainValue, double temperatureValue, double fisheyeValue,
+                  double vignetteValue) {
+        this.filterName = filterName;
+        this.brightnessValue = brightnessValue;
+        this.contrastValue = contrastValue;
+        this.saturateValue = saturateValue;
+        this.sharpenValue = sharpenValue;
+        this.autofixValue = autofixValue;
+        this.blackValue = blackValue;
+        this.whiteValue = whiteValue;
+        this.fillightValue = fillightValue;
+        this.grainValue = grainValue;
+        this.temperatureValue = temperatureValue;
+        this.fisheyeValue = fisheyeValue;
+        this.vignetteValue = vignetteValue;
+    }
+
+    private static Filter defaultFilter = new Filter("default", 1.0, 1.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    private static Filter waldenFilter = new Filter("walden", 1.2, 0.9, 1.7, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    private static Filter toasterFilter = new Filter("toaster", 1.0, 0.67, 2.5, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    private static Filter kelvinFilter = new Filter("kelvin", 1.3, 1.1, 2.4, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    private static Filter willowtFilter = new Filter("willow", 1.2, 0.85, 0.02, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+
+
+    public static List<Property> getStandardProperties() {
+        List<Property> products = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
         Collections.shuffle(products);
         return products;
     }
 
-    public static List<PropertyData> getExtendProperties() {
-        List<PropertyData> products = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
+    public static List<Property> getExtendProperties() {
+        List<Property> products = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
         Collections.shuffle(products);
         return products;
     }
 
-    public static double getBRIGHTNESS() {
-        return BRIGHTNESS.getDefaultValue();
+    public static List<Filter> getStandartFilters() {
+        List<Filter> list = new ArrayList<>(Arrays.asList(defaultFilter, waldenFilter, toasterFilter, kelvinFilter, willowtFilter));
+        return list;
     }
 
-    public static void setBRIGHTNESS(double defaultValue) {
-        BRIGHTNESS.setDefaultValue(defaultValue);
+    public String getFilterName() {
+        return filterName;
     }
 
-    public static double getCONTRAST() {
-        return CONTRAST.getDefaultValue();
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
     }
 
-    public static void setCONTRAST(double defaultValue) {
-        CONTRAST.setDefaultValue(defaultValue);
+    public int getId() {
+        return id;
     }
 
-    public static double getSATURATE() {
-        return SATURATE.getDefaultValue();
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public static void setSATURATE(double defaultValue) {
-        SATURATE.setDefaultValue(defaultValue);
+    public double getBrightnessValue() {
+        return brightnessValue;
     }
 
-    public static double getSHARPEN() {
-        return SHARPEN.getDefaultValue();
+    public void setBrightnessValue(double brightnessValue) {
+        this.brightnessValue = brightnessValue;
     }
 
-    public static void setSHARPEN(double defaultValue) {
-        SHARPEN.setDefaultValue(defaultValue);
+    public double getContrastValue() {
+        return contrastValue;
     }
 
-    public static double getAUTOFIX() {
-        return AUTOFIX.getDefaultValue();
+    public void setContrastValue(double contrastValue) {
+        this.contrastValue = contrastValue;
     }
 
-    public static void setAUTOFIX(double defaultValue) {
-        AUTOFIX.setDefaultValue(defaultValue);
+    public double getSaturateValue() {
+        return saturateValue;
     }
 
-    public static double getBLACK() {
-        return BLACK.getDefaultValue();
+    public void setSaturateValue(double saturateValue) {
+        this.saturateValue = saturateValue;
     }
 
-    public static void setBLACK(double defaultValue) {
-        BLACK.setDefaultValue(defaultValue);
+    public double getSharpenValue() {
+        return sharpenValue;
     }
 
-    public static double getWHITE() {
-        return WHITE.getDefaultValue();
+    public void setSharpenValue(double sharpenValue) {
+        this.sharpenValue = sharpenValue;
     }
 
-    public static void setWHITE(double defaultValue) {
-        WHITE.setDefaultValue(defaultValue);
+    public double getAutofixValue() {
+        return autofixValue;
     }
 
-    public static double getFILLIGHT() {
-        return FILLIGHT.getDefaultValue();
+    public void setAutofixValue(double autofixValue) {
+        this.autofixValue = autofixValue;
     }
 
-    public static void setFILLIGHT(double defaultValue) {
-        FILLIGHT.setDefaultValue(defaultValue);
+    public double getBlackValue() {
+        return blackValue;
     }
 
-    public static double getGRAIN() {
-        return GRAIN.getDefaultValue();
+    public void setBlackValue(double blackValue) {
+        this.blackValue = blackValue;
     }
 
-    public static void setGRAIN(double defaultValue) {
-        GRAIN.setDefaultValue(defaultValue);
+    public double getWhiteValue() {
+        return whiteValue;
     }
 
-    public static double getTEMPERATURE() {
-        return TEMPERATURE.getDefaultValue();
+    public void setWhiteValue(double whiteValue) {
+        this.whiteValue = whiteValue;
     }
 
-    public static void setTEMPERATURE(double defaultValue) {
-        TEMPERATURE.setDefaultValue(defaultValue);
+    public double getFillightValue() {
+        return fillightValue;
     }
 
-    public static double getFISHEYE() {
-        return FISHEYE.getDefaultValue();
+    public void setFillightValue(double fillightValue) {
+        this.fillightValue = fillightValue;
     }
 
-    public static void setFISHEYE(double defaultValue) {
-        FISHEYE.setDefaultValue(defaultValue);
+    public double getGrainValue() {
+        return grainValue;
     }
 
-    public static double getVIGNETTE() {
-        return VIGNETTE.getDefaultValue();
+    public void setGrainValue(double grainValue) {
+        this.grainValue = grainValue;
     }
 
-    public static void setVIGNETTE(double defaultValue) {
-        VIGNETTE.setDefaultValue(defaultValue);
+    public double getTemperatureValue() {
+        return temperatureValue;
     }
 
-    public Filter defaultFilter = new Filter("default", 1.0, 1.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
-    public Filter waldenFilter = new Filter("walden", 1.2, 0.9, 1.7, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
-    public Filter toasterFilter = new Filter("toaster", 1.0, 0.67, 2.5, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
-    public Filter kelvinFilter = new Filter("kelvin", 1.3, 1.1, 2.4, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
-    public Filter willowtFilter = new Filter("willow", 1.2, 0.85, 0.02, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    public void setTemperatureValue(double temperatureValue) {
+        this.temperatureValue = temperatureValue;
+    }
 
+    public double getFisheyeValue() {
+        return fisheyeValue;
+    }
+
+    public void setFisheyeValue(double fisheyeValue) {
+        this.fisheyeValue = fisheyeValue;
+    }
+
+    public double getVignetteValue() {
+        return vignetteValue;
+    }
+
+    public void setVignetteValue(double vignetteValue) {
+        this.vignetteValue = vignetteValue;
+    }
 
     public static void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) throws SQLException, java.sql.SQLException {
-        TableUtils.createTable(connectionSource, Friend.class);
+        TableUtils.createTable(connectionSource, Filter.class);
     }
 
     public static void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author Olga
  */
 @SuppressWarnings("unused")
-public class PropertyData implements Serializable {
+public class Property implements Serializable {
 
     private String mPropertyName;
 
@@ -21,7 +21,7 @@ public class PropertyData implements Serializable {
 
     private int mImageId;
 
-    public PropertyData(String propertyName, double minValue, double maxValue, double defaultValue, int imageUrl) {
+    public Property(String propertyName, double minValue, double maxValue, double defaultValue, int imageUrl) {
         mPropertyName = propertyName;
         mMinValue = minValue;
         mMaxValue = maxValue;

@@ -38,6 +38,17 @@ public class FriendDataSource {
         }
     }
 
+    public void deleteAllFriends() {
+        try {
+            List<Friend> friends = mDbHelper.getFriendDao().queryForAll();
+            for (int i = 0; i < friends.size(); i++) {
+                mDbHelper.getFriendDao().delete(friends.get(i));
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Friend> getAllFriends() {
         try {
             return mDbHelper.getFriendDao().queryForAll();

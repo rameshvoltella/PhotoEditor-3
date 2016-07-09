@@ -51,6 +51,8 @@ public class Friend implements Serializable {
     @SerializedName("lists")
     private List<Integer> mLists;
 
+    private boolean mCheckFriend;
+
     public Friend() {/**/}
 
     public int getFriendId() {
@@ -93,14 +95,12 @@ public class Friend implements Serializable {
         mPhotoUrl = photoUrl;
     }
 
-    @SuppressWarnings("unused")
-    public int getHidden() {
-        return mHidden;
+    public boolean isCheckFriend() {
+        return mCheckFriend;
     }
 
-    @SuppressWarnings("unused")
-    public void setHidden(int hidden) {
-        mHidden = hidden;
+    public void setCheckFriend(boolean checkFriend) {
+        mCheckFriend = checkFriend;
     }
 
     @SuppressWarnings("unused")
