@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -17,6 +17,7 @@ import com.example.olga.photoeditor.adapter.PropertyViewHolder;
 import com.example.olga.photoeditor.models.Effects.Property;
 import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
+import com.example.olga.photoeditor.ui.MainActivity;
 
 import java.util.List;
 
@@ -32,23 +33,18 @@ import butterknife.ButterKnife;
 public abstract class LoaderPropertiesFragment extends MvpFragment implements PropertyListView {
 
     @BindView(R.id.fragment_property_list_button_flip_hor)
-    Button mFlipHorButton;
+    ImageButton mFlipHorButton;
 
     @BindView(R.id.fragment_property_list_button_flip_vert)
-    Button mFlipVertButton;
-
-    @BindView(R.id.fragment_property_list_button_rotate_left)
-    Button mRotateLeftButton;
-
-    @BindView(R.id.fragment_property_list_button_rotate_right)
-    Button mRotateRightButton;
+    ImageButton mFlipVertButton;
 
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
     @InjectPresenter
     PropertyListPresenter mPresenter;
-    CollectionRecycleAdapter<Property> mAdapter;
+
+    public static CollectionRecycleAdapter<Property> mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,32 +70,14 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
         mFlipHorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.userChangeValue("FLIPHOR", 0, 0);
-                mPresenter.applyEffect();
+                MainActivity.setCurrentEffect("FLIPHOR", 0, 0);
             }
         });
 
         mFlipVertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.userChangeValue("FLIPVERT", 0, 0);
-                mPresenter.applyEffect();
-            }
-        });
-
-        mRotateLeftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.userChangeValue("ROTATE", 0, -90);
-                mPresenter.applyEffect();
-            }
-        });
-
-        mRotateRightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.userChangeValue("ROTATE", 0, 90);
-                mPresenter.applyEffect();
+                MainActivity.setCurrentEffect("FLIPVERT", 0, 0);
             }
         });
 
@@ -109,11 +87,6 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
     @Override
     public void showProperties() {
         mPropertyRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProperties() {
-        mPropertyRecyclerView.setVisibility(View.GONE);
     }
 
     @Override

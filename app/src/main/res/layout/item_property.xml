@@ -29,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/item_view_margin"
+                android:textColor="@color/item_text_color"
                 android:textSize="@dimen/item_text_size"
                 tools:text="@string/property"/>
 
@@ -37,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:textColor="@color/item_text_color"
                 android:textSize="@dimen/item_text_size"
                 tools:text="XX %"/>
 

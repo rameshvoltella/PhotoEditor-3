@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,9 +20,10 @@ import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FilterViewHolder;
 import com.example.olga.photoeditor.models.Effects.Filter;
 import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
-import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
+import com.example.olga.photoeditor.ui.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,6 +50,12 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     @BindView(R.id.fragment_filter_button_sepia)
     Button mSepiaButton;
 
+    @BindView(R.id.fragment_filter_button_save)
+    Button mSaveButton;
+
+    @BindView(R.id.fragment_filter_edit_text_name)
+    EditText mNameText;
+
     @BindView(R.id.fragment_filter_recycler_view_filters)
     RecyclerView mFilterRecyclerView;
 
@@ -58,8 +66,10 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     TextView mEmptyView;
 
     @InjectPresenter
+
     FiltersPresenter mPresenter;
-    PropertyListPresenter mPropertyListPresenter;
+
+    private Filter mCurrentFilter;
 
     CollectionRecycleAdapter<Filter> mAdapter;
 
@@ -77,6 +87,8 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         mFilterRecyclerView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.GONE);
+        mNameText.setVisibility(View.GONE);
+        mCurrentFilter = Filter.getDefaultFilter();
 
         mAdapter = new CollectionRecycleAdapter<Filter>(getActivity()) {
             @Override
@@ -92,51 +104,26 @@ public class FilterFragment extends MvpFragment implements FiltersView {
 
         initSwipe();
 
-        mDocumentaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("DOCUMENTARY", 0, 0);
-                mPropertyListPresenter.applyEffect();
-            }
-        });
+        mDocumentaryButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("DOCUMENTARY", 0, 0));
 
-        mGrayscaleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("GRAYSCALE", 0, 0);
-                mPropertyListPresenter.applyEffect();
-            }
-        });
+        mGrayscaleButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("GRAYSCALE", 0, 0));
 
-        mLomoishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("LOMOISH", 0, 0);
-                mPropertyListPresenter.applyEffect();
-            }
-        });
+        mLomoishButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("LOMOISH", 0, 0));
 
-        mNegativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("NEGATIVE", 0, 0);
-                mPropertyListPresenter.applyEffect();
-            }
-        });
+        mNegativeButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("NEGATIVE", 0, 0));
 
-        mPosterizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("POSTERIZE", 0, 0);
-                mPropertyListPresenter.applyEffect();
-            }
-        });
+        mPosterizeButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("POSTERIZE", 0, 0));
 
-        mSepiaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPropertyListPresenter.userChangeValue("SEPIA", 0, 0);
-                mPropertyListPresenter.applyEffect();
+        mSepiaButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("SEPIA", 0, 0));
+
+        mSaveButton.setOnClickListener(view1 -> {
+            if (!mNameText.getText().toString().equals("")) {
+                changeCurrentFilter();
+                mCurrentFilter.setFilterName(mNameText.getText().toString());
+                mPresenter.userCreateFilter(mCurrentFilter);
+            } else {
+                mNameText.setVisibility(View.GONE);
+                mNameText.requestFocus();
             }
         });
 
@@ -197,8 +184,24 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         swipeToDismissTouchHelper.attachToRecyclerView(mFilterRecyclerView);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    private void changeCurrentFilter() {
+        List<Double> values = new ArrayList<>();
+        values.addAll(StandardPropertyFragment.getValues());
+        values.addAll(ExtendPropertyFragment.getValues());
+        mCurrentFilter.setBrightnessValue(values.get(0));
+        mCurrentFilter.setContrastValue(values.get(1));
+        mCurrentFilter.setSaturateValue(values.get(2));
+        mCurrentFilter.setSharpenValue(values.get(3));
+        if (values.size() == 12) {
+            mCurrentFilter.setAutofixValue(values.get(4));
+            mCurrentFilter.setBlackValue(values.get(5));
+            mCurrentFilter.setWhiteValue(values.get(6));
+            mCurrentFilter.setFillightValue(values.get(7));
+            mCurrentFilter.setGrainValue(values.get(8));
+            mCurrentFilter.setTemperatureValue(values.get(9));
+            mCurrentFilter.setFisheyeValue(values.get(10));
+            mCurrentFilter.setVignetteValue(values.get(11));
+        }
     }
+
 }

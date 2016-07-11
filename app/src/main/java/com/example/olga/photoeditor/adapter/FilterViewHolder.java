@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.Effects.Filter;
+import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +40,10 @@ public class FilterViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
         mFilterName.setText(model.getFilterName());
         mFilterCheckBox.setChecked(false);
 
-
+        mFilterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                FiltersPresenter.userCheckFilter(model);
+            }
+        });
     }
 }

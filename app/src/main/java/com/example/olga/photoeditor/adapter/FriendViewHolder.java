@@ -3,7 +3,6 @@ package com.example.olga.photoeditor.adapter;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,14 +60,11 @@ public class FriendViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
             onlineTextView.setText(R.string.online);
         }
 
-        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    model.setCheckFriend(true);
-                } else {
-                    model.setCheckFriend(false);
-                }
+        mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                model.setCheckFriend(true);
+            } else {
+                model.setCheckFriend(false);
             }
         });
     }

@@ -8,5 +8,6 @@
     <color name="white">#ffffff</color>
     <color name="cardview_color">#ffffff</color>
     <color name="check_cardview_color">#daeef2</color>
+    <color name="item_text_color">#111111</color>
 
 </resources>

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.Effects.Property;
-import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
+import com.example.olga.photoeditor.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +31,6 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
     @BindView(R.id.item_property_image_view_property)
     ImageView mImageView;
-
-    private PropertyListPresenter mPresenter;
 
     public PropertyViewHolder(View itemView) {
         super(itemView);
@@ -59,8 +57,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextViewPercent.setText(progress + "%");
                 model.setDefaultValue(progress * (model.getMaxValue() - model.getMinValue()) / 100 + model.getMinValue());
-                mPresenter.userChangeValue(model.getPropertyName(), model.getDefaultValue(), 0);
-                mPresenter.applyEffect();
+                MainActivity.setCurrentEffect(model.getPropertyName(), model.getDefaultValue(), 0);
             }
 
             @Override

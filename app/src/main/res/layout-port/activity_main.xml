@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                android:title="@string/app_name"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
         </android.support.design.widget.AppBarLayout>
@@ -43,9 +44,7 @@
                 <android.opengl.GLSurfaceView
                     android:id="@+id/activity_main_image_view_photo"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/photo_height"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/pinguin"/>
+                    android:layout_height="match_parent"/>
 
             </FrameLayout>
 

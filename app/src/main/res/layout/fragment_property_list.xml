@@ -30,26 +30,13 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_flip_vert"/>
 
-            <ImageButton
-                android:id="@+id/fragment_property_list_button_rotate_right"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_properties_one_size"
-                android:layout_weight="1"
-                android:src="@drawable/ic_rotate_right"/>
-
-            <ImageButton
-                android:id="@+id/fragment_property_list_button_rotate_left"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_properties_one_size"
-                android:layout_weight="1"
-                android:src="@drawable/ic_rotate_left"/>
-
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/property_list_recycleview_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            />
 
     </LinearLayout>
 

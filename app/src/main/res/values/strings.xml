@@ -37,5 +37,7 @@
     <string name="negative">negative</string>
     <string name="grayscale">grayscale</string>
     <string name="sepia">sepia</string>
+    <string name="enter_name">Введите имя фильтра</string>
+    <string name="save_filter">Сохранить</string>
 
 </resources>

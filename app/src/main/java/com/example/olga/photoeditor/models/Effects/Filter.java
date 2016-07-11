@@ -12,7 +12,6 @@ import com.j256.ormlite.table.TableUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,8 +26,8 @@ public class Filter implements Serializable {
     public static final String TABLE = "Filter";
 
     //Standard properties
-    public static final Property BRIGHTNESS = new Property("Яркость", 1.0, 100.0, 1.0, R.drawable.ic_brightness);
-    public static final Property CONTRAST = new Property("Контрастность", 1.0, 100.0, 1.0, R.drawable.ic_contrast);
+    public static final Property BRIGHTNESS = new Property("Яркость", 1.0, 5.0, 1.0, R.drawable.ic_brightness);
+    public static final Property CONTRAST = new Property("Контрастность", 1.0, 5.0, 1.0, R.drawable.ic_contrast);
     public static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
     public static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.5, R.drawable.ic_sharpen);
 
@@ -134,15 +133,13 @@ public class Filter implements Serializable {
 
 
     public static List<Property> getStandardProperties() {
-        List<Property> products = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
-        Collections.shuffle(products);
-        return products;
+        List<Property> properties = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
+        return properties;
     }
 
     public static List<Property> getExtendProperties() {
-        List<Property> products = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
-        Collections.shuffle(products);
-        return products;
+        List<Property> properties = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
+        return properties;
     }
 
     public static List<Filter> getStandartFilters() {
@@ -260,6 +257,26 @@ public class Filter implements Serializable {
 
     public void setVignetteValue(double vignetteValue) {
         this.vignetteValue = vignetteValue;
+    }
+
+    public static Filter getDefaultFilter() {
+        return defaultFilter;
+    }
+
+    public static Filter getWaldenFilter() {
+        return waldenFilter;
+    }
+
+    public static Filter getToasterFilter() {
+        return toasterFilter;
+    }
+
+    public static Filter getKelvinFilter() {
+        return kelvinFilter;
+    }
+
+    public static Filter getWillowtFilter() {
+        return willowtFilter;
     }
 
     public static void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) throws SQLException, java.sql.SQLException {

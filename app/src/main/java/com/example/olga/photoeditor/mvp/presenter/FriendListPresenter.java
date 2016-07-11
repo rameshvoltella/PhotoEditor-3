@@ -18,7 +18,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -49,12 +48,7 @@ public class FriendListPresenter extends MvpPresenter<FriendListView> {
                 .timeout(1, TimeUnit.SECONDS)
                 .retry(2)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<FriendListRequest, List<Friend>>() {
-                    @Override
-                    public List<Friend> call(FriendListRequest friendListRequest) {
-                        return friendListRequest.getResponse().getFriends();
-                    }
-                })
+                .map(friendListRequest -> friendListRequest.getResponse().getFriends())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Friend>>() {
                     @Override

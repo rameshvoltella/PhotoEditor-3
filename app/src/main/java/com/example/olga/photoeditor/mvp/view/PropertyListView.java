@@ -19,8 +19,6 @@ public interface PropertyListView extends MvpView {
 
     void showProperties();
 
-    void hideProperties();
-
     void setData(List<Property> properties);
 
 }
