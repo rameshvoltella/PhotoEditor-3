@@ -13,10 +13,5 @@
             android:icon="@drawable/ic_save"
             android:title="@string/save"/>
 
-        <item
-            android:id="@+id/navigation_menu_item_publicate"
-            android:icon="@drawable/ic_upload"
-            android:title="@string/send_photo"/>
-
     </group>
 </menu>

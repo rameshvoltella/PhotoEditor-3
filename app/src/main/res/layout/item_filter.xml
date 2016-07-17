@@ -6,22 +6,13 @@
               android:layout_marginBottom="0dp"
               android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item_filter_text_view_filter_name"
-        android:layout_width="0dp"
+    <CheckBox
+        android:id="@+id/item_filter_check_box"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:textColor="@color/item_text_color"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:text="@string/filtername"
         android:textSize="@dimen/filter_text_size"/>
-
-    <CheckBox
-        android:id="@+id/item_filter_checkbox"
-        android:layout_width="@dimen/check_box_size"
-        android:layout_height="@dimen/check_box_size"
-        android:shadowColor="@color/item_text_color"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
 </LinearLayout>

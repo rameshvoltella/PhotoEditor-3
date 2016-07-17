@@ -2,10 +2,9 @@ package com.example.olga.photoeditor.adapter;
 
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Effects.Filter;
+import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
 
 import butterknife.BindView;
@@ -19,11 +18,11 @@ import butterknife.ButterKnife;
  */
 public class FilterViewHolder extends CollectionRecycleAdapter.RecycleViewHolder<Filter> {
 
-    @BindView(R.id.item_filter_text_view_filter_name)
-    TextView mFilterName;
+    @BindView(R.id.item_filter_check_box)
+    CheckBox mCheckBox;
 
-    @BindView(R.id.item_filter_checkbox)
-    CheckBox mFilterCheckBox;
+    int mCheckedPosition;
+    int mCurrentPosition;
 
     public FilterViewHolder(View itemView) {
         super(itemView);
@@ -36,14 +35,21 @@ public class FilterViewHolder extends CollectionRecycleAdapter.RecycleViewHolder
 
     @Override
     public void bind(final Filter model) {
-
-        mFilterName.setText(model.getFilterName());
-        mFilterCheckBox.setChecked(false);
-
-        mFilterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
+        mCheckBox.setText(model.getFilterName());
+        mCheckBox.setChecked(false);
+        mCurrentPosition = getAdapterPosition();
+        mCheckBox.setChecked(mCheckedPosition == mCurrentPosition);
+        mCheckBox.setOnClickListener(v -> {
+            if (mCurrentPosition == mCheckedPosition) {
+                mCheckBox.setChecked(false);
+                FiltersPresenter.userCheckFilter(Filter.getCurrentFilter());
+                mCheckedPosition = -1;
+            } else {
+                mCheckedPosition = mCurrentPosition;
+                mCheckBox.setChecked(true);
                 FiltersPresenter.userCheckFilter(model);
             }
         });
+
     }
 }

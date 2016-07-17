@@ -1,9 +1,8 @@
-package com.example.olga.photoeditor.models.Effects;
+package com.example.olga.photoeditor.models;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.olga.photoeditor.R;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
@@ -24,22 +23,6 @@ import java.util.List;
 @DatabaseTable(tableName = Filter.TABLE)
 public class Filter implements Serializable {
     public static final String TABLE = "Filter";
-
-    //Standard properties
-    public static final Property BRIGHTNESS = new Property("Яркость", 1.0, 5.0, 1.0, R.drawable.ic_brightness);
-    public static final Property CONTRAST = new Property("Контрастность", 1.0, 5.0, 1.0, R.drawable.ic_contrast);
-    public static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
-    public static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.5, R.drawable.ic_sharpen);
-
-    //Extend properties
-    public static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, R.drawable.ic_fix);
-    public static final Property BLACK = new Property("Уровень черного", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
-    public static final Property WHITE = new Property("Уровень белого", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
-    public static final Property FILLIGHT = new Property("Заполняющий свет", 0.0, 1.0, 0.0, R.drawable.ic_fillight);
-    public static final Property GRAIN = new Property("Зернистость", 0.0, 1.0, 0.0, R.drawable.ic_grain);
-    public static final Property TEMPERATURE = new Property("Температура", 0.0, 1.0, 0.5, R.drawable.ic_sunny);
-    public static final Property FISHEYE = new Property("Объектив", 0.0, 1.0, 0.0, R.drawable.ic_camera);
-    public static final Property VIGNETTE = new Property("Виньетка", 0.0, 1.0, 0.0, R.drawable.ic_vignette);
 
     //Table constructor
     public static class Column {
@@ -104,7 +87,9 @@ public class Filter implements Serializable {
     private double vignetteValue;
 
 
-    public Filter() {/**/}
+    public Filter() {
+
+    }
 
     public Filter(String filterName, double brightnessValue, double contrastValue, double saturateValue,
                   double sharpenValue, double autofixValue, double blackValue, double whiteValue,
@@ -125,26 +110,14 @@ public class Filter implements Serializable {
         this.vignetteValue = vignetteValue;
     }
 
-    private static Filter defaultFilter = new Filter("default", 1.0, 1.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+    private static Filter currentFilter = new Filter("current", 1.0, 1.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
     private static Filter waldenFilter = new Filter("walden", 1.2, 0.9, 1.7, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
     private static Filter toasterFilter = new Filter("toaster", 1.0, 0.67, 2.5, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
     private static Filter kelvinFilter = new Filter("kelvin", 1.3, 1.1, 2.4, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
     private static Filter willowtFilter = new Filter("willow", 1.2, 0.85, 0.02, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
 
-
-    public static List<Property> getStandardProperties() {
-        List<Property> properties = new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
-        return properties;
-    }
-
-    public static List<Property> getExtendProperties() {
-        List<Property> properties = new ArrayList<>(Arrays.asList(AUTOFIX, BLACK, WHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
-        return properties;
-    }
-
-    public static List<Filter> getStandartFilters() {
-        List<Filter> list = new ArrayList<>(Arrays.asList(defaultFilter, waldenFilter, toasterFilter, kelvinFilter, willowtFilter));
-        return list;
+    public static List<Filter> getStandardFilters() {
+        return new ArrayList<>(Arrays.asList(currentFilter, waldenFilter, toasterFilter, kelvinFilter, willowtFilter));
     }
 
     public String getFilterName() {
@@ -259,24 +232,8 @@ public class Filter implements Serializable {
         this.vignetteValue = vignetteValue;
     }
 
-    public static Filter getDefaultFilter() {
-        return defaultFilter;
-    }
-
-    public static Filter getWaldenFilter() {
-        return waldenFilter;
-    }
-
-    public static Filter getToasterFilter() {
-        return toasterFilter;
-    }
-
-    public static Filter getKelvinFilter() {
-        return kelvinFilter;
-    }
-
-    public static Filter getWillowtFilter() {
-        return willowtFilter;
+    public static Filter getCurrentFilter() {
+        return currentFilter;
     }
 
     public static void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) throws SQLException, java.sql.SQLException {

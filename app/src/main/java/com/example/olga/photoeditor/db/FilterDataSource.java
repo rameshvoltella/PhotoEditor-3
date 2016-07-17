@@ -2,7 +2,7 @@ package com.example.olga.photoeditor.db;
 
 import android.content.Context;
 
-import com.example.olga.photoeditor.models.Effects.Filter;
+import com.example.olga.photoeditor.models.Filter;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class FilterDataSource {
 
-    private OrmLiteDbHelper mDbHelper;
+    private OrmLiteHelper mDbHelper;
 
     public FilterDataSource(Context context) {
-        mDbHelper = OrmLiteDbHelper.getInstance(context);
+        mDbHelper = OrmLiteHelper.getInstance(context);
     }
 
     public void saveFilter(Filter filter) {

@@ -6,7 +6,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Effects.Property;
+import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.ui.MainActivity;
 
 import butterknife.BindView;
@@ -38,6 +38,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
     @Override
     protected void create(View rootView) {
+
         ButterKnife.bind(this, itemView);
     }
 
@@ -57,17 +58,17 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextViewPercent.setText(progress + "%");
                 model.setDefaultValue(progress * (model.getMaxValue() - model.getMinValue()) / 100 + model.getMinValue());
-                MainActivity.setCurrentEffect(model.getPropertyName(), model.getDefaultValue(), 0);
+                MainActivity.setCurrentEffect(model.getPropertyName(), model.getDefaultValue());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(false);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(true);
             }
         });
     }

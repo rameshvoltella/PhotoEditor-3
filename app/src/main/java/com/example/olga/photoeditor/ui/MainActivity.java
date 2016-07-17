@@ -13,7 +13,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,26 +22,25 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.View;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
 import com.example.olga.photoeditor.fragment.FilterFragment;
 import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
-import com.example.olga.photoeditor.models.Effects.GLToolbox;
-import com.example.olga.photoeditor.models.Effects.TextureRenderer;
+import com.example.olga.photoeditor.models.GLToolbox;
+import com.example.olga.photoeditor.models.TextureRenderer;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.IntBuffer;
 import java.util.Calendar;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -72,18 +70,15 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     @BindView(R.id.activity_main_drawerlayout)
     DrawerLayout mDrawerLayout;
 
-    private static int GALLERY_REQUEST = 1;
+    private BottomBar mBottomBar;
+
+    //Fragments
     private static FilterFragment mFilterFragment;
     private static StandardPropertyFragment mStandardPropertyFragment;
     private static ExtendPropertyFragment mExtendPropertyFragment;
     private static FragmentManager fragmentManager;
-    private BottomBar mBottomBar;
-    private EditText mEditText;
-    private CheckBox mCheckBox;
-    private String folderToSave;
 
-    private AlertDialog mPublicateDialog;
-
+    private static int GALLERY_REQUEST = 1;
 
     //EffectFactory
     private static GLSurfaceView mEffectView;
@@ -91,13 +86,15 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private static int[] mTextures = new int[2];
     private static int mImageWidth;
     private static int mImageHeight;
+    private static String mLastEffect;
     private static String mCurrentEffect;
     private static double mValueCurrentEffect;
-    private static int mDegCurrentEffect;
-
     private static EffectContext mEffectContext;
     private boolean mInitialized = false;
     private TextureRenderer mTexRenderer = new TextureRenderer();
+    private volatile boolean saveFrame;
+
+    private String mPath;
 
 
     @SuppressWarnings("ConstantConditions")
@@ -107,18 +104,20 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        //EffectFactory
+        //init EffectFactory
         mEffectView = (GLSurfaceView) findViewById(R.id.activity_main_image_view_photo);
         mEffectView.setEGLContextClientVersion(2);
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        mEffectView.setPreserveEGLContextOnPause(true);
 
+        mPath = Environment.getExternalStorageDirectory().toString();
+
+        //init fragments
         mFilterFragment = new FilterFragment();
         mStandardPropertyFragment = new StandardPropertyFragment();
         mExtendPropertyFragment = new ExtendPropertyFragment();
         fragmentManager = getFragmentManager();
-
-        folderToSave = Environment.getExternalStorageDirectory().toString();
 
         setSupportActionBar(toolbar);
 
@@ -132,8 +131,10 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        //Bottom navbar
+        //Bottom navigation bar
         mBottomBar = BottomBar.attachShy(mCoordinatorLayout, findViewById(R.id.activity_main_relative_layout_scroll_container), savedInstanceState);
+        mBottomBar.useDarkTheme();
+        mBottomBar.setActiveTabColor(R.color.white);
         mBottomBar.setItems(R.menu.bottom_menu);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
@@ -162,8 +163,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
             }
         });
 
-
-        // Set behavior of Navigation drawer
+        // menu
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     if (menuItem.isChecked()) menuItem.setChecked(false);
@@ -180,26 +180,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
                         }
 
                         case R.id.navigation_menu_item_save: {
-                            savePhoto();
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
-
-                        case R.id.navigation_menu_item_publicate: {
-                            hideDialog();
-                            mEditText = new EditText(MainActivity.this);
-                            mEditText.setHeight(R.dimen.bb_height);
-                            mCheckBox = new CheckBox(MainActivity.this);
-                            mCheckBox.setText(R.string.check_friends);
-                            mPublicateDialog = new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle(getString(R.string.send_photo))
-                                    .setView(mEditText)
-                                    .setView(mCheckBox)
-                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                        showFriendList();
-                                    })
-                                    .setOnCancelListener(dialog -> hideDialog())
-                                    .show();
+                            saveFrame = true;
+                            mEffectView.requestRender();
                             mDrawerLayout.closeDrawers();
                             return true;
                         }
@@ -219,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri selectedImage = imageReturnedIntent.getData();
-            photoLoader("load", selectedImage);
+            loadPhoto("load", selectedImage);
         }
     }
 
@@ -235,8 +217,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         mBottomBar.onSaveInstanceState((outState));
     }
 
@@ -249,12 +231,6 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideDialog();
-    }
-
     //EffectFactory
     @Override
     public void onDrawFrame(GL10 gl) {
@@ -262,15 +238,23 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
             //Only need to do this once
             mEffectContext = EffectContext.createWithCurrentGlContext();
             mTexRenderer.init();
-            photoLoader("default", null);
+            loadPhoto("default", null);
             mInitialized = true;
         }
-        if (!mCurrentEffect.equals("NONE")) {
-            initEffect();
-            applyEffect();
-        }
 
-        renderResult();
+        if (saveFrame) {
+            savePhoto(savePixels(mEffectView, gl));
+            saveFrame = false;
+        } else {
+            if (!mCurrentEffect.equals("NONE")) {
+                initEffect();
+                applyEffect();
+
+                mLastEffect = mCurrentEffect;
+            }
+
+            renderResult();
+        }
     }
 
     @Override
@@ -284,11 +268,13 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
 
-    public static void setCurrentEffect(String propertyName, double defaultValue, int deg) {
-        mCurrentEffect = propertyName;
-        mValueCurrentEffect = defaultValue;
-        mDegCurrentEffect = deg;
+    public static void setCurrentEffect(String propertyName, double defaultValue) {
 
+        mCurrentEffect = propertyName;
+        if (!mCurrentEffect.equals(mLastEffect) && !mLastEffect.equals("NONE")) {
+            mTextures[0] = mTextures[1];
+        }
+        mValueCurrentEffect = defaultValue;
         mEffectView.requestRender();
     }
 
@@ -378,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
                 mEffect.setParameter("scale", (float) mValueCurrentEffect);
                 break;
 
-            //Buttons Properties #1
+            //Flip
             case "FLIPVERT":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_FLIP);
@@ -391,48 +377,10 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
                 mEffect.setParameter("horizontal", true);
                 break;
 
-            case "ROTATE":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_ROTATE);
-                mEffect.setParameter("angle", mDegCurrentEffect);
-                break;
-
-
-            //Buttons Properties #2
-
-            case "DOCUMENTARY":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_DOCUMENTARY);
-                break;
-
-            case "GRAYSCALE":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_GRAYSCALE);
-                break;
-
-            case "LOMOISH":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_LOMOISH);
-                break;
-
-            case "NEGATIVE":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_NEGATIVE);
-                break;
-
-            case "POSTERIZE":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_POSTERIZE);
-                break;
-
-            case "SEPIA":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_SEPIA);
-                break;
-
             default:
                 break;
         }
+
     }
 
     private void applyEffect() {
@@ -443,30 +391,74 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         if (!mCurrentEffect.equals("NONE")) {
             // if no effect is chosen, just render the original bitmap
             mTexRenderer.renderTexture(mTextures[1]);
-            mTextures[0] = mTextures[1];
         } else {
             // render the result of applyEffect()
             mTexRenderer.renderTexture(mTextures[0]);
         }
     }
 
-    private void photoLoader(String label, Uri uri) {
+    private static Bitmap savePixels(View view, GL10 gl) {
+        int h = mImageHeight;
+        int w = mImageWidth;
+        int x = (view.getWidth() - w) / 2;
+        int y = (view.getHeight() + h) / 2;
+        int b[] = new int[w * h];
+        int bt[] = new int[w * h];
+        IntBuffer ib = IntBuffer.wrap(b);
+        ib.position(0);
+
+        gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                int pix = b[i * w + j];
+                int pb = (pix >> 16) & 0xff;
+                int pr = (pix << 16) & 0x00ff0000;
+                int pix1 = (pix & 0xff00ff00) | pr | pb;
+                bt[(h - i - 1) * w + j] = pix1;
+            }
+        }
+        return Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888);
+    }
+
+
+    private String savePhoto(Bitmap bitmap) {
+        Calendar now = Calendar.getInstance();
+        try {
+            OutputStream fOut = null;
+            String fileName = "photo" + Integer.toString(now.get(Calendar.HOUR)) + Integer.toString(now.get(Calendar.MINUTE)) + Integer.toString(now.get(Calendar.SECOND)) + Integer.toString(now.get(Calendar.MILLISECOND)) + ".jpg";
+            File file = new File(mPath, fileName);
+            try {
+                fOut = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            } finally {
+                {
+                    if (fOut != null) fOut.close();
+                }
+            }
+            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return "";
+    }
+
+    private void loadPhoto(String label, Uri uri) {
         Bitmap bitmap = null;
+        // Generate textures
+        GLES20.glGenTextures(2, mTextures, 0);
+
+        mCurrentEffect = "NONE";
+        mLastEffect = "NONE";
+
         switch (label) {
             case "default": {
-                // Generate textures
-                GLES20.glGenTextures(2, mTextures, 0);
-
-                // Load input bitmap
-                bitmap = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.pinguin);
-
-                mCurrentEffect = "NONE";
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pinguin);
                 break;
             }
             case "load": {
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -485,42 +477,6 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
 
         // Set texture parameters
         GLToolbox.initTexParams();
-
-    }
-
-
-    private String savePhoto() {
-        OutputStream fOut = null;
-        Calendar calendar = Calendar.getInstance();
-
-        try {
-            File file = new File(folderToSave, Integer.toString(calendar.YEAR) + Integer.toString(calendar.MONTH) + Integer.toString(calendar.DAY_OF_MONTH) + Integer.toString(calendar.HOUR) + Integer.toString(calendar.MINUTE) + Integer.toString(calendar.SECOND) + ".jpg");
-
-            Bitmap bitmap = mEffectView.getDrawingCache();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-            fOut.flush();
-            fOut.close();
-            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "";
-    }
-
-    private void showFriendList() {
-        if (mCheckBox.isChecked()) {
-            Intent intent = new Intent(this, FriendListActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, R.string.publication, Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    private void hideDialog() {
-        if (mPublicateDialog != null) {
-            mPublicateDialog.dismiss();
-        }
 
     }
 

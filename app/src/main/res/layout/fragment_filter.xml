@@ -12,93 +12,16 @@
         android:orientation="vertical"
         android:padding="@dimen/item_view_margin">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/fragment_filter_button_save"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_documentary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/documentary"
-                    android:textSize="@dimen/button_text_size"/>
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_posterize"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/posterize"
-                    android:textSize="@dimen/button_text_size"/>
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_sepia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sepia"
-                    android:textSize="@dimen/button_text_size"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_lomoish"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lomoish"
-                    android:textSize="@dimen/button_text_size"/>
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_negative"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/negative"
-                    android:textSize="@dimen/button_text_size"/>
-
-                <CheckBox
-                    android:id="@+id/fragment_filter_button_grayscale"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/grayscale"
-                    android:textSize="@dimen/button_text_size"/>
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/fragment_filter_button_save"
-                style="@style/Base.Widget.AppCompat.Button.Colored"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/friend_item_margin"
-                android:layout_weight="1"
-                android:background="@color/colorAccent"
-                android:text="@string/save_filter"
-                android:textSize="@dimen/button_text_size"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-
-
-
-        </LinearLayout>
+            android:background="@color/colorAccent"
+            android:paddingLeft="@dimen/item_view_margin"
+            android:paddingRight="@dimen/item_view_margin"
+            android:text="@string/save_filter"
+            android:textSize="@dimen/button_text_size"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_filter_recycler_view_filters"
@@ -107,11 +30,18 @@
 
     </LinearLayout>
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:visibility="visible">
+
+        <EditText
+            android:id="@+id/fragment_filter_edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:hint="@string/enter_name"/>
 
         <TextView
             android:id="@+id/fragment_filter_text_view_no_data"
@@ -128,14 +58,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible"/>
-
-        <EditText
-            android:id="@+id/fragment_filter_edit_text_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="bottom"
-            android:hint="@string/enter_name"/>
 
     </FrameLayout>
 

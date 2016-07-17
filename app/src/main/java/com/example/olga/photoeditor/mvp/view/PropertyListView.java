@@ -3,7 +3,7 @@ package com.example.olga.photoeditor.mvp.view;
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.example.olga.photoeditor.models.Effects.Property;
+import com.example.olga.photoeditor.models.Property;
 
 import java.util.List;
 

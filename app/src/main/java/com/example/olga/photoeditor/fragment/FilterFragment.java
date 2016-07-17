@@ -18,10 +18,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.FilterViewHolder;
-import com.example.olga.photoeditor.models.Effects.Filter;
+import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
-import com.example.olga.photoeditor.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,23 +31,7 @@ import butterknife.ButterKnife;
 
 public class FilterFragment extends MvpFragment implements FiltersView {
 
-    @BindView(R.id.fragment_filter_button_documentary)
-    Button mDocumentaryButton;
-
-    @BindView(R.id.fragment_filter_button_grayscale)
-    Button mGrayscaleButton;
-
-    @BindView(R.id.fragment_filter_button_lomoish)
-    Button mLomoishButton;
-
-    @BindView(R.id.fragment_filter_button_negative)
-    Button mNegativeButton;
-
-    @BindView(R.id.fragment_filter_button_posterize)
-    Button mPosterizeButton;
-
-    @BindView(R.id.fragment_filter_button_sepia)
-    Button mSepiaButton;
+    private static final String CURRENT_FILTER = "CURRENT_FILTER";
 
     @BindView(R.id.fragment_filter_button_save)
     Button mSaveButton;
@@ -66,7 +49,6 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     TextView mEmptyView;
 
     @InjectPresenter
-
     FiltersPresenter mPresenter;
 
     private Filter mCurrentFilter;
@@ -88,41 +70,38 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         mProgressBar.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.GONE);
         mNameText.setVisibility(View.GONE);
-        mCurrentFilter = Filter.getDefaultFilter();
 
+        //Create and set adapter
         mAdapter = new CollectionRecycleAdapter<Filter>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new FilterViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_filter, parent, false));
             }
         };
-
         mFilterRecyclerView.setAdapter(mAdapter);
         mFilterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        mFilterRecyclerView.setOnClickListener(v -> mAdapter.notifyDataSetChanged());
         mPresenter.userLoadFilters(getActivity());
+
+        //Apply currentFilter
+        if (savedInstanceState != null) {
+            mCurrentFilter = (Filter) savedInstanceState.getSerializable(CURRENT_FILTER);
+            FiltersPresenter.userCheckFilter(mCurrentFilter);
+        } else {
+            mCurrentFilter = Filter.getCurrentFilter();
+        }
 
         initSwipe();
 
-        mDocumentaryButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("DOCUMENTARY", 0, 0));
-
-        mGrayscaleButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("GRAYSCALE", 0, 0));
-
-        mLomoishButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("LOMOISH", 0, 0));
-
-        mNegativeButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("NEGATIVE", 0, 0));
-
-        mPosterizeButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("POSTERIZE", 0, 0));
-
-        mSepiaButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("SEPIA", 0, 0));
-
+        // Create listeners
         mSaveButton.setOnClickListener(view1 -> {
             if (!mNameText.getText().toString().equals("")) {
                 changeCurrentFilter();
                 mCurrentFilter.setFilterName(mNameText.getText().toString());
                 mPresenter.userCreateFilter(mCurrentFilter);
-            } else {
                 mNameText.setVisibility(View.GONE);
+            } else {
+                mNameText.setVisibility(View.VISIBLE);
                 mNameText.requestFocus();
             }
         });
@@ -203,5 +182,19 @@ public class FilterFragment extends MvpFragment implements FiltersView {
             mCurrentFilter.setVignetteValue(values.get(11));
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeCurrentFilter();
+        mPresenter.userChangeCurrentFilter(mCurrentFilter);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(CURRENT_FILTER, mCurrentFilter);
+    }
+
 
 }

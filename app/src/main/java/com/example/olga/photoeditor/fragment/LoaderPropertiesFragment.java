@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -14,7 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.PropertyViewHolder;
-import com.example.olga.photoeditor.models.Effects.Property;
+import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 import com.example.olga.photoeditor.ui.MainActivity;
@@ -66,20 +67,19 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
 
         mPropertyRecyclerView.setAdapter(mAdapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        mFlipHorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.setCurrentEffect("FLIPHOR", 0, 0);
+        mPropertyRecyclerView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                mPropertyRecyclerView.requestDisallowInterceptTouchEvent(false);
+            } else {
+                mPropertyRecyclerView.requestDisallowInterceptTouchEvent(true);
             }
+            v.onTouchEvent(event);
+            return false;
         });
 
-        mFlipVertButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.setCurrentEffect("FLIPVERT", 0, 0);
-            }
-        });
+        mFlipHorButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("FLIPHOR", 0));
+
+        mFlipVertButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("FLIPVERT", 0));
 
         return view;
     }

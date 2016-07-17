@@ -3,7 +3,7 @@ package com.example.olga.photoeditor.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.example.olga.photoeditor.models.Effects.Property;
+import com.example.olga.photoeditor.models.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,10 @@ public class StandardPropertyFragment extends LoaderPropertiesFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.userSelectStandardProperties();
+        mPresenter.userSelectProperties("standard");
     }
 
-    public static List<Double> getValues(){
+    public static List<Double> getValues() {
         List<Property> properties = mAdapter.getCollection();
         List<Double> values = new ArrayList<>();
         for (int i = 0; i < properties.size(); i++) {
@@ -31,4 +31,9 @@ public class StandardPropertyFragment extends LoaderPropertiesFragment {
         return values;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.userUpdateProperties("standard");
+    }
 }
