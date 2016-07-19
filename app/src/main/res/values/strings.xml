@@ -14,9 +14,16 @@
     <string name="filter">Фильтры</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="filtername">FilterName</string>
     <string name="property">Свойство</string>
-    <string name="enter_name">Введите имя фильтра</string>
-    <string name="save_filter">Сохранить текущий фильтр</string>
+    <string name="enter_name">Введите имя файла</string>
+    <string name="cancel">Отмена</string>
+    <string name="none_filter">Без фильтра</string>
+    <string name="crossprocess">Пленка</string>
+    <string name="documentary">Документальный</string>
+    <string name="grayscale">Оттенки серого</string>
+    <string name="lomoish">Ломография</string>
+    <string name="negative">Негатив</string>
+    <string name="posterize">Постеризация</string>
+    <string name="sepia">Сепия</string>
 
 </resources>

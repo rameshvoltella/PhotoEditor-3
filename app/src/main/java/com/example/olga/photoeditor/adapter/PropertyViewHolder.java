@@ -63,12 +63,10 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(false);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(true);
             }
         });
     }
