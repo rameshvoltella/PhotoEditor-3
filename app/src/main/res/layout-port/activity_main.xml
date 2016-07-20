@@ -78,17 +78,17 @@
         app:menu="@menu/navigation_menu"/>
 
     <FrameLayout
+        android:id="@+id/activity_main_layout_message"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/activity_main_layout_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/bb_darkBackgroundColor"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/activity_main_edit_text_file_name"
