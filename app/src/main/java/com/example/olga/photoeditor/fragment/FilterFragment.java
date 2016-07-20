@@ -45,4 +45,9 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFilterRadioGroup.clearCheck();
+    }
 }

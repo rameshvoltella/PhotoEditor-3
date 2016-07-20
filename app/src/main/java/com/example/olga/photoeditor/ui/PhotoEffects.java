@@ -15,7 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.GLToolbox;
@@ -55,7 +55,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     protected static GLSurfaceView mEffectView;
 
     @BindView(R.id.activity_main_layout_message)
-    LinearLayout mMessageLayout;
+    FrameLayout mMessageLayout;
 
     @BindView(R.id.activity_main_edit_text_file_name)
     EditText mNameEditText;
@@ -66,6 +66,19 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     @BindView(R.id.activity_main_button_cancel)
     Button mCancelButton;
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mEffectView.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mEffectView.onResume();
+    }
+
     //EffectFactory
     @Override
     public void onDrawFrame(GL10 gl) {
@@ -75,21 +88,24 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             mTexRenderer.init();
             loadPhoto(mBitmap);
             mInitialized = true;
+            renderResult();
         }
-        if (!saveFrame) {
-            if (!mCurrentEffect.equals("NONE")) {
-                initEffect(mCurrentEffect, mValueCurrentEffect);
-                applyEffect();
-                mLastEffect = mCurrentEffect;
-            }
+
+        if (!mCurrentEffect.equals("NONE")) {
+            initEffect(mCurrentEffect, mValueCurrentEffect);
+            applyEffect();
+            mLastEffect = mCurrentEffect;
             if (mCurrentEffect.equals("DOCUMENTARY") || mCurrentEffect.equals("GRAYSCALE") ||
                     mCurrentEffect.equals("LOMOISH") || mCurrentEffect.equals("NEGATIVE") ||
                     mCurrentEffect.equals("POSTERIZE") || mCurrentEffect.equals("SEPIA") ||
                     mCurrentEffect.equals("CROSSPROCESS")) {
                 mTextures[2] = mTextures[0];
             }
-            renderResult();
-        } else {
+        }
+
+        renderResult();
+
+        if (saveFrame) {
             savePhoto(savePixels(mImageHeight, mImageWidth, mEffectView, gl));
             saveFrame = false;
         }
@@ -125,9 +141,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         if (mEffect != null) {
             mEffect.release();
         }
-        /**
-         * Initialize the correct effect based on the selected menu/action item
-         */
 
         switch (currentEffect) {
             //Standard Properties
@@ -259,9 +272,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     private void applyEffect() {
         mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
-        if (mTextures[2] != 0) {
-            mEffect.apply(mTextures[2], mImageWidth, mImageHeight, mTextures[3]);
-        }
     }
 
     public static void cancelFilter() {
@@ -318,10 +328,12 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     private String savePhoto(Bitmap bitmap) {
         String path = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(path + "/saved_images");
+        myDir.mkdirs();
         String fileName = mNameEditText.getText() + ".jpg";
         try {
             OutputStream fOut = null;
-            File file = new File(path, fileName);
+            File file = new File(myDir, fileName);
             try {
                 fOut = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);

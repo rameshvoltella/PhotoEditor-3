@@ -172,18 +172,6 @@ public class MainActivity extends PhotoEffects {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mEffectView.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mEffectView.onResume();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
