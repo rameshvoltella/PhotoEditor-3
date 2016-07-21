@@ -36,4 +36,8 @@ public class ExtendPropertyFragment extends LoaderPropertiesFragment {
         super.onResume();
         mPresenter.userUpdateProperties("extend");
     }
+
+    public static List<Property> getExtendProerties(){
+        return mAdapter.getCollection();
+    }
 }

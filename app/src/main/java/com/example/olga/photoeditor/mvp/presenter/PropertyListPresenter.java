@@ -2,8 +2,11 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
+import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
+import com.example.olga.photoeditor.ui.MainActivity;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
 
     static List<Property> mStandardProperties;
     static List<Property> mExtendProperties;
+    static List<Property> mProperties;
 
     @Override
     protected void onFirstViewAttach() {
@@ -42,6 +46,19 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
         }
         if (string.equals("extend")) {
             getViewState().setData(mExtendProperties);
+        }
+    }
+
+    public static void userChangePropertiesValue() {
+        mProperties = StandardPropertyFragment.getStandardProerties();
+        if (ExtendPropertyFragment.getExtendProerties().size() != 4) {
+            mProperties.addAll(ExtendPropertyFragment.getExtendProerties());
+        }
+        for (int i = 0; i < mProperties.size(); i++) {
+            Property property = mProperties.get(i);
+            if (property.getCurrentValue() != property.getDefaultValue()) {
+                MainActivity.setCurrentEffect(property.getPropertyName(), property.getCurrentValue());
+            }
         }
     }
 

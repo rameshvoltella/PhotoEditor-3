@@ -20,7 +20,7 @@ public class Property implements Serializable {
     private static final Property BRIGHTNESS = new Property("Яркость", 1.0, 2.0, 1.0, R.drawable.ic_brightness);
     private static final Property CONTRAST = new Property("Контрастность", 1.0, 2.0, 1.0, R.drawable.ic_contrast);
     private static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
-    private static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.5, R.drawable.ic_sharpen);
+    private static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.0, R.drawable.ic_sharpen);
 
     //Extend properties
     private static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, R.drawable.ic_fix);
@@ -38,6 +38,8 @@ public class Property implements Serializable {
     private double mMaxValue;
 
     private double mDefaultValue;
+
+    private double mCurrentValue;
 
     private int mImageId;
 
@@ -95,5 +97,13 @@ public class Property implements Serializable {
 
     public void setImageId(int imageId) {
         mImageId = imageId;
+    }
+
+    public double getCurrentValue() {
+        return mCurrentValue;
+    }
+
+    public void setCurrentValue(double currentValue) {
+        mCurrentValue = currentValue;
     }
 }

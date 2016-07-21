@@ -22,7 +22,6 @@ import java.util.List;
 
 @InjectViewState
 public class FiltersPresenter extends MvpPresenter<FiltersView> {
-    private static boolean mFiltersApply;
     private List<Filter> filters;
 
     @Override
@@ -41,13 +40,7 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
     }
 
     public void userCheckFilter(int index) {
-        if (mFiltersApply) {
-            MainActivity.cancelFilter();
-        }
-        if (index != 0) {
-            MainActivity.setCurrentEffect(filters.get(index).getFilterLabel(), 0.0);
-            mFiltersApply = true;
-        }
+        MainActivity.setCurrentEffect(filters.get(index).getFilterLabel(), 0.0);
 
     }
 

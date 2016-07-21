@@ -36,4 +36,8 @@ public class StandardPropertyFragment extends LoaderPropertiesFragment {
         super.onResume();
         mPresenter.userUpdateProperties("standard");
     }
+
+    public static List<Property> getStandardProerties(){
+        return mAdapter.getCollection();
+    }
 }

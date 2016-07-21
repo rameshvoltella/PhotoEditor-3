@@ -12,22 +12,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_marginBottom="@dimen/button_flip_margin"
+            android:gravity="right"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/fragment_property_list_button_flip_hor"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_properties_one_size"
-                android:layout_weight="1"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="@dimen/button_flip_size"
+                android:layout_height="@dimen/button_flip_size"
                 android:src="@drawable/ic_flip"
                 android:tint="@color/white"/>
 
             <ImageButton
                 android:id="@+id/fragment_property_list_button_flip_vert"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_properties_one_size"
-                android:layout_weight="1"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="@dimen/button_flip_size"
+                android:layout_height="@dimen/button_flip_size"
                 android:src="@drawable/ic_flip_vert"
                 android:tint="@color/white"/>
 
@@ -36,8 +37,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/property_list_recycleview_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

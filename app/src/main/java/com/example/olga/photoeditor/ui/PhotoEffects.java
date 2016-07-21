@@ -40,15 +40,15 @@ import butterknife.BindView;
 public abstract class PhotoEffects extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     private static Effect mEffect;
-    private static int[] mTextures = new int[4];
+    private static int[] mTextures = new int[2];
     private static int mImageWidth;
     private static int mImageHeight;
-    private static String mLastEffect;
     private static String mCurrentEffect;
     private static double mValueCurrentEffect;
     private static EffectContext mEffectContext;
     private static TextureRenderer mTexRenderer = new TextureRenderer();
-    private volatile boolean saveFrame;
+    private volatile boolean mSaveFrame;
+    private volatile boolean mFilterApply;
     protected boolean mInitialized = false;
     protected Bitmap mBitmap;
 
@@ -94,20 +94,17 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         if (!mCurrentEffect.equals("NONE")) {
             initEffect(mCurrentEffect, mValueCurrentEffect);
             applyEffect();
-            mLastEffect = mCurrentEffect;
-            if (mCurrentEffect.equals("DOCUMENTARY") || mCurrentEffect.equals("GRAYSCALE") ||
-                    mCurrentEffect.equals("LOMOISH") || mCurrentEffect.equals("NEGATIVE") ||
-                    mCurrentEffect.equals("POSTERIZE") || mCurrentEffect.equals("SEPIA") ||
-                    mCurrentEffect.equals("CROSSPROCESS")) {
-                mTextures[2] = mTextures[0];
+            if (mFilterApply) {
+                mTextures[0] = mTextures[1];
+                mFilterApply = false;
             }
         }
 
         renderResult();
 
-        if (saveFrame) {
+        if (mSaveFrame) {
             savePhoto(savePixels(mImageHeight, mImageWidth, mEffectView, gl));
-            saveFrame = false;
+            mSaveFrame = false;
         }
     }
 
@@ -125,12 +122,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     public static void setCurrentEffect(String propertyName, double defaultValue) {
 
         mCurrentEffect = propertyName;
-        if (!mCurrentEffect.equals(mLastEffect) && !mLastEffect.equals("NONE")) {
-            mTextures[0] = mTextures[1];
-            if (mTextures[3] != 0) {
-                mTextures[2] = mTextures[3];
-            }
-        }
         mValueCurrentEffect = defaultValue;
         mEffectView.requestRender();
     }
@@ -232,36 +223,43 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             case "CROSSPROCESS":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_CROSSPROCESS);
+                mFilterApply = true;
                 break;
 
             case "DOCUMENTARY":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_DOCUMENTARY);
+                mFilterApply = true;
                 break;
 
             case "GRAYSCALE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_GRAYSCALE);
+                mFilterApply = true;
                 break;
 
             case "LOMOISH":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_LOMOISH);
+                mFilterApply = true;
                 break;
 
             case "NEGATIVE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_NEGATIVE);
+                mFilterApply = true;
                 break;
 
             case "POSTERIZE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_POSTERIZE);
+                mFilterApply = true;
                 break;
 
             case "SEPIA":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_SEPIA);
+                mFilterApply = true;
                 break;
 
             default:
@@ -272,12 +270,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     private void applyEffect() {
         mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
-    }
-
-    public static void cancelFilter() {
-        mTextures[0] = mTextures[2];
-        mCurrentEffect = "NONE";
-        mEffectView.requestRender();
     }
 
     protected static void renderResult() {
@@ -329,6 +321,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     private String savePhoto(Bitmap bitmap) {
         String path = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(path + "/saved_images");
+        //noinspection ResultOfMethodCallIgnored
         myDir.mkdirs();
         String fileName = mNameEditText.getText() + ".jpg";
         try {
@@ -354,7 +347,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         // Generate textures
         GLES20.glGenTextures(2, mTextures, 0);
         mCurrentEffect = "NONE";
-        mLastEffect = "NONE";
 
         //noinspection ConstantConditions
         mImageWidth = bitmap.getWidth();
@@ -380,9 +372,9 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             if (mNameEditText.getText().toString().equals("")) {
                 mNameEditText.setFocusable(true);
             } else {
-                saveFrame = true;
+                mSaveFrame = true;
                 mCurrentEffect = "NONE";
-                mEffectView.requestRender();
+                //mEffectView.requestRender();
                 mMessageLayout.startAnimation(animationDown);
                 mMessageLayout.setVisibility(View.GONE);
             }

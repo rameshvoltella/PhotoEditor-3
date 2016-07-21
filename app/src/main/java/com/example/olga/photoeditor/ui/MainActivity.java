@@ -97,7 +97,7 @@ public class MainActivity extends PhotoEffects {
         //Bottom navigation bar
         mBottomBar = BottomBar.attachShy(mCoordinatorLayout, findViewById(R.id.activity_main_relative_layout_scroll_container), savedInstanceState);
         mBottomBar.useDarkTheme();
-        mBottomBar.setActiveTabColor(R.color.colorPrimary);
+        mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setItems(R.menu.bottom_menu);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.ui.MainActivity;
+import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +45,10 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
     @Override
     public void bind(final Property model) {
 
-        int progress = (int) ((model.getDefaultValue() - model.getMinValue()) * 100 / (model.getMaxValue() - model.getMinValue()));
-
+        if (model.getCurrentValue() == 0) {
+            model.setCurrentValue(model.getDefaultValue());
+        }
+        int progress = (int) ((model.getCurrentValue() - model.getMinValue()) * 100 / (model.getMaxValue() - model.getMinValue()));
         mTextViewProperty.setText(model.getPropertyName());
         mTextViewPercent.setText(progress + " %");
         mSeekBarPercent.setProgress(progress);
@@ -57,8 +59,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextViewPercent.setText(progress + "%");
-                model.setDefaultValue(progress * (model.getMaxValue() - model.getMinValue()) / 100 + model.getMinValue());
-                MainActivity.setCurrentEffect(model.getPropertyName(), model.getDefaultValue());
+                model.setCurrentValue(progress * (model.getMaxValue() - model.getMinValue()) / 100 + model.getMinValue());
             }
 
             @Override
@@ -67,6 +68,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                PropertyListPresenter.userChangePropertiesValue();
             }
         });
     }
