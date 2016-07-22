@@ -67,9 +67,9 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
         mPropertyRecyclerView.setAdapter(mAdapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mFlipHorButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("FLIPHOR", 0));
+        mFlipHorButton.setOnClickListener(view1 -> MainActivity.setFlipHor());
 
-        mFlipVertButton.setOnClickListener(view1 -> MainActivity.setCurrentEffect("FLIPVERT", 0));
+        mFlipVertButton.setOnClickListener(view1 -> MainActivity.setFlipVert());
 
         return view;
     }

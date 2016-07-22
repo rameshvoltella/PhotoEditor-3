@@ -22,7 +22,6 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
 
     static List<Property> mStandardProperties;
     static List<Property> mExtendProperties;
-    static List<Property> mProperties;
 
     @Override
     protected void onFirstViewAttach() {
@@ -50,16 +49,16 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public static void userChangePropertiesValue() {
-        mProperties = StandardPropertyFragment.getStandardProerties();
+        List<Property> properties = StandardPropertyFragment.getStandardProerties();
         if (ExtendPropertyFragment.getExtendProerties().size() != 4) {
-            mProperties.addAll(ExtendPropertyFragment.getExtendProerties());
+            properties.addAll(ExtendPropertyFragment.getExtendProerties());
         }
-        for (int i = 0; i < mProperties.size(); i++) {
-            Property property = mProperties.get(i);
-            if (property.getCurrentValue() != property.getDefaultValue()) {
-                MainActivity.setCurrentEffect(property.getPropertyName(), property.getCurrentValue());
+        for (int i = 0; i < properties.size(); i++) {
+            Property property = properties.get(i);
+            if (property.getCurrentValue() == property.getDefaultValue()) {
+                properties.remove(i);
             }
         }
+        MainActivity.setChangedProperties(properties);
     }
-
 }

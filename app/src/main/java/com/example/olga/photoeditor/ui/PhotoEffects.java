@@ -19,12 +19,14 @@ import android.widget.FrameLayout;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.GLToolbox;
+import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.models.TextureRenderer;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.IntBuffer;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -40,18 +42,18 @@ import butterknife.BindView;
 public abstract class PhotoEffects extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     private static Effect mEffect;
-    private static int[] mTextures = new int[2];
+    private static Effect mEffects[];
+    private static boolean mFlipHor;
+    private static boolean mFlipVert;
+    private static int[] mTextures = new int[4];
     private static int mImageWidth;
     private static int mImageHeight;
-    private static String mCurrentEffect;
-    private static double mValueCurrentEffect;
+    protected static String mCurrentEffect;
     private static EffectContext mEffectContext;
     private static TextureRenderer mTexRenderer = new TextureRenderer();
     private volatile boolean mSaveFrame;
-    private volatile boolean mFilterApply;
     protected boolean mInitialized = false;
     protected Bitmap mBitmap;
-
     protected static GLSurfaceView mEffectView;
 
     @BindView(R.id.activity_main_layout_message)
@@ -66,7 +68,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     @BindView(R.id.activity_main_button_cancel)
     Button mCancelButton;
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -76,6 +77,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     @Override
     protected void onResume() {
         super.onResume();
+        mInitialized = false;
         mEffectView.onResume();
     }
 
@@ -88,16 +90,22 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             mTexRenderer.init();
             loadPhoto(mBitmap);
             mInitialized = true;
-            renderResult();
+        }
+        //apply flip
+        if (mFlipVert || mFlipHor) {
+            initFilters("NONE");
+            applyEffect(0, 0);
         }
 
-        if (!mCurrentEffect.equals("NONE")) {
-            initEffect(mCurrentEffect, mValueCurrentEffect);
-            applyEffect();
-            if (mFilterApply) {
-                mTextures[0] = mTextures[1];
-                mFilterApply = false;
-            }
+        //apply properties new value
+        if (mEffects != null) {
+            applyEffect(0, 1);
+        }
+
+        //apply filters
+        if (!mCurrentEffect.equals("NONE") && !mCurrentEffect.equals("FLIPVERT") && !mCurrentEffect.equals("FLIPHOR")) {
+            initFilters(mCurrentEffect);
+            applyEffect(1, 3);
         }
 
         renderResult();
@@ -106,6 +114,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             savePhoto(savePixels(mImageHeight, mImageWidth, mEffectView, gl));
             mSaveFrame = false;
         }
+
     }
 
     @Override
@@ -119,147 +128,158 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
 
-    public static void setCurrentEffect(String propertyName, double defaultValue) {
-
+    public static void setCurrentEffect(String propertyName) {
         mCurrentEffect = propertyName;
-        mValueCurrentEffect = defaultValue;
         mEffectView.requestRender();
     }
 
-    private void initEffect(String currentEffect, double value) {
+    public static void setChangedProperties(List<Property> properties) {
+        mEffects = null;
+        mEffects = new Effect[properties.size()];
+        EffectFactory effectFactory = mEffectContext.getFactory();
+
+        for (int i = 0; i < properties.size(); i++) {
+            String currentEffect = properties.get(i).getPropertyName();
+            float value = (float) properties.get(i).getCurrentValue();
+            if (mEffects[i] != null) {
+                mEffects[i].release();
+            }
+
+            switch (currentEffect) {
+                //Standard Properties
+                case "Яркость":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_BRIGHTNESS);
+                    mEffects[i].setParameter("brightness", value);
+                    break;
+
+                case "Контрастность":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_CONTRAST);
+                    mEffects[i].setParameter("contrast", value);
+                    break;
+
+                case "Насыщенность":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_SATURATE);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                case "Резкость":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_SHARPEN);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                //Extend Properties
+                case "Автокоррекция":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_AUTOFIX);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                case "Уровень черного/белого":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_BLACKWHITE);
+                    if (value >= 0.5) {
+                        mEffects[i].setParameter("black", value);
+                    } else {
+                        mEffects[i].setParameter("white", (1.0 - value));
+                    }
+                    break;
+
+                case "Заполняющий свет":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_FILLLIGHT);
+                    mEffects[i].setParameter("strength", value);
+                    break;
+
+                case "Зернистость":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_GRAIN);
+                    mEffects[i].setParameter("strength", value);
+                    break;
+
+                case "Температура":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                case "Объектив":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_FISHEYE);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                case "Виньетка":
+                    mEffects[i] = effectFactory.createEffect(EffectFactory.EFFECT_VIGNETTE);
+                    mEffects[i].setParameter("scale", value);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        mEffectView.requestRender();
+    }
+
+    public static void setFlipHor() {
+        mFlipHor = !mFlipHor;
+        mEffectView.requestRender();
+    }
+
+    public static void setFlipVert() {
+        mFlipVert = !mFlipVert;
+        mEffectView.requestRender();
+    }
+
+    private void initFilters(String currentEffect) {
 
         EffectFactory effectFactory = mEffectContext.getFactory();
         if (mEffect != null) {
             mEffect.release();
         }
 
+        if (mFlipVert) {
+            mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_FLIP);
+            mEffect.setParameter("vertical", true);
+            mFlipVert = false;
+        }
+
+        if (mFlipHor){
+            mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_FLIP);
+            mEffect.setParameter("horizontal", true);
+            mFlipVert = true;
+        }
+
         switch (currentEffect) {
-            //Standard Properties
-            case "Яркость":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_BRIGHTNESS);
-                mEffect.setParameter("brightness", (float) value);
-                break;
 
-            case "Контрастность":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_CONTRAST);
-                mEffect.setParameter("contrast", (float) value);
-                break;
-
-            case "Насыщенность":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_SATURATE);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            case "Резкость":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_SHARPEN);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            //Extend Properties
-            case "Автокоррекция":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_AUTOFIX);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            case "Уровень черного/белого":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_BLACKWHITE);
-                if (value >= 0.5) {
-                    mEffect.setParameter("black", (float) value);
-                } else {
-                    mEffect.setParameter("white", (float) (1.0 - value));
-                }
-                break;
-
-            case "Заполняющий свет":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_FILLLIGHT);
-                mEffect.setParameter("strength", (float) value);
-                break;
-
-            case "Зернистость":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_GRAIN);
-                mEffect.setParameter("strength", (float) value);
-                break;
-
-            case "Температура":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_TEMPERATURE);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            case "Объектив":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_FISHEYE);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            case "Виньетка":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_VIGNETTE);
-                mEffect.setParameter("scale", (float) value);
-                break;
-
-            //Flip
-            case "FLIPVERT":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_FLIP);
-                mEffect.setParameter("vertical", true);
-                break;
-
-            case "FLIPHOR":
-                mEffect = effectFactory.createEffect(
-                        EffectFactory.EFFECT_FLIP);
-                mEffect.setParameter("horizontal", true);
-                break;
-
-            //Filters
             case "CROSSPROCESS":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_CROSSPROCESS);
-                mFilterApply = true;
                 break;
 
             case "DOCUMENTARY":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_DOCUMENTARY);
-                mFilterApply = true;
                 break;
 
             case "GRAYSCALE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_GRAYSCALE);
-                mFilterApply = true;
                 break;
 
             case "LOMOISH":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_LOMOISH);
-                mFilterApply = true;
                 break;
 
             case "NEGATIVE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_NEGATIVE);
-                mFilterApply = true;
                 break;
 
             case "POSTERIZE":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_POSTERIZE);
-                mFilterApply = true;
                 break;
 
             case "SEPIA":
                 mEffect = effectFactory.createEffect(
                         EffectFactory.EFFECT_SEPIA);
-                mFilterApply = true;
                 break;
 
             default:
@@ -268,17 +288,33 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     }
 
-    private void applyEffect() {
-        mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
+    private void applyEffect(int i, int j) {
+        if (!mCurrentEffect.equals("NONE")) {
+            mEffect.apply(mTextures[i], mImageWidth, mImageHeight, mTextures[j]);
+        }
+        if (mEffects != null) {
+            mEffects[0].apply(mTextures[i], mImageWidth, mImageHeight, mTextures[j]); //apply first effect
+            for (int n = 1; n < mEffects.length; n++) {
+                int sourceTexture = mTextures[1];
+                int destinationTexture = mTextures[2];
+                mEffects[n].apply(sourceTexture, mImageWidth, mImageHeight, destinationTexture);
+                mTextures[1] = destinationTexture;
+                mTextures[2] = sourceTexture;
+            }
+        }
     }
 
     protected static void renderResult() {
-        if (!mCurrentEffect.equals("NONE")) {
-            // if no effect is chosen, just render the original bitmap
-            mTexRenderer.renderTexture(mTextures[1]);
+        if (!mCurrentEffect.equals("NONE") && !mCurrentEffect.equals("FLIPVERT") && !mCurrentEffect.equals("FLIPHOR")) {
+            mTexRenderer.renderTexture(mTextures[3]);
         } else {
-            // render the result of applyEffect()
-            mTexRenderer.renderTexture(mTextures[0]);
+            if (mEffects != null) {
+                // if no effect is chosen, just render the original bitmap
+                mTexRenderer.renderTexture(mTextures[1]);
+            } else {
+                // render the result of applyEffect()
+                mTexRenderer.renderTexture(mTextures[0]);
+            }
         }
     }
 
@@ -345,8 +381,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     protected void loadPhoto(Bitmap bitmap) {
 
         // Generate textures
-        GLES20.glGenTextures(2, mTextures, 0);
-        mCurrentEffect = "NONE";
+        GLES20.glGenTextures(4, mTextures, 0);
 
         //noinspection ConstantConditions
         mImageWidth = bitmap.getWidth();

@@ -40,7 +40,7 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
     }
 
     public void userCheckFilter(int index) {
-        MainActivity.setCurrentEffect(filters.get(index).getFilterLabel(), 0.0);
+        MainActivity.setCurrentEffect(filters.get(index).getFilterLabel());
 
     }
 

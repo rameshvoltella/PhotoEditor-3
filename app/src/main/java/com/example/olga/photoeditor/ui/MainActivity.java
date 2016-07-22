@@ -74,6 +74,7 @@ public class MainActivity extends PhotoEffects {
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         mEffectView.setPreserveEGLContextOnPause(true);
+        mCurrentEffect = "NONE";
         mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pinguin);
 
         //init fragments
@@ -129,8 +130,6 @@ public class MainActivity extends PhotoEffects {
         // menu
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    if (menuItem.isChecked()) menuItem.setChecked(false);
-                    else menuItem.setChecked(true);
 
                     switch (menuItem.getItemId()) {
 
@@ -139,12 +138,14 @@ public class MainActivity extends PhotoEffects {
                             photoPickerIntent.setType("image/*");
                             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                             mDrawerLayout.closeDrawers();
+                            menuItem.setChecked(false);
                             return true;
                         }
 
                         case R.id.navigation_menu_item_save: {
                             showMessage();
                             mDrawerLayout.closeDrawers();
+                            menuItem.setChecked(false);
                             return true;
                         }
 
@@ -152,6 +153,8 @@ public class MainActivity extends PhotoEffects {
                             mDrawerLayout.closeDrawers();
                             return true;
                     }
+
+
                 }
         );
     }
@@ -163,6 +166,7 @@ public class MainActivity extends PhotoEffects {
             Uri selectedImage = imageReturnedIntent.getData();
             try {
                 mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                mCurrentEffect = "NONE";
                 mInitialized = false;
                 mEffectView.requestRender();
             } catch (IOException e) {

@@ -36,9 +36,10 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
+                android:id="@+id/activity_main_frame_layout_photo_container"
                 android:layout_width="@dimen/photo_height"
                 android:layout_height="match_parent"
-                android:layout_gravity="right">
+                android:layout_gravity="left">
 
                 <android.opengl.GLSurfaceView
                     android:id="@+id/activity_main_image_view_photo"
@@ -54,8 +55,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@id/activity_main_frame_layout_photo_container"
-                android:gravity="left">
+                android:layout_gravity="left"
+                android:layout_toRightOf="@id/activity_main_frame_layout_photo_container">
 
                 <FrameLayout
                     android:id="@+id/activity_main_frame_layout_container"
