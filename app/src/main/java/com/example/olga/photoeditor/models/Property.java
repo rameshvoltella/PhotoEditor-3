@@ -17,19 +17,19 @@ import java.util.List;
 public class Property implements Serializable {
 
     //Standard properties
-    private static final Property BRIGHTNESS = new Property("Яркость", 1.0, 2.0, 1.0, R.drawable.ic_brightness);
-    private static final Property CONTRAST = new Property("Контрастность", 1.0, 2.0, 1.0, R.drawable.ic_contrast);
-    private static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, R.drawable.ic_saturate);
-    private static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.0, R.drawable.ic_sharpen);
+    private static final Property BRIGHTNESS = new Property("Яркость", 1.0, 2.0, 1.0, 1.0, R.drawable.ic_brightness);
+    private static final Property CONTRAST = new Property("Контрастность", 1.0, 2.0, 1.0, 1.0, R.drawable.ic_contrast);
+    private static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, 0.0, R.drawable.ic_saturate);
+    private static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_sharpen);
 
     //Extend properties
-    private static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, R.drawable.ic_fix);
-    private static final Property BLACKWHITE = new Property("Уровень черного/белого", 0.0, 1.0, 0.5, R.drawable.ic_filter_b_and_w);
-    private static final Property FILLIGHT = new Property("Заполняющий свет", 0.0, 1.0, 0.0, R.drawable.ic_fillight);
-    private static final Property GRAIN = new Property("Зернистость", 0.0, 1.0, 0.0, R.drawable.ic_grain);
-    private static final Property TEMPERATURE = new Property("Температура", 0.0, 1.0, 0.5, R.drawable.ic_sunny);
-    private static final Property FISHEYE = new Property("Объектив", 0.0, 1.0, 0.0, R.drawable.ic_camera);
-    private static final Property VIGNETTE = new Property("Виньетка", 0.0, 1.0, 0.0, R.drawable.ic_vignette);
+    private static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_fix);
+    private static final Property BLACKWHITE = new Property("Уровень черного/белого", 0.0, 1.0, 0.5, 0.5, R.drawable.ic_filter_b_and_w);
+    private static final Property FILLIGHT = new Property("Заполняющий свет", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_fillight);
+    private static final Property GRAIN = new Property("Зернистость", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_grain);
+    private static final Property TEMPERATURE = new Property("Температура", 0.0, 1.0, 0.5, 0.5, R.drawable.ic_sunny);
+    private static final Property FISHEYE = new Property("Объектив", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_camera);
+    private static final Property VIGNETTE = new Property("Виньетка", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_vignette);
 
     private String mPropertyName;
 
@@ -51,7 +51,7 @@ public class Property implements Serializable {
         return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
     }
 
-    public Property(String propertyName, double minValue, double maxValue, double defaultValue, int imageUrl) {
+    public Property(String propertyName, double minValue, double maxValue, double defaultValue, double currentValue, int imageUrl) {
         mPropertyName = propertyName;
         mMinValue = minValue;
         mMaxValue = maxValue;

@@ -41,19 +41,30 @@ import butterknife.BindView;
  */
 public abstract class PhotoEffects extends AppCompatActivity implements GLSurfaceView.Renderer {
 
+    private static EffectContext mEffectContext;
+    protected boolean mInitialized = false;
+
+    //filters
     private static Effect mEffect;
+    protected static String mCurrentEffect;
+
+    //change properties value
     private static Effect mEffects[];
+
+    //flip
     private static boolean mFlipHor;
     private static boolean mFlipVert;
+    protected static String mFlip;
+
+    //photo
     private static int[] mTextures = new int[4];
     private static int mImageWidth;
     private static int mImageHeight;
-    protected static String mCurrentEffect;
-    private static EffectContext mEffectContext;
     private static TextureRenderer mTexRenderer = new TextureRenderer();
-    private volatile boolean mSaveFrame;
-    protected boolean mInitialized = false;
     protected Bitmap mBitmap;
+    private volatile boolean mSaveFrame;
+
+    //photo container
     protected static GLSurfaceView mEffectView;
 
     @BindView(R.id.activity_main_layout_message)
@@ -77,7 +88,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     @Override
     protected void onResume() {
         super.onResume();
-        mInitialized = false;
         mEffectView.onResume();
     }
 
@@ -91,19 +101,20 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             loadPhoto(mBitmap);
             mInitialized = true;
         }
-        //apply flip
-        if (mFlipVert || mFlipHor) {
-            initFilters("NONE");
-            applyEffect(0, 0);
-        }
 
+        // Apply users photo properties and filters
+        //apply flip
+        if (!mFlip.equals("NONE")) {
+            initFilters(mFlip);
+            applyEffect(0, 0);
+            mFlip = "NONE";
+        }
         //apply properties new value
         if (mEffects != null) {
             applyEffect(0, 1);
         }
-
         //apply filters
-        if (!mCurrentEffect.equals("NONE") && !mCurrentEffect.equals("FLIPVERT") && !mCurrentEffect.equals("FLIPHOR")) {
+        if (!mCurrentEffect.equals("NONE")) {
             initFilters(mCurrentEffect);
             applyEffect(1, 3);
         }
@@ -216,11 +227,13 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     public static void setFlipHor() {
         mFlipHor = !mFlipHor;
+        mFlip = "FLIPHOR";
         mEffectView.requestRender();
     }
 
     public static void setFlipVert() {
         mFlipVert = !mFlipVert;
+        mFlip = "FLIPVERT";
         mEffectView.requestRender();
     }
 
@@ -231,21 +244,15 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             mEffect.release();
         }
 
-        if (mFlipVert) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_FLIP);
-            mEffect.setParameter("vertical", true);
-            mFlipVert = false;
-        }
-
-        if (mFlipHor){
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_FLIP);
-            mEffect.setParameter("horizontal", true);
-            mFlipVert = true;
-        }
-
         switch (currentEffect) {
+
+            case "FLIPVERT": mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_FLIP);
+                mEffect.setParameter("vertical", true);
+
+            case "FLIPHOR":mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_FLIP);
+                mEffect.setParameter("horizontal", true);
 
             case "CROSSPROCESS":
                 mEffect = effectFactory.createEffect(

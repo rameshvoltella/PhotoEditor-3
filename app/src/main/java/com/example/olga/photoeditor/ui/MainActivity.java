@@ -74,6 +74,7 @@ public class MainActivity extends PhotoEffects {
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         mEffectView.setPreserveEGLContextOnPause(true);
+        mFlip = "NONE";
         mCurrentEffect = "NONE";
         mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pinguin);
 
@@ -166,6 +167,7 @@ public class MainActivity extends PhotoEffects {
             Uri selectedImage = imageReturnedIntent.getData();
             try {
                 mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                mFlip = "NONE";
                 mCurrentEffect = "NONE";
                 mInitialized = false;
                 mEffectView.requestRender();

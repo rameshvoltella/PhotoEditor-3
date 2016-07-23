@@ -44,10 +44,6 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
     @Override
     public void bind(final Property model) {
-
-        if (model.getCurrentValue() == 0) {
-            model.setCurrentValue(model.getDefaultValue());
-        }
         int progress = (int) ((model.getCurrentValue() - model.getMinValue()) * 100 / (model.getMaxValue() - model.getMinValue()));
         mTextViewProperty.setText(model.getPropertyName());
         mTextViewPercent.setText(progress + " %");
@@ -64,11 +60,13 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(false);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 PropertyListPresenter.userChangePropertiesValue();
+                seekBar.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(true);
             }
         });
     }

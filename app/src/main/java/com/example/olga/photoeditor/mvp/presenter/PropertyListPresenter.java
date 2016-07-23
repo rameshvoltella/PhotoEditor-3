@@ -39,6 +39,15 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
         }
     }
 
+    public void userSaveProperties() {
+        mStandardProperties.clear();
+        mStandardProperties.addAll(StandardPropertyFragment.getStandardProperties());
+        if (ExtendPropertyFragment.getExtendProerties().size() == 7) {
+            mExtendProperties.clear();
+            mExtendProperties.addAll(ExtendPropertyFragment.getExtendProerties());
+        }
+    }
+
     public void userUpdateProperties(String string) {
         if (string.equals("standard")) {
             getViewState().setData(mStandardProperties);
@@ -49,16 +58,20 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public static void userChangePropertiesValue() {
-        List<Property> properties = StandardPropertyFragment.getStandardProerties();
-        if (ExtendPropertyFragment.getExtendProerties().size() != 4) {
-            properties.addAll(ExtendPropertyFragment.getExtendProerties());
+        List<Property> changedProperties = StandardPropertyFragment.getStandardProperties();
+        List<Property> properties = ExtendPropertyFragment.getExtendProerties();
+        if (properties.size() == 7) {
+            changedProperties.addAll(properties);
         }
-        for (int i = 0; i < properties.size(); i++) {
+        properties.clear();
+        for (int i = 0; i < changedProperties.size(); i++) {
             Property property = properties.get(i);
-            if (property.getCurrentValue() == property.getDefaultValue()) {
-                properties.remove(i);
+            if (property.getCurrentValue() != property.getDefaultValue()) {
+                properties.add(changedProperties.get(i));
             }
         }
-        MainActivity.setChangedProperties(properties);
+        if (properties.size() != 0) {
+            MainActivity.setChangedProperties(properties);
+        }
     }
 }

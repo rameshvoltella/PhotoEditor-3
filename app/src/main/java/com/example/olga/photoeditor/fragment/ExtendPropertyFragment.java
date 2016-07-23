@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.example.olga.photoeditor.models.Property;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,15 +19,6 @@ public class ExtendPropertyFragment extends LoaderPropertiesFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter.userSelectProperties("extend");
-    }
-
-    public static List<Double> getValues(){
-        List<Property> properties = mAdapter.getCollection();
-        List<Double> values = new ArrayList<>();
-        for (int i = 0; i < properties.size(); i++) {
-            values.add(properties.get(i).getDefaultValue());
-        }
-        return values;
     }
 
     @Override

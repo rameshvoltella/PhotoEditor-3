@@ -73,6 +73,11 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
 
         return view;
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.userSaveProperties();
+    }
 
     @Override
     public void showProperties() {

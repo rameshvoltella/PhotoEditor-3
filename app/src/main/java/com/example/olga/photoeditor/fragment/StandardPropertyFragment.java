@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.example.olga.photoeditor.models.Property;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,22 +21,13 @@ public class StandardPropertyFragment extends LoaderPropertiesFragment {
         mPresenter.userSelectProperties("standard");
     }
 
-    public static List<Double> getValues() {
-        List<Property> properties = mAdapter.getCollection();
-        List<Double> values = new ArrayList<>();
-        for (int i = 0; i < properties.size(); i++) {
-            values.add(properties.get(i).getDefaultValue());
-        }
-        return values;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         mPresenter.userUpdateProperties("standard");
     }
 
-    public static List<Property> getStandardProerties(){
+    public static List<Property> getStandardProperties(){
         return mAdapter.getCollection();
     }
 }
