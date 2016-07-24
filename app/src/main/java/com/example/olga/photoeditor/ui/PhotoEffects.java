@@ -18,9 +18,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.GLToolbox;
 import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.models.TextureRenderer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,11 +48,11 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     //change properties value
     private static Effect mEffects[];
+    private static boolean isEffectApply;
 
     //flip
-    private static boolean mFlipHor;
-    private static boolean mFlipVert;
-    protected static String mFlip;
+    protected static int[] mFlip;
+    private static boolean isFlipApply;
 
     //photo
     private static int[] mTextures = new int[4];
@@ -89,6 +87,12 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     protected void onResume() {
         super.onResume();
         mEffectView.onResume();
+        //mEffectContext = (EffectContext) getLastCustomNonConfigurationInstance();
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mEffectContext;
     }
 
     //EffectFactory
@@ -102,21 +106,25 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             mInitialized = true;
         }
 
+
         // Apply users photo properties and filters
         //apply flip
-        if (!mFlip.equals("NONE")) {
-            initFilters(mFlip);
-            applyEffect(0, 0);
-            mFlip = "NONE";
+        if (mFlip[0] > 0 ) {
+            initFilters("FLIPHOR");
+            applyEffect("FLIP");
+        }
+        if (mFlip[1] > 0 ) {
+            initFilters("FLIPVERT");
+            applyEffect("FLIP");
         }
         //apply properties new value
         if (mEffects != null) {
-            applyEffect(0, 1);
+            applyEffect("PROPERTY");
         }
         //apply filters
         if (!mCurrentEffect.equals("NONE")) {
             initFilters(mCurrentEffect);
-            applyEffect(1, 3);
+            applyEffect("FILTER");
         }
 
         renderResult();
@@ -151,7 +159,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
         for (int i = 0; i < properties.size(); i++) {
             String currentEffect = properties.get(i).getPropertyName();
-            float value = (float) properties.get(i).getCurrentValue();
+            float value = properties.get(i).getCurrentValue();
             if (mEffects[i] != null) {
                 mEffects[i].release();
             }
@@ -189,7 +197,7 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
                     if (value >= 0.5) {
                         mEffects[i].setParameter("black", value);
                     } else {
-                        mEffects[i].setParameter("white", (1.0 - value));
+                        mEffects[i].setParameter("white", (1.0f - value));
                     }
                     break;
 
@@ -225,15 +233,13 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         mEffectView.requestRender();
     }
 
-    public static void setFlipHor() {
-        mFlipHor = !mFlipHor;
-        mFlip = "FLIPHOR";
-        mEffectView.requestRender();
-    }
-
-    public static void setFlipVert() {
-        mFlipVert = !mFlipVert;
-        mFlip = "FLIPVERT";
+    public static void setFlip(String flip) {
+        switch (flip) {
+            case "FLIPVERT":
+                ++mFlip[1];
+            case "FLIPHOR":
+                ++mFlip[0];
+        }
         mEffectView.requestRender();
     }
 
@@ -246,13 +252,17 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
         switch (currentEffect) {
 
-            case "FLIPVERT": mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_FLIP);
+            case "FLIPVERT":
+                mEffect = effectFactory.createEffect(
+                        EffectFactory.EFFECT_FLIP);
                 mEffect.setParameter("vertical", true);
+                break;
 
-            case "FLIPHOR":mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_FLIP);
+            case "FLIPHOR":
+                mEffect = effectFactory.createEffect(
+                        EffectFactory.EFFECT_FLIP);
                 mEffect.setParameter("horizontal", true);
+                break;
 
             case "CROSSPROCESS":
                 mEffect = effectFactory.createEffect(
@@ -295,32 +305,68 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     }
 
-    private void applyEffect(int i, int j) {
-        if (!mCurrentEffect.equals("NONE")) {
-            mEffect.apply(mTextures[i], mImageWidth, mImageHeight, mTextures[j]);
+    private void applyEffect(String label) {
+        int sourceTexture, destinationTexture;
+        switch (label) {
+
+            case "FLIP":
+                if (mFlip[0]%2 == 1 || mFlip[1]%2 == 1){
+                    mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
+                    isFlipApply = true;
+                } else {
+                    isFlipApply = false;
+                }
+
+                break;
+
+            case "PROPERTY":
+                int i = 0;
+                if (isFlipApply) {
+                    i = 1;
+                }
+
+                mEffects[0].apply(mTextures[i], mImageWidth, mImageHeight, mTextures[2]); //apply first effect
+                for (int n = 1; n < mEffects.length; n++) {
+                    sourceTexture = mTextures[2];
+                    destinationTexture = mTextures[3];
+                    mEffects[n].apply(sourceTexture, mImageWidth, mImageHeight, destinationTexture);
+                    mTextures[2] = destinationTexture;
+                    mTextures[3] = sourceTexture;
+                }
+                isEffectApply = true;
+                break;
+
+            case "FILTER":
+                int j = 0;
+                if (isFlipApply) {
+                    j = 1;
+                }
+                if (isEffectApply) {
+                    j = 2;
+                }
+                mEffect.apply(mTextures[j], mImageWidth, mImageHeight, mTextures[3]);
+                break;
+
+            default:
+                break;
         }
-        if (mEffects != null) {
-            mEffects[0].apply(mTextures[i], mImageWidth, mImageHeight, mTextures[j]); //apply first effect
-            for (int n = 1; n < mEffects.length; n++) {
-                int sourceTexture = mTextures[1];
-                int destinationTexture = mTextures[2];
-                mEffects[n].apply(sourceTexture, mImageWidth, mImageHeight, destinationTexture);
-                mTextures[1] = destinationTexture;
-                mTextures[2] = sourceTexture;
-            }
-        }
+
     }
 
     protected static void renderResult() {
-        if (!mCurrentEffect.equals("NONE") && !mCurrentEffect.equals("FLIPVERT") && !mCurrentEffect.equals("FLIPHOR")) {
+        // render the result of applyEffect()
+        if (!mCurrentEffect.equals("NONE")) {
             mTexRenderer.renderTexture(mTextures[3]);
         } else {
-            if (mEffects != null) {
-                // if no effect is chosen, just render the original bitmap
-                mTexRenderer.renderTexture(mTextures[1]);
+            if (isEffectApply) {
+                mTexRenderer.renderTexture(mTextures[2]);
             } else {
-                // render the result of applyEffect()
-                mTexRenderer.renderTexture(mTextures[0]);
+                if (isFlipApply) {
+                    mTexRenderer.renderTexture(mTextures[1]);
+                } else {
+                    // if no effect is chosen, just render the original bitmap
+                    mTexRenderer.renderTexture(mTextures[0]);
+                }
             }
         }
     }
@@ -415,8 +461,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
                 mNameEditText.setFocusable(true);
             } else {
                 mSaveFrame = true;
-                mCurrentEffect = "NONE";
-                //mEffectView.requestRender();
                 mMessageLayout.startAnimation(animationDown);
                 mMessageLayout.setVisibility(View.GONE);
             }
@@ -424,7 +468,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         mCancelButton.setOnClickListener(v -> {
             mMessageLayout.startAnimation(animationDown);
             mMessageLayout.setVisibility(View.GONE);
-
         });
     }
 }

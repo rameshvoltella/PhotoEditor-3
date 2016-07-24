@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.models;
+package com.example.olga.photoeditor.ui;
 
 import android.opengl.GLES20;
 

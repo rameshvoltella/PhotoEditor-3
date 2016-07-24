@@ -17,29 +17,29 @@ import java.util.List;
 public class Property implements Serializable {
 
     //Standard properties
-    private static final Property BRIGHTNESS = new Property("Яркость", 1.0, 2.0, 1.0, 1.0, R.drawable.ic_brightness);
-    private static final Property CONTRAST = new Property("Контрастность", 1.0, 2.0, 1.0, 1.0, R.drawable.ic_contrast);
-    private static final Property SATURATE = new Property("Насыщенность", -1.0, 1.0, 0.0, 0.0, R.drawable.ic_saturate);
-    private static final Property SHARPEN = new Property("Резкость", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_sharpen);
+    private static final Property BRIGHTNESS = new Property("Яркость", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_brightness);
+    private static final Property CONTRAST = new Property("Контрастность", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_contrast);
+    private static final Property SATURATE = new Property("Насыщенность", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_saturate);
+    private static final Property SHARPEN = new Property("Резкость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_sharpen);
 
     //Extend properties
-    private static final Property AUTOFIX = new Property("Автокоррекция", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_fix);
-    private static final Property BLACKWHITE = new Property("Уровень черного/белого", 0.0, 1.0, 0.5, 0.5, R.drawable.ic_filter_b_and_w);
-    private static final Property FILLIGHT = new Property("Заполняющий свет", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_fillight);
-    private static final Property GRAIN = new Property("Зернистость", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_grain);
-    private static final Property TEMPERATURE = new Property("Температура", 0.0, 1.0, 0.5, 0.5, R.drawable.ic_sunny);
-    private static final Property FISHEYE = new Property("Объектив", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_camera);
-    private static final Property VIGNETTE = new Property("Виньетка", 0.0, 1.0, 0.0, 0.0, R.drawable.ic_vignette);
+    private static final Property AUTOFIX = new Property("Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix);
+    private static final Property BLACKWHITE = new Property("Уровень черного/белого", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_filter_b_and_w);
+    private static final Property FILLIGHT = new Property("Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight);
+    private static final Property GRAIN = new Property("Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain);
+    private static final Property TEMPERATURE = new Property("Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny);
+    private static final Property FISHEYE = new Property("Объектив", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_camera);
+    private static final Property VIGNETTE = new Property("Виньетка", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_vignette);
 
     private String mPropertyName;
 
-    private double mMinValue;
+    private float mMinValue;
 
-    private double mMaxValue;
+    private float mMaxValue;
 
-    private double mDefaultValue;
+    private float mDefaultValue;
 
-    private double mCurrentValue;
+    private float mCurrentValue;
 
     private int mImageId;
 
@@ -51,11 +51,12 @@ public class Property implements Serializable {
         return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
     }
 
-    public Property(String propertyName, double minValue, double maxValue, double defaultValue, double currentValue, int imageUrl) {
+    public Property(String propertyName, float minValue, float maxValue, float defaultValue, float currentValue, int imageUrl) {
         mPropertyName = propertyName;
         mMinValue = minValue;
         mMaxValue = maxValue;
         mDefaultValue = defaultValue;
+        mCurrentValue = currentValue;
         mImageId = imageUrl;
     }
 
@@ -71,23 +72,23 @@ public class Property implements Serializable {
         return mMinValue;
     }
 
-    public void setMinValue(double minValue) {
+    public void setMinValue(float minValue) {
         mMinValue = minValue;
     }
 
-    public double getMaxValue() {
+    public float getMaxValue() {
         return mMaxValue;
     }
 
-    public void setMaxValue(double maxValue) {
+    public void setMaxValue(float maxValue) {
         mMaxValue = maxValue;
     }
 
-    public double getDefaultValue() {
+    public float getDefaultValue() {
         return mDefaultValue;
     }
 
-    public void setDefaultValue(double defaultValue) {
+    public void setDefaultValue(float defaultValue) {
         mDefaultValue = defaultValue;
     }
 
@@ -99,11 +100,19 @@ public class Property implements Serializable {
         mImageId = imageId;
     }
 
-    public double getCurrentValue() {
+    public float getCurrentValue() {
         return mCurrentValue;
     }
 
-    public void setCurrentValue(double currentValue) {
+    public void setCurrentValue(float currentValue) {
         mCurrentValue = currentValue;
+    }
+
+    public int getValue() {
+        return (int) ((mCurrentValue - mMinValue) * 100/ (mMaxValue - mMinValue));
+    }
+
+    public void setValue(int currentValue) {
+        mCurrentValue = (currentValue * (mMaxValue - mMinValue) / 100 + mMinValue);
     }
 }

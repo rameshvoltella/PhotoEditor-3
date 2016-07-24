@@ -12,7 +12,57 @@
         <RadioGroup
             android:id="@+id/fragment_filter_radio_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_current"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/none_filter"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_crossprocess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crossprocess"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_documentary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/documentary"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_grayscale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/grayscale"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_lomoish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lomoish"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_negative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/negative"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_posterize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/posterize"/>
+
+            <RadioButton
+                android:id="@+id/fragment_filter_radio_button_sepia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sepia"/>
+
+        </RadioGroup>
 
     </ScrollView>
 

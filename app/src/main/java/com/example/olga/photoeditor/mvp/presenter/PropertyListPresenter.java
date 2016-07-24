@@ -8,7 +8,14 @@ import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 import com.example.olga.photoeditor.ui.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Date: 05.07.16
@@ -22,6 +29,7 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
 
     static List<Property> mStandardProperties;
     static List<Property> mExtendProperties;
+    static Subscription mSubscription;
 
     @Override
     protected void onFirstViewAttach() {
@@ -39,10 +47,12 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
         }
     }
 
-    public void userSaveProperties() {
-        mStandardProperties.clear();
-        mStandardProperties.addAll(StandardPropertyFragment.getStandardProperties());
-        if (ExtendPropertyFragment.getExtendProerties().size() == 7) {
+    public void userSaveProperties(String string) {
+        if (string.equals("standard")) {
+            mStandardProperties.clear();
+            mStandardProperties.addAll(StandardPropertyFragment.getStandardProperties());
+        }
+        if (string.equals("extend")) {
             mExtendProperties.clear();
             mExtendProperties.addAll(ExtendPropertyFragment.getExtendProerties());
         }
@@ -58,20 +68,54 @@ public class PropertyListPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public static void userChangePropertiesValue() {
-        List<Property> changedProperties = StandardPropertyFragment.getStandardProperties();
-        List<Property> properties = ExtendPropertyFragment.getExtendProerties();
-        if (properties.size() == 7) {
-            changedProperties.addAll(properties);
-        }
-        properties.clear();
-        for (int i = 0; i < changedProperties.size(); i++) {
-            Property property = properties.get(i);
-            if (property.getCurrentValue() != property.getDefaultValue()) {
-                properties.add(changedProperties.get(i));
-            }
-        }
-        if (properties.size() != 0) {
-            MainActivity.setChangedProperties(properties);
-        }
+        mSubscription = getStandardProperties()
+                .repeat(1)
+                .subscribeOn(Schedulers.io())
+                .map(properties1 -> {
+                    getExtendProperties().subscribe(new Subscriber<List<Property>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Property> extendProperties) {
+                            if (extendProperties.size() == 7) {
+                                properties1.addAll(extendProperties);
+                            }
+                        }
+                    });
+                    return properties1;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(properties -> {
+                    List<Property> changedProperties = new ArrayList<>();
+                    for (int i = 0; i < properties.size(); i++) {
+                        Property property = properties.get(i);
+                        if (property.getCurrentValue() != property.getDefaultValue()) {
+                            changedProperties.add(properties.get(i));
+                        }
+                    }
+                    MainActivity.setChangedProperties(changedProperties);
+                });
+    }
+
+    private static Observable<List<Property>> getStandardProperties() {
+        return Observable.create((Observable.OnSubscribe<List<Property>>) subscriber -> {
+            subscriber.onNext(StandardPropertyFragment.getStandardProperties());
+            subscriber.onCompleted();
+        });
+    }
+
+    private static Observable<List<Property>> getExtendProperties() {
+        return Observable.create((Observable.OnSubscribe<List<Property>>) subscriber -> {
+            subscriber.onNext(ExtendPropertyFragment.getExtendProerties());
+            subscriber.onCompleted();
+        });
     }
 }

@@ -23,7 +23,7 @@ public class Filter {
         mFilterLabel = filterLabel;
     }
 
-    private static final Filter CURRENT = new  Filter("Без фильтра", "CURRENT");
+    private static final Filter CURRENT = new  Filter("Без фильтра", "NONE");
     private static final Filter CROSSPROCESS = new  Filter("Пленка", "CROSSPROCESS");
     private static final Filter DOCUMENTARY = new  Filter("Документальный", "DOCUMENTARY");
     private static final Filter GRAYSCALE = new  Filter("Оттенки серого", "GRAYSCALE");

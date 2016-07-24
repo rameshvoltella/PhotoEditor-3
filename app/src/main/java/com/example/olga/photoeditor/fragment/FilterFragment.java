@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.arellomobile.mvp.MvpFragment;
@@ -22,6 +23,30 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     @BindView(R.id.fragment_filter_radio_group)
     RadioGroup mFilterRadioGroup;
 
+    @BindView(R.id.fragment_filter_radio_button_current)
+    RadioButton mCurrentRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_crossprocess)
+    RadioButton mCrossprocessRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_documentary)
+    RadioButton mDocumentaryRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_grayscale)
+    RadioButton mGrayscaleRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_lomoish)
+    RadioButton mLomoishRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_negative)
+    RadioButton mNegativeRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_posterize)
+    RadioButton mPosterizeRadioButton;
+
+    @BindView(R.id.fragment_filter_radio_button_sepia)
+    RadioButton mSepiaRadioButton;
+
     @InjectPresenter
     FiltersPresenter mPresenter;
 
@@ -36,11 +61,9 @@ public class FilterFragment extends MvpFragment implements FiltersView {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         ButterKnife.bind(this, view);
 
-        mPresenter.userSelectFiltersTab(mFilterRadioGroup, getActivity());
-        mFilterRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            int index = mFilterRadioGroup.indexOfChild(view.findViewById(checkedId));
-            mPresenter.userCheckFilter(index);
-        });
+        mFilterRadioGroup.check(R.id.fragment_filter_radio_button_current);
+
+        mFilterRadioGroup.setOnCheckedChangeListener((group, checkedId) -> mPresenter.userCheckFilter(checkedId));
 
         return view;
     }
