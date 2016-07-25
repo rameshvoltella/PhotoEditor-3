@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:layout_marginBottom="@dimen/activity_vertical_margin"
-             android:orientation="vertical">
+             android:layout_marginBottom="@dimen/activity_vertical_margin">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,59 +11,75 @@
         <RadioGroup
             android:id="@+id/fragment_filter_radio_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/item_filter_margin">
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_current"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/none_filter"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/none_filter"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_crossprocess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crossprocess"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/crossprocess"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_documentary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/documentary"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/documentary"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_grayscale"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grayscale"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/grayscale"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_lomoish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/lomoish"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/lomoish"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_negative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/negative"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/negative"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_posterize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/posterize"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/posterize"
+                android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
                 android:id="@+id/fragment_filter_radio_button_sepia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sepia"/>
+                android:layout_marginBottom="@dimen/item_view_margin"
+                android:text="@string/sepia"
+                android:textSize="@dimen/filter_text_size"/>
 
         </RadioGroup>
 
     </ScrollView>
-
 
 </FrameLayout>

@@ -63,6 +63,7 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
                 break;
         }
         MainActivity.setCurrentEffect(filters.get(i).getFilterLabel());
+        getViewState().selectFilter(id);
     }
 
 }

@@ -79,6 +79,7 @@ public class MainActivity extends PhotoEffects {
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
+        mInitialized = false;
         setBitmap((Bitmap) getLastCustomNonConfigurationInstance());
         if (getBitmap() == null) {
             //init EffectFactory
@@ -184,6 +185,7 @@ public class MainActivity extends PhotoEffects {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri selectedImage = imageReturnedIntent.getData();
             try {
+                mInitialized = false;
                 setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage));
                 clearFilters();
                 mEffectView.requestRender();

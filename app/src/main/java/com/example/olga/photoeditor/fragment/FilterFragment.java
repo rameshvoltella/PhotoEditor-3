@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 
 public class FilterFragment extends MvpFragment implements FiltersView {
 
+    private static final String CHEKED_RADIO_BUTTUN_ID = "CHEKED_RADIO_BUTTUN_ID";
     @BindView(R.id.fragment_filter_radio_group)
     RadioGroup mFilterRadioGroup;
 
@@ -50,6 +51,8 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     @InjectPresenter
     FiltersPresenter mPresenter;
 
+    private int mCheckedRadioButtonId;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +60,16 @@ public class FilterFragment extends MvpFragment implements FiltersView {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         ButterKnife.bind(this, view);
 
-        mFilterRadioGroup.check(R.id.fragment_filter_radio_button_current);
+        if (savedInstanceState != null ){
+            mCheckedRadioButtonId = savedInstanceState.getInt(CHEKED_RADIO_BUTTUN_ID);
+        } else {
+            mCheckedRadioButtonId = R.id.fragment_filter_radio_button_current;
+        }
+        mFilterRadioGroup.check(mCheckedRadioButtonId);
 
         mFilterRadioGroup.setOnCheckedChangeListener((group, checkedId) -> mPresenter.userCheckFilter(checkedId));
 
@@ -71,6 +79,15 @@ public class FilterFragment extends MvpFragment implements FiltersView {
     @Override
     public void onPause() {
         super.onPause();
-        mFilterRadioGroup.clearCheck();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CHEKED_RADIO_BUTTUN_ID, mCheckedRadioButtonId);
+    }
+
+    @Override
+    public void selectFilter(int id) {
+        mCheckedRadioButtonId = id;
     }
 }

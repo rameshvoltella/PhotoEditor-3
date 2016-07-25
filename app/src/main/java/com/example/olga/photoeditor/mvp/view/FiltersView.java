@@ -13,5 +13,5 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface FiltersView extends MvpView {
-
+    void selectFilter(int id);
 }

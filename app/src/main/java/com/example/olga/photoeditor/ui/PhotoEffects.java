@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -41,13 +42,14 @@ import butterknife.BindView;
 public abstract class PhotoEffects extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     private static EffectContext mEffectContext;
-    private boolean mInitialized = false;
+    protected boolean mInitialized = false;
 
     //filters
     private static Effect mEffect;
     private static String mCurrentEffect;
 
     //change properties value
+    private static List<Property> mChangedProperties = new ArrayList<>();
     private static Effect mEffects[];
     private static boolean isEffectApply;
 
@@ -121,7 +123,8 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             applyEffect("FLIP");
         }
         //apply properties new value
-        if (mEffects != null) {
+        if (mChangedProperties.size() != 0) {
+            initEffects(mChangedProperties);
             applyEffect("PROPERTY");
         }
         //apply filters
@@ -156,13 +159,28 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     }
 
     public static void setChangedProperties(List<Property> properties) {
+        mChangedProperties = properties;
+        mEffectView.requestRender();
+    }
+
+    public static void setFlip(String flip) {
+        switch (flip) {
+            case "FLIPVERT":
+                ++mFlip[1];
+            case "FLIPHOR":
+                ++mFlip[0];
+        }
+        mEffectView.requestRender();
+    }
+
+    private void initEffects(List<Property> changedProperties) {
         mEffects = null;
-        mEffects = new Effect[properties.size()];
+        mEffects = new Effect[changedProperties.size()];
         EffectFactory effectFactory = mEffectContext.getFactory();
 
-        for (int i = 0; i < properties.size(); i++) {
-            String currentEffect = properties.get(i).getPropertyName();
-            float value = properties.get(i).getCurrentValue();
+        for (int i = 0; i < changedProperties.size(); i++) {
+            String currentEffect = changedProperties.get(i).getPropertyName();
+            float value = changedProperties.get(i).getCurrentValue();
             if (mEffects[i] != null) {
                 mEffects[i].release();
             }
@@ -233,17 +251,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
                     break;
             }
         }
-        mEffectView.requestRender();
-    }
-
-    public static void setFlip(String flip) {
-        switch (flip) {
-            case "FLIPVERT":
-                ++mFlip[1];
-            case "FLIPHOR":
-                ++mFlip[0];
-        }
-        mEffectView.requestRender();
     }
 
     private void initFilters(String currentEffect) {
@@ -469,7 +476,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         mCurrentEffect = "NONE";
         isEffectApply = false;
         isFlipApply = false;
-        mInitialized = false;
     }
 
     protected void setBitmap(Bitmap bitmap){

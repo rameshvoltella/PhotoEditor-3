@@ -10,6 +10,7 @@
     <dimen name="photo_height">250dp</dimen>
     <dimen name="item_view_margin">8dp</dimen>
     <dimen name="item_property_margin">24dp</dimen>
+    <dimen name="item_filter_margin">48dp</dimen>
     <dimen name="icon_size">36dp</dimen>
     <dimen name="item_text_size">7pt</dimen>
     <dimen name="button_flip_size">50dp</dimen>
