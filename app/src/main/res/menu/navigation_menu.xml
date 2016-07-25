@@ -5,11 +5,13 @@
 
         <item
             android:id="@+id/navigation_menu_item_select"
+            android:checkable="false"
             android:icon="@drawable/ic_add_a_photo"
             android:title="@string/select_photo"/>
 
         <item
             android:id="@+id/navigation_menu_item_save"
+            android:checkable="false"
             android:icon="@drawable/ic_save"
             android:title="@string/save"/>
 

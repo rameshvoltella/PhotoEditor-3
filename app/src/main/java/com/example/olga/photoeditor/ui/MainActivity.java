@@ -2,6 +2,7 @@ package com.example.olga.photoeditor.ui;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
@@ -17,6 +18,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
@@ -61,25 +65,26 @@ public class MainActivity extends PhotoEffects {
 
     private static int GALLERY_REQUEST = 1;
 
+    private Animation mAnimationUp;
+    private Animation mAnimationDown;
+
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        //init EffectFactory
         mEffectView = (GLSurfaceView) findViewById(R.id.activity_main_image_view_photo);
         mEffectView.setEGLContextClientVersion(2);
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-        mEffectView.setPreserveEGLContextOnPause(true);
-        mFlip = new int[2];
-        mFlip[0] = 0;
-        mFlip[1] = 0;
-        mCurrentEffect = "NONE";
-        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pinguin);
+        setBitmap((Bitmap) getLastCustomNonConfigurationInstance());
+        if (getBitmap() == null) {
+            //init EffectFactory
+            clearFilters();
+            setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pinguin));
+        }
 
         //init fragments
         mFilterFragment = new FilterFragment();
@@ -134,22 +139,18 @@ public class MainActivity extends PhotoEffects {
         // menu
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-
                     switch (menuItem.getItemId()) {
-
                         case R.id.navigation_menu_item_select: {
                             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                             photoPickerIntent.setType("image/*");
                             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                             mDrawerLayout.closeDrawers();
-                            menuItem.setChecked(false);
                             return true;
                         }
 
                         case R.id.navigation_menu_item_save: {
-                            showMessage();
+                            messageAnimation(mAnimationUp, View.VISIBLE);
                             mDrawerLayout.closeDrawers();
-                            menuItem.setChecked(false);
                             return true;
                         }
 
@@ -160,6 +161,21 @@ public class MainActivity extends PhotoEffects {
 
                 }
         );
+
+        //enter name message
+        mAnimationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        mAnimationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        mOkButton.setOnClickListener(v -> {
+            if (mNameEditText.getText().toString().equals("")) {
+                mNameEditText.setFocusable(true);
+            } else {
+                mSaveFrame = true;
+                messageAnimation(mAnimationDown, View.GONE);
+                mEffectView.requestRender();
+            }
+        });
+        mCancelButton.setOnClickListener(v -> messageAnimation(mAnimationDown, View.GONE));
     }
 
     @Override
@@ -168,12 +184,8 @@ public class MainActivity extends PhotoEffects {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri selectedImage = imageReturnedIntent.getData();
             try {
-                mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                mFlip = new int[2];
-                mFlip[0] = 0;
-                mFlip[1] = 0;
-                mCurrentEffect = "NONE";
-                mInitialized = false;
+                setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage));
+                clearFilters();
                 mEffectView.requestRender();
             } catch (IOException e) {
                 e.printStackTrace();

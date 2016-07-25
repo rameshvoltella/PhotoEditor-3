@@ -12,10 +12,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.Property;
@@ -40,18 +41,18 @@ import butterknife.BindView;
 public abstract class PhotoEffects extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     private static EffectContext mEffectContext;
-    protected boolean mInitialized = false;
+    private boolean mInitialized = false;
 
     //filters
     private static Effect mEffect;
-    protected static String mCurrentEffect;
+    private static String mCurrentEffect;
 
     //change properties value
     private static Effect mEffects[];
     private static boolean isEffectApply;
 
     //flip
-    protected static int[] mFlip;
+    private static int[] mFlip;
     private static boolean isFlipApply;
 
     //photo
@@ -59,14 +60,17 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     private static int mImageWidth;
     private static int mImageHeight;
     private static TextureRenderer mTexRenderer = new TextureRenderer();
-    protected Bitmap mBitmap;
-    private volatile boolean mSaveFrame;
+    private Bitmap mBitmap;
+    protected volatile boolean mSaveFrame;
 
     //photo container
     protected static GLSurfaceView mEffectView;
 
     @BindView(R.id.activity_main_layout_message)
     FrameLayout mMessageLayout;
+
+    @BindView(R.id.activity_main_linear_layout_message)
+    LinearLayout mMessageLinearLayout;
 
     @BindView(R.id.activity_main_edit_text_file_name)
     EditText mNameEditText;
@@ -81,18 +85,18 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
     protected void onPause() {
         super.onPause();
         mEffectView.onPause();
+        mInitialized = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mEffectView.onResume();
-        //mEffectContext = (EffectContext) getLastCustomNonConfigurationInstance();
     }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return mEffectContext;
+        return mBitmap;
     }
 
     //EffectFactory
@@ -105,7 +109,6 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
             loadPhoto(mBitmap);
             mInitialized = true;
         }
-
 
         // Apply users photo properties and filters
         //apply flip
@@ -376,17 +379,17 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
         int heightView = view.getHeight();
         int widthView = view.getWidth();
         int x, y, w, h;
-        if (heightView / height < widthView / width) {
+
+        if ((heightView / height) < (widthView / width)) {
             h = heightView;
             w = width * heightView / height;
-            x = (widthView - w) / 2;
-            y = h;
         } else {
             h = height * widthView / width;
             w = widthView;
-            x = w;
-            y = (heightView + h) / 2;
         }
+
+        x = (widthView - w) / 2;
+        y = (heightView - h) / 2;
 
         int b[] = new int[w * h];
         int bt[] = new int[w * h];
@@ -425,6 +428,8 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
                 }
             }
             MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            Toast toast = Toast.makeText(PhotoEffects.this, "Сохранено", Toast.LENGTH_SHORT);
+            toast.show();
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -450,25 +455,29 @@ public abstract class PhotoEffects extends AppCompatActivity implements GLSurfac
 
     }
 
-    //Enter Name Message
-    protected void showMessage() {
-        Animation animationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        Animation animationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
-        mMessageLayout.startAnimation(animationUp);
-        mMessageLayout.setVisibility(View.VISIBLE);
-        mOkButton.setOnClickListener(v -> {
-            if (mNameEditText.getText().toString().equals("")) {
-                mNameEditText.setFocusable(true);
-            } else {
-                mSaveFrame = true;
-                mMessageLayout.startAnimation(animationDown);
-                mMessageLayout.setVisibility(View.GONE);
-            }
-        });
-        mCancelButton.setOnClickListener(v -> {
-            mMessageLayout.startAnimation(animationDown);
-            mMessageLayout.setVisibility(View.GONE);
-        });
+    protected void messageAnimation(Animation animation, int visible) {
+        mMessageLayout.startAnimation(animation);
+        mMessageLayout.setVisibility(visible);
+        mMessageLinearLayout.setVisibility(visible);
+    }
+
+    protected void clearFilters(){
+        mFlip = new int[2];
+        mFlip[0] = 0;
+        mFlip[1] = 0;
+        mEffects = null;
+        mCurrentEffect = "NONE";
+        isEffectApply = false;
+        isFlipApply = false;
+        mInitialized = false;
+    }
+
+    protected void setBitmap(Bitmap bitmap){
+        mBitmap = bitmap;
+    }
+
+    protected Bitmap getBitmap() {
+        return mBitmap;
     }
 }
 
