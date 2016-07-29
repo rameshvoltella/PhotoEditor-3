@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.fragment;
+package com.example.olga.photoeditor.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,32 +9,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Date: 30.06.16
- * Time: 22:33
+ * Date: 01.07.16
+ * Time: 09:51
  *
  * @author Olga
  */
-public class StandardPropertyFragment extends LoaderPropertiesFragment {
+public class ExtendPropertyFragment extends LoaderPropertiesFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.userSelectProperties("standard");
+        mPresenter.userSelectProperties("extend");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mPresenter.userSaveProperties("standard");
+        mPresenter.userSaveProperties("extend");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.userUpdateProperties("standard");
+        mPresenter.userUpdateProperties("extend");
     }
 
-    public static List<Property> getStandardProperties(){
+    public static List<Property> getExtendProerties(){
         List<Property> properties = new ArrayList<>();
         properties.addAll(mAdapter.getCollection());
         return properties;

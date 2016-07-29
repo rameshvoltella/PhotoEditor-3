@@ -15,67 +15,59 @@
             android:paddingBottom="@dimen/item_filter_margin">
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_current"
+                android:id="@+id/fragment_filter_radio_button_0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/none_filter"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_crossprocess"
+                android:id="@+id/fragment_filter_radio_button_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/crossprocess"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_documentary"
+                android:id="@+id/fragment_filter_radio_button_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/documentary"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_grayscale"
+                android:id="@+id/fragment_filter_radio_button_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/grayscale"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_lomoish"
+                android:id="@+id/fragment_filter_radio_button_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/lomoish"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_negative"
+                android:id="@+id/fragment_filter_radio_button_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/negative"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_posterize"
+                android:id="@+id/fragment_filter_radio_button_6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/posterize"
                 android:textSize="@dimen/filter_text_size"/>
 
             <RadioButton
-                android:id="@+id/fragment_filter_radio_button_sepia"
+                android:id="@+id/fragment_filter_radio_button_7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_view_margin"
-                android:text="@string/sepia"
                 android:textSize="@dimen/filter_text_size"/>
 
         </RadioGroup>

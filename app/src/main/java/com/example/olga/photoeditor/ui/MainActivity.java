@@ -23,9 +23,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
-import com.example.olga.photoeditor.fragment.FilterFragment;
-import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.ExtendPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.FilterFragment;
+import com.example.olga.photoeditor.ui.fragment.StandardPropertyFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  * @author Olga
  */
 
-public class MainActivity extends PhotoEffects {
+public class MainActivity extends PhotoEffectsActivity {
 
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
@@ -220,7 +220,6 @@ public class MainActivity extends PhotoEffects {
             super.onBackPressed();
         }
     }
-
 
 }
 

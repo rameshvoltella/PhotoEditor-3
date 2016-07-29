@@ -44,7 +44,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
     @Override
     public void bind(final Property model) {
-        mTextViewProperty.setText(model.getPropertyName());
+        mTextViewProperty.setText(model.getPropertyDescription());
         mTextViewPercent.setText(model.getValue() + " %");
         mSeekBarPercent.setProgress(model.getValue());
         mImageView.setImageResource(model.getImageId());

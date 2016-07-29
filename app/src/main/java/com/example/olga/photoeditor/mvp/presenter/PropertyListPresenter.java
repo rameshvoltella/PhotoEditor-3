@@ -2,8 +2,8 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
-import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.ExtendPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.StandardPropertyFragment;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 import com.example.olga.photoeditor.ui.MainActivity;

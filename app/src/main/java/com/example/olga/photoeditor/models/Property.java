@@ -14,24 +14,34 @@ import java.util.List;
  * @author Olga
  */
 @SuppressWarnings("unused")
-public class Property implements Serializable {
+public enum Property implements Serializable {
 
     //Standard properties
-    private static final Property BRIGHTNESS = new Property("Яркость", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_brightness);
-    private static final Property CONTRAST = new Property("Контрастность", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_contrast);
-    private static final Property SATURATE = new Property("Насыщенность", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_saturate);
-    private static final Property SHARPEN = new Property("Резкость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_sharpen);
+    BRIGHTNESS("BRIGHTNESS", "Яркость", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_brightness),
+    CONTRAST("CONTRAST", "Контрастность", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_contrast),
+    SATURATE("SATURATE", "Насыщенность", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_saturate),
+    SHARPEN("SHARPEN", "Резкость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_sharpen),
 
     //Extend properties
-    private static final Property AUTOFIX = new Property("Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix);
-    private static final Property BLACKWHITE = new Property("Уровень черного/белого", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_filter_b_and_w);
-    private static final Property FILLIGHT = new Property("Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight);
-    private static final Property GRAIN = new Property("Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain);
-    private static final Property TEMPERATURE = new Property("Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny);
-    private static final Property FISHEYE = new Property("Объектив", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_camera);
-    private static final Property VIGNETTE = new Property("Виньетка", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_vignette);
+    AUTOFIX("AUTOFIX", "Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix),
+    BLACKWHITE("BLACKWHITE", "Уровень черного/белого", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_filter_b_and_w),
+    FILLIGHT("FILLIGHT", "Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight),
+    GRAIN("GRAIN", "Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain),
+    TEMPERATURE("TEMPERATURE", "Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny),
+    FISHEYE("FISHEYE", "Объектив", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_camera),
+    VIGNETTE("VIGNETTE", "Виньетка", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_vignette);
+
+    public static List<Property> getStandardProperties() {
+        return new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
+    }
+
+    public static List<Property> getExtendProperties() {
+        return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
+    }
 
     private String mPropertyName;
+
+    private String mPropertyDescription;
 
     private float mMinValue;
 
@@ -43,16 +53,9 @@ public class Property implements Serializable {
 
     private int mImageId;
 
-    public static List<Property> getStandardProperties() {
-        return new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
-    }
-
-    public static List<Property> getExtendProperties() {
-        return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
-    }
-
-    public Property(String propertyName, float minValue, float maxValue, float defaultValue, float currentValue, int imageUrl) {
+    Property(String propertyName, String propertyDescription, float minValue, float maxValue, float defaultValue, float currentValue, int imageUrl) {
         mPropertyName = propertyName;
+        mPropertyDescription = propertyDescription;
         mMinValue = minValue;
         mMaxValue = maxValue;
         mDefaultValue = defaultValue;
@@ -66,6 +69,14 @@ public class Property implements Serializable {
 
     public void setPropertyName(String propertyName) {
         mPropertyName = propertyName;
+    }
+
+    public String getPropertyDescription() {
+        return mPropertyDescription;
+    }
+
+    public void setPropertyDescription(String propertyDescription) {
+        mPropertyDescription = propertyDescription;
     }
 
     public double getMinValue() {

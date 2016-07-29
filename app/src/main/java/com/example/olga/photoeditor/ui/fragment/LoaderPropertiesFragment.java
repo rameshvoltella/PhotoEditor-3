@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.fragment;
+package com.example.olga.photoeditor.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

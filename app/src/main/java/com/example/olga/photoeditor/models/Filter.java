@@ -13,27 +13,29 @@ import java.util.List;
 
 
 @SuppressWarnings("unused")
-public class Filter {
+public enum Filter {
+
+    FLIPVERT("Отражение по вертикали", "FLIPVERT"),
+    FLIPHOR("Отражение по горизогтали", "FLIPHOR"),
+    NONE("Без фильтра", "NONE"),
+    CROSSPROCESS("Пленка", "CROSSPROCESS"),
+    DOCUMENTARY("Документальный", "DOCUMENTARY"),
+    GRAYSCALE("Оттенки серого", "GRAYSCALE"),
+    LOMOISH("Ломография", "LOMOISH"),
+    NEGATIVE("Негатив", "NEGATIVE"),
+    POSTERIZE("Постеризация", "POSTERIZE"),
+    SEPIA("Сепия", "SEPIA");
+
+    public static List<Filter> getFilterList() {
+        return new ArrayList<>(Arrays.asList(NONE, CROSSPROCESS, DOCUMENTARY, GRAYSCALE, LOMOISH, NEGATIVE, POSTERIZE, SEPIA));
+    }
 
     private String mFilterName;
     private String mFilterLabel;
 
-    public Filter(String filterName, String filterLabel) {
+    Filter(String filterName, String filterLabel) {
         mFilterName = filterName;
         mFilterLabel = filterLabel;
-    }
-
-    private static final Filter CURRENT = new  Filter("Без фильтра", "NONE");
-    private static final Filter CROSSPROCESS = new  Filter("Пленка", "CROSSPROCESS");
-    private static final Filter DOCUMENTARY = new  Filter("Документальный", "DOCUMENTARY");
-    private static final Filter GRAYSCALE = new  Filter("Оттенки серого", "GRAYSCALE");
-    private static final Filter LOMOISH = new  Filter("Ломография", "LOMOISH");
-    private static final Filter NEGATIVE = new  Filter("Негатив", "NEGATIVE");
-    private static final Filter POSTERIZE = new  Filter("Постеризыция", "POSTERIZE");
-    private static final Filter SEPIA = new  Filter("Сепия", "SEPIA");
-
-    public static List<Filter> getFilterList () {
-        return new ArrayList<>(Arrays.asList(CURRENT, CROSSPROCESS, DOCUMENTARY, GRAYSCALE, LOMOISH, NEGATIVE, POSTERIZE, SEPIA));
     }
 
     public String getFilterName() {
