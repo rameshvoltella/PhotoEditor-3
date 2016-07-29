@@ -1,14 +1,11 @@
 package com.example.olga.photoeditor.mvp.presenter;
 
-import android.content.Context;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.olga.photoeditor.db.FilterDataSource;
 import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
+import com.example.olga.photoeditor.ui.MainActivity;
 
-import java.util.List;
 
 /**
  * Date: 08.07.16
@@ -20,40 +17,21 @@ import java.util.List;
 @InjectViewState
 public class FiltersPresenter extends MvpPresenter<FiltersView> {
 
-    private FilterDataSource mFilterDataSource;
-    private Context mContext;
-
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
     }
 
-    public void userLoadFilters(Context context) {
-        mContext = context;
-        mFilterDataSource = new FilterDataSource(mContext);
-
-        List<Filter> filterList = mFilterDataSource.getAllFilters();
-
-        if (filterList.isEmpty()) {
-            filterList = Filter.getStandartFilters();
-            for (int i = 0; i < filterList.size(); i++) {
-                mFilterDataSource.saveFilter(filterList.get(i));
-            }
-        }
-        getViewState().hideProgress();
-        getViewState().showFiltersList();
-        getViewState().setData(filterList);
+    public void userSetFilter(String name) {
+        MainActivity.setCurrentFilter(name);
     }
 
-    public void userCheckFilter() {
+    public void userUpdateFiltersList() {
+        String currentFilterLabel = MainActivity.getmCurrentFilter();
+        Filter filter = Filter.valueOf(currentFilterLabel);
+        String currentFilterName = filter.getFilterName();
+        getViewState().checkCurrentFilter(currentFilterName);
     }
-
-    public void userCreateFilter() {
-    }
-
-    public void userRemoveFilter(Filter filter) {
-        mFilterDataSource.deleteFilter(filter);
-    }
-
 
 }
+

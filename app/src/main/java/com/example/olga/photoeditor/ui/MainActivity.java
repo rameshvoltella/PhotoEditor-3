@@ -1,10 +1,13 @@
 package com.example.olga.photoeditor.ui;
 
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -13,25 +16,32 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.fragment.ExtendPropertyFragment;
-import com.example.olga.photoeditor.fragment.FilterFragment;
-import com.example.olga.photoeditor.fragment.StandardPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.ExtendPropertyFragment;
+import com.example.olga.photoeditor.ui.fragment.FilterFragment;
+import com.example.olga.photoeditor.ui.fragment.StandardPropertyFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Date: 25.06.16
+ * Time: 13:38
+ *
+ * @author Olga
+ */
+
+public class MainActivity extends PhotoEffectsActivity {
 
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
@@ -42,25 +52,42 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.activity_main_nav_view)
     NavigationView navigationView;
 
-    @BindView((R.id.activity_main_drawerlayout))
+    @BindView(R.id.activity_main_drawerlayout)
     DrawerLayout mDrawerLayout;
 
+    private BottomBar mBottomBar;
+
+    //Fragments
     private static FilterFragment mFilterFragment;
     private static StandardPropertyFragment mStandardPropertyFragment;
     private static ExtendPropertyFragment mExtendPropertyFragment;
     private static FragmentManager fragmentManager;
-    private BottomBar mBottomBar;
-    private EditText mEditText;
-    private CheckBox mCheckBox;
 
-    private AlertDialog mPublicateDialog;
+    private static int GALLERY_REQUEST = 1;
 
+    private Animation mAnimationUp;
+    private Animation mAnimationDown;
+
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mEffectView = (GLSurfaceView) findViewById(R.id.activity_main_image_view_photo);
+        mEffectView.setEGLContextClientVersion(2);
+        mEffectView.setRenderer(this);
+        mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
+        mInitialized = false;
+        setBitmap((Bitmap) getLastCustomNonConfigurationInstance());
+        if (getBitmap() == null) {
+            //init EffectFactory
+            clearFilters();
+            setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pinguin));
+        }
+
+        //init fragments
         mFilterFragment = new FilterFragment();
         mStandardPropertyFragment = new StandardPropertyFragment();
         mExtendPropertyFragment = new ExtendPropertyFragment();
@@ -78,8 +105,10 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        //Bottom navbar
+        //Bottom navigation bar
         mBottomBar = BottomBar.attachShy(mCoordinatorLayout, findViewById(R.id.activity_main_relative_layout_scroll_container), savedInstanceState);
+        mBottomBar.useDarkTheme();
+        mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setItems(R.menu.bottom_menu);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
@@ -108,66 +137,62 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // Set behavior of Navigation drawer
+        // menu
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener()
-
-                {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        if (menuItem.isChecked()) menuItem.setChecked(false);
-                        else menuItem.setChecked(true);
-
-                        switch (menuItem.getItemId()) {
-
-                            case R.id.navigation_menu_item_select: {
-
-                                mDrawerLayout.closeDrawers();
-                                return true;
-                            }
-
-                            case R.id.navigation_menu_item_save: {
-
-                                mDrawerLayout.closeDrawers();
-                                return true;
-                            }
-
-                            case R.id.navigation_menu_item_publicate: {
-                                hideDialog();
-                                mEditText = new EditText(MainActivity.this);
-                                mEditText.setHeight(R.dimen.bb_height);
-                                mCheckBox = new CheckBox(MainActivity.this);
-                                mCheckBox.setText(R.string.check_friends);
-                                mPublicateDialog = new AlertDialog.Builder(MainActivity.this)
-                                        .setTitle(getString(R.string.send_photo))
-                                        .setView(mEditText)
-                                        .setView(mCheckBox)
-                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                showFriendList();
-                                            }
-                                        })
-                                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                            @Override
-                                            public void onCancel(DialogInterface dialog) {
-                                                hideDialog();
-                                            }
-                                        })
-                                        .show();
-                                mDrawerLayout.closeDrawers();
-                                return true;
-                            }
-
-                            default:
-
-                                mDrawerLayout.closeDrawers();
-                                return true;
+                menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.navigation_menu_item_select: {
+                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                            photoPickerIntent.setType("image/*");
+                            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+                            mDrawerLayout.closeDrawers();
+                            return true;
                         }
+
+                        case R.id.navigation_menu_item_save: {
+                            messageAnimation(mAnimationUp, View.VISIBLE);
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                        }
+
+                        default:
+                            mDrawerLayout.closeDrawers();
+                            return true;
                     }
+
                 }
         );
+
+        //enter name message
+        mAnimationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        mAnimationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        mOkButton.setOnClickListener(v -> {
+            if (mNameEditText.getText().toString().equals("")) {
+                mNameEditText.setFocusable(true);
+            } else {
+                mSaveFrame = true;
+                messageAnimation(mAnimationDown, View.GONE);
+                mEffectView.requestRender();
+            }
+        });
+        mCancelButton.setOnClickListener(v -> messageAnimation(mAnimationDown, View.GONE));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            Uri selectedImage = imageReturnedIntent.getData();
+            try {
+                mInitialized = false;
+                setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage));
+                clearFilters();
+                mEffectView.requestRender();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -182,8 +207,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         mBottomBar.onSaveInstanceState((outState));
     }
 
@@ -196,28 +221,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showFriendList() {
-        if (mCheckBox.isChecked()) {
-            Intent intent = new Intent(this, FriendListActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, R.string.publication, Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    private void hideDialog() {
-        if (mPublicateDialog != null) {
-            mPublicateDialog.dismiss();
-        }
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideDialog();
-
-    }
 }
 

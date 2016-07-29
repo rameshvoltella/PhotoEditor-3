@@ -7,8 +7,14 @@
     <dimen name="friend_avatar">80dp</dimen>
     <dimen name="friend_name_textsize">20sp</dimen>
     <dimen name="activity_vertical_padding">16dp</dimen>
-    <dimen name="photo_height">300dp</dimen>
+    <dimen name="photo_height">250dp</dimen>
     <dimen name="item_view_margin">8dp</dimen>
+    <dimen name="item_property_margin">24dp</dimen>
+    <dimen name="item_filter_margin">100dp</dimen>
     <dimen name="icon_size">36dp</dimen>
     <dimen name="item_text_size">7pt</dimen>
+    <dimen name="button_flip_size">50dp</dimen>
+    <dimen name="seekbar_margin">-5dp</dimen>
+    <dimen name="button_text_size">10sp</dimen>
+    <dimen name="filter_text_size">8pt</dimen>
 </resources>

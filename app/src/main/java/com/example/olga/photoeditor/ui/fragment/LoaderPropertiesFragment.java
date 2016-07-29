@@ -1,4 +1,4 @@
-package com.example.olga.photoeditor.fragment;
+package com.example.olga.photoeditor.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -16,6 +17,7 @@ import com.example.olga.photoeditor.adapter.PropertyViewHolder;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
+import com.example.olga.photoeditor.ui.MainActivity;
 
 import java.util.List;
 
@@ -30,12 +32,19 @@ import butterknife.ButterKnife;
  */
 public abstract class LoaderPropertiesFragment extends MvpFragment implements PropertyListView {
 
+    @BindView(R.id.fragment_property_list_button_flip_hor)
+    ImageButton mFlipHorButton;
+
+    @BindView(R.id.fragment_property_list_button_flip_vert)
+    ImageButton mFlipVertButton;
+
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
     @InjectPresenter
     PropertyListPresenter mPresenter;
-    CollectionRecycleAdapter<Property> mAdapter;
+
+    public static CollectionRecycleAdapter<Property> mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,17 +67,16 @@ public abstract class LoaderPropertiesFragment extends MvpFragment implements Pr
         mPropertyRecyclerView.setAdapter(mAdapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mFlipHorButton.setOnClickListener(view1 -> MainActivity.setFlip("FLIPHOR"));
+
+        mFlipVertButton.setOnClickListener(view1 -> MainActivity.setFlip("FLIPVERT"));
+
         return view;
     }
 
     @Override
     public void showProperties() {
         mPropertyRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProperties() {
-        mPropertyRecyclerView.setVisibility(View.GONE);
     }
 
     @Override

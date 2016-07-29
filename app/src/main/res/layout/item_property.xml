@@ -12,11 +12,13 @@
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
         android:layout_marginRight="@dimen/activity_vertical_margin"
-        android:src="@drawable/photo_property"/>
+        android:src="@drawable/photo_property"
+        android:tint="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
 
         <LinearLayout
@@ -45,6 +47,7 @@
         <SeekBar
             android:id="@+id/photo_item_property_seekbar"
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/seekbar_margin"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>

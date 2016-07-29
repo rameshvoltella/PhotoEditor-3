@@ -21,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -48,7 +52,7 @@ dependencies {
 
     //butterknife
     compile 'com.jakewharton:butterknife:8.1.0'
-    provided 'com.jakewharton:butterknife-compiler:8.1.0'
+    apt 'com.jakewharton:butterknife-compiler:8.1.0'
 
     //ORMLite
     compile 'com.j256.ormlite:ormlite-core:4.48'
@@ -65,4 +69,5 @@ dependencies {
 
 
 
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
