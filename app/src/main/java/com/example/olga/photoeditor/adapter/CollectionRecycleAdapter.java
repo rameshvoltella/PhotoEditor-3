@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author Olga
  */
+@SuppressWarnings("unused")
 public abstract class CollectionRecycleAdapter<T> extends RecyclerView.Adapter<CollectionRecycleAdapter.RecycleViewHolder> {
     protected LayoutInflater mInflater;
     private Context mContext;
@@ -100,6 +101,5 @@ public abstract class CollectionRecycleAdapter<T> extends RecyclerView.Adapter<C
             return itemView;
         }
     }
-
 
 }

@@ -4,7 +4,8 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
-import com.example.olga.photoeditor.ui.MainActivity;
+
+import java.util.List;
 
 
 /**
@@ -17,20 +18,47 @@ import com.example.olga.photoeditor.ui.MainActivity;
 @InjectViewState
 public class FiltersPresenter extends MvpPresenter<FiltersView> {
 
+    private String mCurrentFilter;
+    private List<Filter> mFilters;
+    private FilterListener<String> mFilterListener;
+
+    public void setFilterListener(FilterListener<String> filterListener) {
+        mFilterListener = filterListener;
+    }
+
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        mCurrentFilter = Filter.NONE.name();
+        mFilters = Filter.getFilterList();
     }
 
-    public void userSetFilter(String name) {
-        MainActivity.setCurrentFilter(name);
+    public void userCheckFilter(int i) {
+        String name = mFilters.get(i).name();
+        if (mCurrentFilter != null && !mCurrentFilter.equals(name)) {
+            mCurrentFilter = name;
+            mFilterListener.userSetFilter(mCurrentFilter);
+        }
+    }
+
+    public void userSelectFiltersTab() {
+        getViewState().setFiltersList(mFilters);
+    }
+
+    public void userResetFilter(){
+        mCurrentFilter = Filter.NONE.name();
+        getViewState().checkCurrentFilter(Filter.NONE.getFilterName());
     }
 
     public void userUpdateFiltersList() {
-        String currentFilterLabel = MainActivity.getmCurrentFilter();
-        Filter filter = Filter.valueOf(currentFilterLabel);
+        Filter filter = Filter.valueOf(mCurrentFilter);
         String currentFilterName = filter.getFilterName();
         getViewState().checkCurrentFilter(currentFilterName);
+    }
+
+    //Listener
+    public interface FilterListener<T> {
+        void userSetFilter(T data);
     }
 
 }

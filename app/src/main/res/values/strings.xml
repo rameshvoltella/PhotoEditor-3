@@ -25,5 +25,6 @@
     <string name="negative">Негатив</string>
     <string name="posterize">Постеризация</string>
     <string name="sepia">Сепия</string>
+    <string name="check_filter">Выберите фильтр</string>
 
 </resources>

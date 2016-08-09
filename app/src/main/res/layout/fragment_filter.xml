@@ -3,75 +3,89 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:layout_marginBottom="@dimen/activity_vertical_margin">
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RadioGroup
-            android:id="@+id/fragment_filter_radio_group"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/item_filter_margin">
+            android:textSize="@dimen/filter_text_size"
+            android:text="@string/check_filter"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_0"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioGroup
+                android:id="@+id/fragment_filter_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                android:paddingBottom="@dimen/item_filter_margin">
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-            <RadioButton
-                android:id="@+id/fragment_filter_radio_button_7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_view_margin"
-                android:textSize="@dimen/filter_text_size"/>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/fragment_filter_radio_button_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_view_margin"
+                    android:textSize="@dimen/filter_text_size"/>
 
-    </ScrollView>
+            </RadioGroup>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>

@@ -22,7 +22,7 @@ public class EffectsInitializer {
         EffectFactory effectFactory = effectContext.getFactory();
 
         for (int i = 0; i < changedProperties.size(); i++) {
-            Property property = Property.valueOf(changedProperties.get(i).getPropertyName());
+            Property property = Property.valueOf(changedProperties.get(i).name());
 
             float value = changedProperties.get(i).getCurrentValue();
             if (effects[i] != null) {
@@ -58,10 +58,17 @@ public class EffectsInitializer {
 
                 case BLACKWHITE:
                     effects[i] = effectFactory.createEffect(EffectFactory.EFFECT_BLACKWHITE);
-                    if (value >= 0.5) {
+                    if (value > 0.0f) {
                         effects[i].setParameter("black", value);
+                        effects[i].setParameter("white", 0.0f);
                     } else {
-                        effects[i].setParameter("white", (1.0f - value));
+                        if (value < 0.0f) {
+                            effects[i].setParameter("black", 0.0f);
+                            effects[i].setParameter("white", (-value));
+                        } else {
+                            effects[i].setParameter("black", 0.0f);
+                            effects[i].setParameter("white", 0.0f);
+                        }
                     }
                     break;
 
@@ -82,11 +89,6 @@ public class EffectsInitializer {
 
                 case FISHEYE:
                     effects[i] = effectFactory.createEffect(EffectFactory.EFFECT_FISHEYE);
-                    effects[i].setParameter("scale", value);
-                    break;
-
-                case VIGNETTE:
-                    effects[i] = effectFactory.createEffect(EffectFactory.EFFECT_VIGNETTE);
                     effects[i].setParameter("scale", value);
                     break;
 
