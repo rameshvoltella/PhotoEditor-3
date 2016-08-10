@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.olga.photoeditor.mvp.view.PhotoEffectsView;
 
@@ -22,6 +23,11 @@ import javax.microedition.khronos.opengles.GL10;
  * @author Olga
  */
 public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implements GLSurfaceView.Renderer, PhotoEffectsView {
+
+    private static final String PHOTO_EFFECT = "PHOTO_EFFECT";
+
+    //DataSource for setting
+    protected EffectDataSource mEffectDataSource;
 
     //photo
     private TextureRenderer mTexRenderer = new TextureRenderer();
@@ -37,6 +43,7 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
     //photo container
     private GLSurfaceView mEffectView;
 
+    //@InjectPresenter(type = PresenterType.GLOBAL, tag = PHOTO_EFFECT)
     @InjectPresenter
     PhotoEffectsPresenter mPresenter;
 
@@ -52,7 +59,8 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         //Set default/current photo
-        mPresenter.userUpdatePhoto(this, (Bitmap) getLastCustomNonConfigurationInstance());
+        mPresenter.initEditor(this);
+        mPresenter.userUpdatePhoto((Bitmap) getLastCustomNonConfigurationInstance());
     }
 
     @Override
@@ -92,7 +100,7 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
         renderResult(mResultTexture);
 
         if (mSaveFrame) {
-            mPresenter.userSavePhoto(this, mEffectView, gl, getContentResolver());
+            mPresenter.userSavePhoto(mEffectView, gl, getContentResolver());
             mSaveFrame = false;
         }
     }
@@ -143,6 +151,11 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
     @Override
     public void setEffect() {
         mEffectView.requestRender();
+    }
+
+    @Override
+    public void setEffectsData(EffectDataSource data) {
+        mEffectDataSource = data;
     }
 
     @Override

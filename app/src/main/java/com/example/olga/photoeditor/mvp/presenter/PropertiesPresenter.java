@@ -2,11 +2,12 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.models.EffectsLabel;
+import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -26,19 +27,19 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
 
     private List<Property> mStandardProperties;
     private List<Property> mExtendProperties;
+    private EffectDataSource mEffectDataSource;
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private Subscription mSubscription;
-    private PropertyListener<List<Property>, String> mPropertyListener;
-
-    public void setPropertyListener(PropertyListener<List<Property>, String> propertyListener) {
-        mPropertyListener = propertyListener;
-    }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
         mStandardProperties = Property.getStandardProperties();
         mExtendProperties = Property.getExtendProperties();
+    }
+
+    public void initEditor(EffectDataSource effectDataSource) {
+        mEffectDataSource = effectDataSource;
     }
 
     public void userSelectPropertiesTab(String string) {
@@ -54,59 +55,43 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public void userClickButton(String flip) {
-        mPropertyListener.userSetFlip(flip);
+        float value = mEffectDataSource.getEffectValue(flip);
+        if (value == 0.0f) {
+            value = 1.0f;
+        } else {
+            value = 0.0f;
+        }
+        mEffectDataSource.updateEffect(new PhotoEffect(flip, EffectsLabel.FILTER.name(), value));
     }
 
-    public void userChangePropertiesValue(String name, float value) {
-        mSubscription = getCurrentProperties(name, value)
-                .repeat(1)
+    public void userUpdateProperties() {
+        mSubscription = getProperties()
+                .repeat(2)
                 .subscribeOn(Schedulers.io())
-                .map(properties1 -> {
-                    List<Property> changedProperties = new ArrayList<>();
-                    for (int i = 0; i < properties1.size(); i++) {
-                        Property property = properties1.get(i);
-                        if (property.getCurrentValue() != property.getDefaultValue()) {
-                            changedProperties.add(properties1.get(i));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(effects -> {
+                    for (int i = 0; i < effects.size(); i++) {
+                        PhotoEffect effect = effects.get(i);
+                        for (int x = 0; x < mStandardProperties.size(); x++) {
+                            if (mStandardProperties.get(x).name().equals(effect.getEffectName())) {
+                                mStandardProperties.get(x).setCurrentValue(effect.getEffectValue());
+                            }
+                        }
+                        for (int y = 0; y < mExtendProperties.size(); y++) {
+                            if (mExtendProperties.get(y).name().equals(effect.getEffectName())) {
+                                mExtendProperties.get(y).setCurrentValue(effect.getEffectValue());
+                            }
+
                         }
                     }
-                    return changedProperties;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(properties -> {
-                    mPropertyListener.userSetProperties(properties);
                 });
     }
 
-    private Observable<List<Property>> getCurrentProperties(String name, float value) {
-        return Observable.create((Observable.OnSubscribe<List<Property>>) subscriber -> {
-            subscriber.onNext(getProperties(name, value));
+    private Observable<List<PhotoEffect>> getProperties() {
+        return Observable.create((Observable.OnSubscribe<List<PhotoEffect>>) subscriber -> {
+            subscriber.onNext(mEffectDataSource.getAllEffects());
             subscriber.onCompleted();
         });
     }
 
-    private List<Property> getProperties(String name, float value) {
-
-        for (int i = 0; i < mStandardProperties.size(); i++) {
-            if (mStandardProperties.get(i).getPropertyName().equals(name)) {
-                mStandardProperties.get(i).setCurrentValue(value);
-            }
-        }
-        for (int i = 0; i < mExtendProperties.size(); i++) {
-            if (mExtendProperties.get(i).getPropertyName().equals(name)) {
-                mExtendProperties.get(i).setCurrentValue(value);
-            }
-        }
-
-        List<Property> properties = new ArrayList<>();
-        properties.addAll(mStandardProperties);
-        properties.addAll(mExtendProperties);
-        return properties;
-    }
-
-    // Listener
-    public interface PropertyListener<T, S> {
-        void userSetProperties(T data);
-
-        void userSetFlip(S flip);
-    }
 }

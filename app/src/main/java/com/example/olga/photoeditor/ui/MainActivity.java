@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends PhotoEffectsActivity {
 
-    private static final String SET_LISTENER = "SET_LISTENER";
+    private static final String SET_DATA = "SET_DATA";
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
 
@@ -97,7 +97,7 @@ public class MainActivity extends PhotoEffectsActivity {
 
         //Set Listeners
         Bundle bundle = new Bundle();
-        bundle.putSerializable(SET_LISTENER, mPresenter);
+        bundle.putSerializable(SET_DATA, mEffectDataSource);
         mStandardPropertyFragment.setArguments(bundle);
         mExtendPropertyFragment.setArguments(bundle);
         mFilterFragment.setArguments(bundle);
