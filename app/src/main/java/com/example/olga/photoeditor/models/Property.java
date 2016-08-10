@@ -17,31 +17,28 @@ import java.util.List;
 public enum Property implements Serializable {
 
     //Standard properties
-    BRIGHTNESS("BRIGHTNESS", "Яркость", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_brightness),
-    CONTRAST("CONTRAST", "Контрастность", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_contrast),
-    SATURATE("SATURATE", "Насыщенность", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_saturate),
-    SHARPEN("SHARPEN", "Резкость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_sharpen),
+    BRIGHTNESS("Яркость", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_brightness),
+    CONTRAST("Контрастность", 1.0f, 2.0f, 1.0f, 1.0f, R.drawable.ic_contrast),
+    SATURATE("Насыщенность", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_saturate),
+    SHARPEN("Резкость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_sharpen),
 
     //Extend properties
-    AUTOFIX("AUTOFIX", "Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix),
-    BLACKWHITE("BLACKWHITE", "Уровень черного/белого", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_filter_b_and_w),
-    FILLIGHT("FILLIGHT", "Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight),
-    GRAIN("GRAIN", "Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain),
-    TEMPERATURE("TEMPERATURE", "Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny),
-    FISHEYE("FISHEYE", "Объектив", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_camera),
-    VIGNETTE("VIGNETTE", "Виньетка", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_vignette);
+    AUTOFIX("Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix),
+    BLACKWHITE("Уровень черного/белого", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_filter_b_and_w),
+    FILLIGHT("Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight),
+    GRAIN("Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain),
+    TEMPERATURE("Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny),
+    FISHEYE("Объектив", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_camera);
 
     public static List<Property> getStandardProperties() {
         return new ArrayList<>(Arrays.asList(BRIGHTNESS, CONTRAST, SATURATE, SHARPEN));
     }
 
     public static List<Property> getExtendProperties() {
-        return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE, VIGNETTE));
+        return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE));
     }
 
     private String mPropertyName;
-
-    private String mPropertyDescription;
 
     private float mMinValue;
 
@@ -53,9 +50,8 @@ public enum Property implements Serializable {
 
     private int mImageId;
 
-    Property(String propertyName, String propertyDescription, float minValue, float maxValue, float defaultValue, float currentValue, int imageUrl) {
+    Property(String propertyName, float minValue, float maxValue, float defaultValue, float currentValue, int imageUrl) {
         mPropertyName = propertyName;
-        mPropertyDescription = propertyDescription;
         mMinValue = minValue;
         mMaxValue = maxValue;
         mDefaultValue = defaultValue;
@@ -69,14 +65,6 @@ public enum Property implements Serializable {
 
     public void setPropertyName(String propertyName) {
         mPropertyName = propertyName;
-    }
-
-    public String getPropertyDescription() {
-        return mPropertyDescription;
-    }
-
-    public void setPropertyDescription(String propertyDescription) {
-        mPropertyDescription = propertyDescription;
     }
 
     public double getMinValue() {
@@ -120,7 +108,7 @@ public enum Property implements Serializable {
     }
 
     public int getValue() {
-        return (int) ((mCurrentValue - mMinValue) * 100/ (mMaxValue - mMinValue));
+        return (int) ((mCurrentValue - mMinValue) * 100 / (mMaxValue - mMinValue));
     }
 
     public void setValue(int currentValue) {

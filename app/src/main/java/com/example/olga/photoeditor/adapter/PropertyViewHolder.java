@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.mvp.presenter.PropertyListPresenter;
+import com.example.olga.photoeditor.mvp.presenter.PropertiesPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,19 +32,21 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
     @BindView(R.id.item_property_image_view_property)
     ImageView mImageView;
 
-    public PropertyViewHolder(View itemView) {
+    private PropertiesPresenter mPresenter;
+
+    public PropertyViewHolder(View itemView, PropertiesPresenter presenter) {
         super(itemView);
+        mPresenter = presenter;
     }
 
     @Override
     protected void create(View rootView) {
-
         ButterKnife.bind(this, itemView);
     }
 
     @Override
     public void bind(final Property model) {
-        mTextViewProperty.setText(model.getPropertyDescription());
+        mTextViewProperty.setText(model.getPropertyName());
         mTextViewPercent.setText(model.getValue() + " %");
         mSeekBarPercent.setProgress(model.getValue());
         mImageView.setImageResource(model.getImageId());
@@ -63,7 +65,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                PropertyListPresenter.userChangePropertiesValue();
+                mPresenter.userChangePropertiesValue(model.getPropertyName(), model.getCurrentValue());
             }
         });
     }

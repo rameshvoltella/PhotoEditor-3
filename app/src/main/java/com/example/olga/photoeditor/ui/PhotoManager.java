@@ -90,7 +90,7 @@ public class PhotoManager {
     public static void loadPhoto(Bitmap bitmap, int[] textures, TextureRenderer texRenderer) {
 
         // Generate textures
-        GLES20.glGenTextures(4, textures, 0);
+        GLES20.glGenTextures(5, textures, 0);
 
         //noinspection ConstantConditions
         int imageWidth = bitmap.getWidth();
