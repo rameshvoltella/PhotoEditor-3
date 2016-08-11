@@ -53,19 +53,16 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
     public void initEditor(Context context) {
         mContext = context;
         if (mEffectDataSource == null) {
-            mEffectDataSource = new EffectDataSource(context, this);
+            mEffectDataSource = new EffectDataSource(mContext, this);
             resetAllEffects();
         }
         getViewState().setEffectsData(mEffectDataSource);
     }
 
-    public void userUpdatePhoto(Bitmap bitmap) {
-
+    public void updatePhoto(Bitmap bitmap) {
         if (bitmap == null) {
-            resetAllEffects();
             bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pinguin);
         }
-
         getViewState().setBitmap(bitmap);
         getViewState().showPhoto();
     }
@@ -157,6 +154,7 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
         mFlip[1] = 0;
         mChangedProperties.clear();
         mCurrentFilter = Filter.NONE.name();
+
         //get all default properties
         List<Property> properties = Property.getStandardProperties();
         properties.addAll(Property.getExtendProperties());
@@ -165,12 +163,12 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
         //add flip effect
         filters.add(Filter.FLIPVERT);
         filters.add(Filter.FLIPHOR);
-        //add/update to database
+        //create default database
         mEffectDataSource.deleteAllEffects();
-        for (int i = 1; i < properties.size(); i++) {
+        for (int i = 0; i < properties.size(); i++) {
             mEffectDataSource.createEffect(new PhotoEffect(properties.get(i).name(), EffectsLabel.PROPERTY.name(), properties.get(i).getCurrentValue()));
         }
-        mEffectDataSource.updateEffect(new PhotoEffect(filters.get(0).name(), EffectsLabel.FILTER.name(), 1.0f));
+        mEffectDataSource.createEffect(new PhotoEffect(filters.get(0).name(), EffectsLabel.FILTER.name(), 1.0f));
         for (int i = 1; i < filters.size(); i++) {
             mEffectDataSource.createEffect(new PhotoEffect(filters.get(i).name(), EffectsLabel.FILTER.name(), 0.0f));
         }

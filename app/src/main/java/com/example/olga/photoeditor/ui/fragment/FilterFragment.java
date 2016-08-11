@@ -79,8 +79,8 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         mPresenter.initEditor(mEffectDataSource);
         mPresenter.userSelectFiltersTab();
         mPresenter.userUpdateFiltersList();

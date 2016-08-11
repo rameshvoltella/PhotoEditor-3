@@ -3,7 +3,6 @@ package com.example.olga.photoeditor.db;
 import android.content.Context;
 
 import com.example.olga.photoeditor.models.PhotoEffect;
-import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class EffectDataSource implements Serializable {
 
     public void createEffect(PhotoEffect photoEffect) {
         try {
-            mDbHelper.getPhotoEffectDao().createIfNotExists(photoEffect);
+            mDbHelper.getPhotoEffectDao().create(photoEffect);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -64,21 +63,18 @@ public class EffectDataSource implements Serializable {
         }
     }
 
-    public float getEffectValue(String name) {
+    public PhotoEffect findEffect(String name) {
         try {
-            QueryBuilder<PhotoEffect, Integer> effectQb = mDbHelper.getPhotoEffectDao().queryBuilder();
-            effectQb.where().eq(PhotoEffect.Column.EFFECT_NAME, name);
-            List<PhotoEffect> effects = mDbHelper.getPhotoEffectDao().queryBuilder().join(effectQb).query();
-            return effects.get(0).getEffectValue();
+            List<PhotoEffect> effects = mDbHelper.getPhotoEffectDao().queryBuilder().where().eq(PhotoEffect.Column.EFFECT_NAME, name).query();
+            return effects.get(0);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
-            return 5.0f;
+            return null;
         }
     }
 
-
     public interface ResultListener<T> {
-        void updateEffectValue(PhotoEffect effect);
+        void updateEffectValue(T effect);
     }
 
 }

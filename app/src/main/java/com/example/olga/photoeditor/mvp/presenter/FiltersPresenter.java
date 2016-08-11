@@ -3,7 +3,6 @@ package com.example.olga.photoeditor.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.db.EffectDataSource;
-import com.example.olga.photoeditor.models.EffectsLabel;
 import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
@@ -49,8 +48,15 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
     public void userCheckFilter(int i) {
         String name = mFilters.get(i).name();
         if (mCurrentFilter != null && !mCurrentFilter.equals(name)) {
-            mEffectDataSource.updateEffect(new PhotoEffect(mCurrentFilter, EffectsLabel.FILTER.name(), 0.0f));
-            mEffectDataSource.updateEffect(new PhotoEffect(name, EffectsLabel.FILTER.name(), 1.0f));
+            //reset current filter
+            PhotoEffect effect = mEffectDataSource.findEffect(mCurrentFilter);
+            effect.setEffectValue(0.0f);
+            mEffectDataSource.updateEffect(effect);
+            //set checked filter
+            effect = mEffectDataSource.findEffect(name);
+            effect.setEffectValue(1.0f);
+            mEffectDataSource.updateEffect(effect);
+
             mCurrentFilter = name;
         }
     }
@@ -65,8 +71,8 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
                         for (int j = 0; j < mFilters.size(); j++) {
                             if (effects.get(i).getEffectName().equals(mFilters.get(j).name())
                                     && effects.get(i).getEffectValue() == 1.0f) {
-                                mCurrentFilter = mFilters.get(i).name();
-                                String currentFilterName = mFilters.get(i).getFilterName();
+                                mCurrentFilter = mFilters.get(j).name();
+                                String currentFilterName = mFilters.get(j).getFilterName();
                                 getViewState().checkCurrentFilter(currentFilterName);
                             }
                         }
@@ -76,8 +82,13 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
 
     private Observable<List<PhotoEffect>> getProperties() {
         return Observable.create((Observable.OnSubscribe<List<PhotoEffect>>) subscriber -> {
-            subscriber.onNext(mEffectDataSource.getAllEffects());
-            subscriber.onCompleted();
+            try {
+                subscriber.onNext(mEffectDataSource.getAllEffects());
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
         });
     }
 

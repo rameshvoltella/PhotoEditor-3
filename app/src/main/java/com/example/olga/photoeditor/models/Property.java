@@ -24,7 +24,7 @@ public enum Property implements Serializable {
 
     //Extend properties
     AUTOFIX("Автокоррекция", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fix),
-    BLACKWHITE("Уровень черного/белого", -1.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_filter_b_and_w),
+    VIGNETTE("Виньетка", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_vignette),
     FILLIGHT("Заполняющий свет", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_fillight),
     GRAIN("Зернистость", 0.0f, 1.0f, 0.0f, 0.0f, R.drawable.ic_grain),
     TEMPERATURE("Температура", 0.0f, 1.0f, 0.5f, 0.5f, R.drawable.ic_sunny),
@@ -35,7 +35,7 @@ public enum Property implements Serializable {
     }
 
     public static List<Property> getExtendProperties() {
-        return new ArrayList<>(Arrays.asList(AUTOFIX, BLACKWHITE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE));
+        return new ArrayList<>(Arrays.asList(AUTOFIX, VIGNETTE, FILLIGHT, GRAIN, TEMPERATURE, FISHEYE));
     }
 
     private String mPropertyName;

@@ -2,6 +2,7 @@ package com.example.olga.photoeditor.models;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
@@ -17,9 +18,10 @@ import java.sql.SQLException;
  * @author Olga
  */
 
+@SuppressWarnings("unused")
 @DatabaseTable(tableName = PhotoEffect.TABLE)
 public class PhotoEffect implements Serializable {
-    public static final String TABLE = "PHOTO_EFFECT";
+    public static final String TABLE = "EFFECT";
 
     public static class Column {
         public static final String ID = "id";
@@ -34,16 +36,17 @@ public class PhotoEffect implements Serializable {
     @DatabaseField(columnName = Column.EFFECT_NAME)
     private String mEffectName;
 
-    @DatabaseField(columnName = Column.EFFECT_VALUE)
-    private float mEffectValue;
-
     @DatabaseField(columnName = Column.EFFECT_TYPE)
     private String mEffectType;
+
+    @DatabaseField(columnName = Column.EFFECT_VALUE)
+    private float mEffectValue;
 
     public PhotoEffect() {/**/}
 
     public PhotoEffect(String effectName, String effectType, float effectValue) {
         mEffectValue = effectValue;
+        mEffectType = effectType;
         mEffectName = effectName;
     }
 
@@ -83,8 +86,8 @@ public class PhotoEffect implements Serializable {
         TableUtils.createTable(connectionSource, PhotoEffect.class);
     }
 
-    public static void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) throws SQLException {
-        //use old
+    public static void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion, Dao dao) throws SQLException {
+        //
     }
 
 }

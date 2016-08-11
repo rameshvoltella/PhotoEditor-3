@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.db.EffectDataSource;
-import com.example.olga.photoeditor.models.EffectsLabel;
 import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.models.Property;
 
@@ -67,8 +66,11 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mEffectDataSource.updateEffect(new PhotoEffect(model.name(), EffectsLabel.PROPERTY.name(), model.getCurrentValue()));
+                PhotoEffect effect = mEffectDataSource.findEffect(model.name());
+                effect.setEffectValue(model.getCurrentValue());
+                mEffectDataSource.updateEffect(effect);
             }
         });
     }
+
 }

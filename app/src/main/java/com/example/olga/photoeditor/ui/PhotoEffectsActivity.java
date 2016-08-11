@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
 import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.olga.photoeditor.mvp.view.PhotoEffectsView;
@@ -43,8 +44,7 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
     //photo container
     private GLSurfaceView mEffectView;
 
-    //@InjectPresenter(type = PresenterType.GLOBAL, tag = PHOTO_EFFECT)
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.GLOBAL, tag = PHOTO_EFFECT)
     PhotoEffectsPresenter mPresenter;
 
     @Override
@@ -58,9 +58,14 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         //Set default/current photo
         mPresenter.initEditor(this);
-        mPresenter.userUpdatePhoto((Bitmap) getLastCustomNonConfigurationInstance());
+        mPresenter.updatePhoto((Bitmap) getLastCustomNonConfigurationInstance());
     }
 
     @Override
@@ -73,12 +78,6 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
     protected void onResume() {
         super.onResume();
         mEffectView.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mPresenter.detachView(this);
     }
 
     @Override

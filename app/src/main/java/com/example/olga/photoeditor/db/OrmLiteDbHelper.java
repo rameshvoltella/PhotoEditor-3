@@ -25,14 +25,10 @@ public class OrmLiteDbHelper extends OrmLiteSqliteOpenHelper {
 
     private Dao<PhotoEffect, Integer> mPhotoEffectDao;
 
-    public static OrmLiteDbHelper getInstance(Context context)
-    {
-        if (sInstance == null)
-        {
-            synchronized (OrmLiteDbHelper.class)
-            {
-                if (sInstance == null)
-                {
+    public static OrmLiteDbHelper getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (OrmLiteDbHelper.class) {
+                if (sInstance == null) {
                     sInstance = OpenHelperManager.getHelper(context, OrmLiteDbHelper.class);
                 }
             }
@@ -57,7 +53,7 @@ public class OrmLiteDbHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-            PhotoEffect.onUpgrade(database, connectionSource, oldVersion, newVersion);
+            PhotoEffect.onUpgrade(database, connectionSource, oldVersion, newVersion, mPhotoEffectDao);
         } catch (SQLException e) {
             e.printStackTrace();
         }

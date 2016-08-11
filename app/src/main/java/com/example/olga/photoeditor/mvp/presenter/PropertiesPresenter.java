@@ -55,13 +55,14 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public void userClickButton(String flip) {
-        float value = mEffectDataSource.getEffectValue(flip);
-        if (value == 0.0f) {
-            value = 1.0f;
+        //inverse current filter state
+        PhotoEffect effect = mEffectDataSource.findEffect(flip);
+        if (effect.getEffectValue() == 0.0f) {
+            effect.setEffectValue(1.0f);
         } else {
-            value = 0.0f;
+            effect.setEffectValue(0.0f);
         }
-        mEffectDataSource.updateEffect(new PhotoEffect(flip, EffectsLabel.FILTER.name(), value));
+        mEffectDataSource.updateEffect(effect);
     }
 
     public void userUpdateProperties() {
@@ -89,8 +90,13 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
 
     private Observable<List<PhotoEffect>> getProperties() {
         return Observable.create((Observable.OnSubscribe<List<PhotoEffect>>) subscriber -> {
-            subscriber.onNext(mEffectDataSource.getAllEffects());
-            subscriber.onCompleted();
+            try {
+                subscriber.onNext(mEffectDataSource.getAllEffects());
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
         });
     }
 

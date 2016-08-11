@@ -79,8 +79,8 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         mPresenter.userUpdateProperties();
     }
 
