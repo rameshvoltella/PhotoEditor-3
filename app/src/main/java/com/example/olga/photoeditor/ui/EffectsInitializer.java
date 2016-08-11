@@ -56,20 +56,9 @@ public class EffectsInitializer {
                     effects[i].setParameter("scale", value);
                     break;
 
-                case BLACKWHITE:
-                    effects[i] = effectFactory.createEffect(EffectFactory.EFFECT_BLACKWHITE);
-                    if (value > 0.0f) {
-                        effects[i].setParameter("black", value);
-                        effects[i].setParameter("white", 0.0f);
-                    } else {
-                        if (value < 0.0f) {
-                            effects[i].setParameter("black", 0.0f);
-                            effects[i].setParameter("white", (-value));
-                        } else {
-                            effects[i].setParameter("black", 0.0f);
-                            effects[i].setParameter("white", 0.0f);
-                        }
-                    }
+                case VIGNETTE:
+                    effects[i] = effectFactory.createEffect(EffectFactory.EFFECT_VIGNETTE);
+                    effects[i].setParameter("scale", value);
                     break;
 
                 case FILLIGHT:
@@ -162,4 +151,5 @@ public class EffectsInitializer {
         return effect;
 
     }
+
 }

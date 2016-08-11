@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends PhotoEffectsActivity {
 
-    private static final String SET_LISTENER = "SET_LISTENER";
+    private static final String SET_DATA = "SET_DATA";
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
 
@@ -95,13 +95,6 @@ public class MainActivity extends PhotoEffectsActivity {
         mExtendPropertyFragment = new ExtendPropertyFragment();
         fragmentManager = getSupportFragmentManager();
 
-        //Set Listeners
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SET_LISTENER, mPresenter);
-        mStandardPropertyFragment.setArguments(bundle);
-        mExtendPropertyFragment.setArguments(bundle);
-        mFilterFragment.setArguments(bundle);
-
         setSupportActionBar(toolbar);
 
         // Adding menu icon to Toolbar
@@ -119,32 +112,6 @@ public class MainActivity extends PhotoEffectsActivity {
         mBottomBar.useDarkTheme();
         mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setItems(R.menu.bottom_menu);
-        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
-            @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                if (menuItemId == R.id.bottom_menu_standard) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.activity_main_frame_layout_container, mStandardPropertyFragment)
-                            .addToBackStack(null)
-                            .commit();
-                } else if (menuItemId == R.id.bottom_menu_extend) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.activity_main_frame_layout_container, mExtendPropertyFragment)
-                            .addToBackStack(null)
-                            .commit();
-                } else {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.activity_main_frame_layout_container, mFilterFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-            }
-
-            @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-
-            }
-        });
 
         // menu
         navigationView.setNavigationItemSelectedListener(
@@ -185,6 +152,43 @@ public class MainActivity extends PhotoEffectsActivity {
             }
         });
         mCancelButton.setOnClickListener(v -> messageAnimation(mAnimationDown, View.GONE));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Set Listeners
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SET_DATA, mEffectDataSource);
+        mStandardPropertyFragment.setArguments(bundle);
+        mExtendPropertyFragment.setArguments(bundle);
+        mFilterFragment.setArguments(bundle);
+        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+            @Override
+            public void onMenuTabSelected(@IdRes int menuItemId) {
+                if (menuItemId == R.id.bottom_menu_standard) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_main_frame_layout_container, mStandardPropertyFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else if (menuItemId == R.id.bottom_menu_extend) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_main_frame_layout_container, mExtendPropertyFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_main_frame_layout_container, mFilterFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+
+            @Override
+            public void onMenuTabReSelected(@IdRes int menuItemId) {
+
+            }
+        });
     }
 
     @Override
@@ -231,5 +235,6 @@ public class MainActivity extends PhotoEffectsActivity {
         mMessageLayout.setVisibility(visible);
         mMessageLinearLayout.setVisibility(visible);
     }
+
 }
 

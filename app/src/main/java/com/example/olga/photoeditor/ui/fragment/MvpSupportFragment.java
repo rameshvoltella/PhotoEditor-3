@@ -45,7 +45,7 @@ public class MvpSupportFragment extends Fragment {
     }
 
     public MvpDelegate getMvpDelegate() {
-        if(this.mMvpDelegate == null) {
+        if (this.mMvpDelegate == null) {
             this.mMvpDelegate = new MvpDelegate(this);
         }
 
