@@ -2,17 +2,10 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
 
 import java.util.List;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -27,69 +20,45 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
 
     private String mCurrentFilter;
     private List<Filter> mFilters;
-    private EffectDataSource mEffectDataSource;
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private Subscription mSubscription;
+    private FilterListener<String> mFilterListener;
+
+    public void setFilterListener(FilterListener<String> filterListener) {
+        mFilterListener = filterListener;
+    }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        mCurrentFilter = Filter.NONE.name();
         mFilters = Filter.getFilterList();
     }
 
-    public void initEditor(EffectDataSource effectDataSource) {
-        mEffectDataSource = effectDataSource;
+    public void userCheckFilter(int i) {
+        String name = mFilters.get(i).name();
+        if (mCurrentFilter != null && !mCurrentFilter.equals(name)) {
+            mCurrentFilter = name;
+            mFilterListener.userSetFilter(mCurrentFilter);
+        }
     }
 
     public void userSelectFiltersTab() {
         getViewState().setFiltersList(mFilters);
     }
 
-    public void userCheckFilter(int i) {
-        String name = mFilters.get(i).name();
-        if (mCurrentFilter != null && !mCurrentFilter.equals(name)) {
-            //reset current filter
-            PhotoEffect effect = mEffectDataSource.findEffect(mCurrentFilter);
-            effect.setEffectValue(0.0f);
-            mEffectDataSource.updateEffect(effect);
-            //set checked filter
-            effect = mEffectDataSource.findEffect(name);
-            effect.setEffectValue(1.0f);
-            mEffectDataSource.updateEffect(effect);
-
-            mCurrentFilter = name;
-        }
+    public void userResetFilter(){
+        mCurrentFilter = Filter.NONE.name();
+        getViewState().checkCurrentFilter(Filter.NONE.getFilterName());
     }
 
     public void userUpdateFiltersList() {
-        mSubscription = getProperties()
-                .repeat(2)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(effects -> {
-                    for (int i = 0; i < effects.size(); i++) {
-                        for (int j = 0; j < mFilters.size(); j++) {
-                            if (effects.get(i).getEffectName().equals(mFilters.get(j).name())
-                                    && effects.get(i).getEffectValue() == 1.0f) {
-                                mCurrentFilter = mFilters.get(j).name();
-                                String currentFilterName = mFilters.get(j).getFilterName();
-                                getViewState().checkCurrentFilter(currentFilterName);
-                            }
-                        }
-                    }
-                });
+        Filter filter = Filter.valueOf(mCurrentFilter);
+        String currentFilterName = filter.getFilterName();
+        getViewState().checkCurrentFilter(currentFilterName);
     }
 
-    private Observable<List<PhotoEffect>> getProperties() {
-        return Observable.create((Observable.OnSubscribe<List<PhotoEffect>>) subscriber -> {
-            try {
-                subscriber.onNext(mEffectDataSource.getAllEffects());
-                subscriber.onCompleted();
-            } catch (Exception e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        });
+    //Listener
+    public interface FilterListener<T> {
+        void userSetFilter(T data);
     }
 
 }

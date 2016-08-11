@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 /**
  * Date: 09.07.2016
  * Time: 18:46
- *
  * @author Olga
  */
 public class TextureRenderer {
@@ -131,8 +130,8 @@ public class TextureRenderer {
 
     private void computeOutputVertices() {
         if (mPosVertices != null) {
-            float imgAspectRatio = mTexWidth / (float) mTexHeight;
-            float viewAspectRatio = mViewWidth / (float) mViewHeight;
+            float imgAspectRatio = mTexWidth / (float)mTexHeight;
+            float viewAspectRatio = mViewWidth / (float)mViewHeight;
             float relativeAspectRatio = viewAspectRatio / imgAspectRatio;
             float x0, y0, x1, y1;
             if (relativeAspectRatio > 1.0f) {
@@ -146,7 +145,7 @@ public class TextureRenderer {
                 x1 = 1.0f;
                 y1 = relativeAspectRatio;
             }
-            float[] coords = new float[]{x0, y0, x1, y0, x0, y1, x1, y1};
+            float[] coords = new float[] { x0, y0, x1, y0, x0, y1, x1, y1 };
             mPosVertices.put(coords).position(0);
         }
     }

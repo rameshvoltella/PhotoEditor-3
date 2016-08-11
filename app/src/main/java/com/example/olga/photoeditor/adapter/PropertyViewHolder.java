@@ -6,9 +6,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.db.EffectDataSource;
-import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.models.Property;
+import com.example.olga.photoeditor.mvp.presenter.PropertiesPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,11 +32,11 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
     @BindView(R.id.item_property_image_view_property)
     ImageView mImageView;
 
-    private EffectDataSource mEffectDataSource;
+    private PropertiesPresenter mPresenter;
 
-    public PropertyViewHolder(View itemView, EffectDataSource effectDataSource) {
+    public PropertyViewHolder(View itemView, PropertiesPresenter presenter) {
         super(itemView);
-        mEffectDataSource = effectDataSource;
+        mPresenter = presenter;
     }
 
     @Override
@@ -66,11 +65,8 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                PhotoEffect effect = mEffectDataSource.findEffect(model.name());
-                effect.setEffectValue(model.getCurrentValue());
-                mEffectDataSource.updateEffect(effect);
+                mPresenter.userChangePropertiesValue(model.getPropertyName(), model.getCurrentValue());
             }
         });
     }
-
 }

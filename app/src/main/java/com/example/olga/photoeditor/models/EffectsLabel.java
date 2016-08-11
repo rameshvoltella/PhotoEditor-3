@@ -9,6 +9,7 @@ package com.example.olga.photoeditor.models;
 public enum EffectsLabel {
     EXTEND,
     STANDARD,
+    FLIP,
     PROPERTY,
     FILTER;
 }
