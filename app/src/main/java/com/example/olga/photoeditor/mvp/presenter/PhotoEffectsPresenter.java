@@ -35,7 +35,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 @InjectViewState
-public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implements FiltersPresenter.FilterListener<String>, PropertiesPresenter.PropertyListener<List<Property>, String>, Serializable {
+public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implements FiltersPresenter.FilterListener<String>, PropertiesPresenter.PropertyListener<Property, String>, Serializable {
 
     private int mImageWidth;
     private int mImageHeight;
@@ -157,8 +157,18 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
     }
 
     @Override
-    public void userSetProperties(List<Property> properties) {
-        mChangedProperties = properties;
+    public void userSetProperties(Property property) {
+        if (mChangedProperties.size() != 0) {
+            for (int i = 0; i < mChangedProperties.size(); i++) {
+                if (mChangedProperties.get(i).name().equals(property.name())) {
+                    mChangedProperties.get(i).setCurrentValue(property.getCurrentValue());
+                } else {
+                    mChangedProperties.add(property);
+                }
+            }
+        } else {
+            mChangedProperties.add(property);
+        }
         getViewState().setEffect();
     }
 
@@ -175,6 +185,5 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
         }
         getViewState().setEffect();
     }
-
 
 }

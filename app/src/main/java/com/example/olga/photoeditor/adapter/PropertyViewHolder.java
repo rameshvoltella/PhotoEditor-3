@@ -65,7 +65,7 @@ public class PropertyViewHolder extends CollectionRecycleAdapter.RecycleViewHold
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mPresenter.userChangePropertiesValue(model.getPropertyName(), model.getCurrentValue());
+                mPresenter.userChangePropertiesValue(model);
             }
         });
     }

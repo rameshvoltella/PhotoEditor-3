@@ -43,11 +43,12 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
+    protected String mPropertiesType;
+
     @InjectPresenter
     PropertiesPresenter mPresenter;
 
     public CollectionRecycleAdapter<Property> mAdapter;
-    protected String propertiesList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +86,12 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     @Override
     public void setData(List<Property> properties) {
         mAdapter.setCollection(properties);
+    }
+
+    public void resetProperties() {
+        if (mPresenter != null) {
+            mPresenter.userResetProperties();
+        }
     }
 
 }

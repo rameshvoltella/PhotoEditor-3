@@ -85,12 +85,6 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mPresenter.userResetFilter();
-    }
-
-    @Override
     public void setFiltersList(List<Filter> filters) {
         for (int i = 0; i < filters.size(); i++) {
             mRadioButtons.get(i).setText(filters.get(i).getFilterName());
@@ -107,6 +101,12 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
         }
     }
 
+    public void resetFilters() {
+        if (mPresenter != null) {
+            mPresenter.userResetFilter();
+        }
+    }
+
     private void setFilter(int id) {
         for (int i = 0; i < mRadioButtons.size(); i++) {
             if (mRadioButtons.get(i).getId() == id) {
@@ -114,4 +114,5 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
             }
         }
     }
+
 }
