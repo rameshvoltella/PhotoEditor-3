@@ -68,12 +68,6 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mPresenter.detachView(this);
-    }
-
-    @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return mBitmap;
     }

@@ -153,6 +153,9 @@ public class MainActivity extends PhotoEffectsActivity {
                         case R.id.navigation_menu_item_select: {
                             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                             photoPickerIntent.setType("image/*");
+                            mStandardPropertyFragment.resetProperties();
+                            mExtendPropertyFragment.resetProperties();
+                            mFilterFragment.resetFilters();
                             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                             mDrawerLayout.closeDrawers();
                             return true;
@@ -168,7 +171,6 @@ public class MainActivity extends PhotoEffectsActivity {
                             mDrawerLayout.closeDrawers();
                             return true;
                     }
-
                 }
         );
 
@@ -231,5 +233,6 @@ public class MainActivity extends PhotoEffectsActivity {
         mMessageLayout.setVisibility(visible);
         mMessageLinearLayout.setVisibility(visible);
     }
+
 }
 
