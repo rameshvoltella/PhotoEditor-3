@@ -5,7 +5,6 @@ import android.opengl.GLES20;
 /**
  * Date: 09.07.2016
  * Time: 18:46
- *
  * @author Olga
  */
 public class GLToolbox {
@@ -76,5 +75,4 @@ public class GLToolbox {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
                 GLES20.GL_CLAMP_TO_EDGE);
     }
-
 }

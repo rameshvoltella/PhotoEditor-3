@@ -7,7 +7,6 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.example.olga.photoeditor.db.EffectDataSource;
 
 /**
  * Date: 03.08.16
@@ -26,14 +25,12 @@ public interface PhotoEffectsView extends MvpView {
 
     void changeTexture(int number, int data);
 
-    @StateStrategyType(value = SingleStateStrategy.class)
+    @StateStrategyType(SingleStateStrategy.class)
     void setBitmap(Bitmap bitmap);
 
     void setResultTexture(int resultTexture);
 
     void setEffect();
-
-    void setEffectsData(EffectDataSource data);
 
     void applyEffect(int sourceTexture, int destinationTexture, Effect effect, int height, int width);
 

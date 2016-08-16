@@ -16,12 +16,17 @@ public class ExtendPropertyFragment extends LoaderPropertiesFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        propertiesList = EffectsLabel.EXTEND.name();
+        mPropertiesType = EffectsLabel.EXTEND.name();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.userSelectPropertiesTab(propertiesList);
+        if (mReset) {
+            mPresenter.userResetProperties();
+            mReset = false;
+        }
+        mPresenter.userSelectPropertiesTab(mPropertiesType);
     }
+
 }

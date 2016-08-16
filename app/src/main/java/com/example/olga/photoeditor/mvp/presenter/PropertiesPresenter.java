@@ -2,18 +2,11 @@ package com.example.olga.photoeditor.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.models.EffectsLabel;
-import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
 import java.util.List;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Date: 05.07.16
@@ -27,9 +20,11 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
 
     private List<Property> mStandardProperties;
     private List<Property> mExtendProperties;
-    private EffectDataSource mEffectDataSource;
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private Subscription mSubscription;
+    private PropertyListener<Property, String> mPropertyListener;
+
+    public void setPropertyListener(PropertyListener<Property, String> propertyListener) {
+        mPropertyListener = propertyListener;
+    }
 
     @Override
     protected void onFirstViewAttach() {
@@ -38,8 +33,13 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
         mExtendProperties = Property.getExtendProperties();
     }
 
-    public void initEditor(EffectDataSource effectDataSource) {
-        mEffectDataSource = effectDataSource;
+    public void userResetProperties() {
+        for (int i = 0; i < mStandardProperties.size(); i++) {
+            mStandardProperties.get(i).setCurrentValue(mStandardProperties.get(i).getDefaultValue());
+        }
+        for (int i = 0; i < mExtendProperties.size(); i++) {
+            mExtendProperties.get(i).setCurrentValue(mExtendProperties.get(i).getDefaultValue());
+        }
     }
 
     public void userSelectPropertiesTab(String string) {
@@ -55,49 +55,17 @@ public class PropertiesPresenter extends MvpPresenter<PropertyListView> {
     }
 
     public void userClickButton(String flip) {
-        //inverse current filter state
-        PhotoEffect effect = mEffectDataSource.findEffect(flip);
-        if (effect.getEffectValue() == 0.0f) {
-            effect.setEffectValue(1.0f);
-        } else {
-            effect.setEffectValue(0.0f);
-        }
-        mEffectDataSource.updateEffect(effect);
+        mPropertyListener.userSetFlip(flip);
     }
 
-    public void userUpdateProperties() {
-        mSubscription = getProperties()
-                .repeat(2)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(effects -> {
-                    for (int i = 0; i < effects.size(); i++) {
-                        PhotoEffect effect = effects.get(i);
-                        for (int x = 0; x < mStandardProperties.size(); x++) {
-                            if (mStandardProperties.get(x).name().equals(effect.getEffectName())) {
-                                mStandardProperties.get(x).setCurrentValue(effect.getEffectValue());
-                            }
-                        }
-                        for (int y = 0; y < mExtendProperties.size(); y++) {
-                            if (mExtendProperties.get(y).name().equals(effect.getEffectName())) {
-                                mExtendProperties.get(y).setCurrentValue(effect.getEffectValue());
-                            }
-
-                        }
-                    }
-                });
+    public void userChangePropertiesValue(Property property) {
+        mPropertyListener.userSetProperties(property);
     }
 
-    private Observable<List<PhotoEffect>> getProperties() {
-        return Observable.create((Observable.OnSubscribe<List<PhotoEffect>>) subscriber -> {
-            try {
-                subscriber.onNext(mEffectDataSource.getAllEffects());
-                subscriber.onCompleted();
-            } catch (Exception e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        });
-    }
+    // Listener
+    public interface PropertyListener<T, S> {
+        void userSetProperties(T data);
 
+        void userSetFlip(S flip);
+    }
 }

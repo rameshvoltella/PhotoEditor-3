@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends PhotoEffectsActivity {
 
-    private static final String SET_DATA = "SET_DATA";
+    private static final String SET_LISTENER = "SET_LISTENER";
     @BindView(R.id.activity_main_main_content)
     CoordinatorLayout mCoordinatorLayout;
 
@@ -95,6 +95,13 @@ public class MainActivity extends PhotoEffectsActivity {
         mExtendPropertyFragment = new ExtendPropertyFragment();
         fragmentManager = getSupportFragmentManager();
 
+        //Set Listeners
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SET_LISTENER, mPresenter);
+        mStandardPropertyFragment.setArguments(bundle);
+        mExtendPropertyFragment.setArguments(bundle);
+        mFilterFragment.setArguments(bundle);
+
         setSupportActionBar(toolbar);
 
         // Adding menu icon to Toolbar
@@ -112,57 +119,6 @@ public class MainActivity extends PhotoEffectsActivity {
         mBottomBar.useDarkTheme();
         mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setItems(R.menu.bottom_menu);
-
-        // menu
-        navigationView.setNavigationItemSelectedListener(
-                menuItem -> {
-                    switch (menuItem.getItemId()) {
-                        case R.id.navigation_menu_item_select: {
-                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                            photoPickerIntent.setType("image/*");
-                            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
-
-                        case R.id.navigation_menu_item_save: {
-                            messageAnimation(mAnimationUp, View.VISIBLE);
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
-
-                        default:
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                    }
-
-                }
-        );
-
-        //enter name message
-        mAnimationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        mAnimationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
-
-        mOkButton.setOnClickListener(v -> {
-            if (mNameEditText.getText().toString().equals("")) {
-                mNameEditText.setFocusable(true);
-            } else {
-                setPhotoName(mNameEditText.getText().toString());
-                messageAnimation(mAnimationDown, View.GONE);
-            }
-        });
-        mCancelButton.setOnClickListener(v -> messageAnimation(mAnimationDown, View.GONE));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Set Listeners
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SET_DATA, mEffectDataSource);
-        mStandardPropertyFragment.setArguments(bundle);
-        mExtendPropertyFragment.setArguments(bundle);
-        mFilterFragment.setArguments(bundle);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
@@ -189,6 +145,48 @@ public class MainActivity extends PhotoEffectsActivity {
 
             }
         });
+
+        // menu
+        navigationView.setNavigationItemSelectedListener(
+                menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.navigation_menu_item_select: {
+                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                            photoPickerIntent.setType("image/*");
+                            mStandardPropertyFragment.resetProperties();
+                            mExtendPropertyFragment.resetProperties();
+                            mFilterFragment.resetFilters();
+                            startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                        }
+
+                        case R.id.navigation_menu_item_save: {
+                            messageAnimation(mAnimationUp, View.VISIBLE);
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                        }
+
+                        default:
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                    }
+                }
+        );
+
+        //enter name message
+        mAnimationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        mAnimationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        mOkButton.setOnClickListener(v -> {
+            if (mNameEditText.getText().toString().equals("")) {
+                mNameEditText.setFocusable(true);
+            } else {
+                setPhotoName(mNameEditText.getText().toString());
+                messageAnimation(mAnimationDown, View.GONE);
+            }
+        });
+        mCancelButton.setOnClickListener(v -> messageAnimation(mAnimationDown, View.GONE));
     }
 
     @Override

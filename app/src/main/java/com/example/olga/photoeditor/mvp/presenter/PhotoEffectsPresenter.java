@@ -13,10 +13,7 @@ import android.provider.MediaStore;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.db.EffectDataSource;
-import com.example.olga.photoeditor.models.EffectsLabel;
 import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.models.PhotoEffect;
 import com.example.olga.photoeditor.models.Property;
 import com.example.olga.photoeditor.mvp.view.PhotoEffectsView;
 import com.example.olga.photoeditor.ui.EffectsInitializer;
@@ -24,11 +21,11 @@ import com.example.olga.photoeditor.ui.PhotoManager;
 import com.example.olga.photoeditor.ui.TextureRenderer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
-
 
 /**
  * Date: 03.08.16
@@ -38,7 +35,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 @InjectViewState
-public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implements EffectDataSource.ResultListener<PhotoEffect> {
+public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implements FiltersPresenter.FilterListener<String>, PropertiesPresenter.PropertyListener<Property, String>, Serializable {
 
     private int mImageWidth;
     private int mImageHeight;
@@ -47,21 +44,11 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
     private String mCurrentFilter;
     private List<Property> mChangedProperties = new ArrayList<>();
     private static int[] mFlip;
-    private Context mContext;
-    EffectDataSource mEffectDataSource;
 
-    public void initEditor(Context context) {
-        mContext = context;
-        if (mEffectDataSource == null) {
-            mEffectDataSource = new EffectDataSource(mContext, this);
-            resetAllEffects();
-        }
-        getViewState().setEffectsData(mEffectDataSource);
-    }
-
-    public void updatePhoto(Bitmap bitmap) {
+    public void userUpdatePhoto(Context context, Bitmap bitmap) {
         if (bitmap == null) {
-            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pinguin);
+            resetAllEffects();
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pinguin);
         }
         getViewState().setBitmap(bitmap);
         getViewState().showPhoto();
@@ -70,22 +57,17 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
     public void userSelectPhoto(ContentResolver contentResolver, Uri selectedImage) {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage);
-            resetAllEffects();
             getViewState().setBitmap(bitmap);
+            resetAllEffects();
             getViewState().showPhoto();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void userEnterPhotoName(String name) {
-        mPhotoName = name;
-        getViewState().savePhoto();
-    }
-
-    public void userSavePhoto(GLSurfaceView glSurfaceView, GL10 gl, ContentResolver contentResolver) {
+    public void userSavePhoto(Context context, GLSurfaceView glSurfaceView, GL10 gl, ContentResolver contentResolver) {
         Bitmap photo = PhotoManager.savePixels(mImageHeight, mImageWidth, glSurfaceView, gl);
-        PhotoManager.savePhoto(photo, mPhotoName, contentResolver, mContext);
+        PhotoManager.savePhoto(photo, mPhotoName, contentResolver, context);
     }
 
     public void userInitTextures(TextureRenderer texRenderer, int textures[], Bitmap bitmap) {
@@ -148,30 +130,17 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
         getViewState().setResultTexture(resultTexture);
     }
 
+    public void userEnterPhotoName(String name) {
+        mPhotoName = name;
+        getViewState().savePhoto();
+    }
+
     private void resetAllEffects() {
         mFlip = new int[2];
         mFlip[0] = 0;
         mFlip[1] = 0;
         mChangedProperties.clear();
         mCurrentFilter = Filter.NONE.name();
-
-        //get all default properties
-        List<Property> properties = Property.getStandardProperties();
-        properties.addAll(Property.getExtendProperties());
-        //get all default filters
-        List<Filter> filters = Filter.getFilterList();
-        //add flip effect
-        filters.add(Filter.FLIPVERT);
-        filters.add(Filter.FLIPHOR);
-        //create default database
-        mEffectDataSource.deleteAllEffects();
-        for (int i = 0; i < properties.size(); i++) {
-            mEffectDataSource.createEffect(new PhotoEffect(properties.get(i).name(), EffectsLabel.PROPERTY.name(), properties.get(i).getCurrentValue()));
-        }
-        mEffectDataSource.createEffect(new PhotoEffect(filters.get(0).name(), EffectsLabel.FILTER.name(), 1.0f));
-        for (int i = 1; i < filters.size(); i++) {
-            mEffectDataSource.createEffect(new PhotoEffect(filters.get(i).name(), EffectsLabel.FILTER.name(), 0.0f));
-        }
     }
 
     private void releaseEffect(Effect effect) {
@@ -180,33 +149,41 @@ public class PhotoEffectsPresenter extends MvpPresenter<PhotoEffectsView> implem
         }
     }
 
+    //Listeners
     @Override
-    public void updateEffectValue(PhotoEffect effect) {
-        if (effect.getEffectType().equals(EffectsLabel.PROPERTY.name())) {
-            Property property = Property.valueOf(effect.getEffectName());
-            property.setCurrentValue(effect.getEffectValue());
+    public void userSetFilter(String name) {
+        mCurrentFilter = name;
+        getViewState().setEffect();
+    }
+
+    @Override
+    public void userSetProperties(Property property) {
+        if (mChangedProperties.size() != 0) {
             for (int i = 0; i < mChangedProperties.size(); i++) {
-                if (mChangedProperties.get(i).name().equals(effect.getEffectName())) {
-                    mChangedProperties.remove(i);
-                    break;
+                if (mChangedProperties.get(i).name().equals(property.name())) {
+                    mChangedProperties.get(i).setCurrentValue(property.getCurrentValue());
+                } else {
+                    mChangedProperties.add(property);
                 }
             }
+        } else {
             mChangedProperties.add(property);
-        }
-        if (effect.getEffectType().equals(EffectsLabel.FILTER.name())) {
-            Filter filter = Filter.valueOf(effect.getEffectName());
-            switch (filter) {
-                case FLIPVERT:
-                    ++mFlip[1];
-                    break;
-                case FLIPHOR:
-                    ++mFlip[0];
-                    break;
-                default:
-                    mCurrentFilter = effect.getEffectName();
-                    break;
-            }
         }
         getViewState().setEffect();
     }
+
+    @Override
+    public void userSetFlip(String flip) {
+        Filter filter = Filter.valueOf(flip);
+        switch (filter) {
+            case FLIPVERT:
+                ++mFlip[1];
+                break;
+            case FLIPHOR:
+                ++mFlip[0];
+                break;
+        }
+        getViewState().setEffect();
+    }
+
 }

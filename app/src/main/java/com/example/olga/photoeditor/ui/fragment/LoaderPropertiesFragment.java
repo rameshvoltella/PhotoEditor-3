@@ -13,9 +13,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.olga.photoeditor.R;
 import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.olga.photoeditor.adapter.PropertyViewHolder;
-import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.models.Property;
+import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.olga.photoeditor.mvp.presenter.PropertiesPresenter;
 import com.example.olga.photoeditor.mvp.view.PropertyListView;
 
@@ -32,8 +32,7 @@ import butterknife.ButterKnife;
  */
 public abstract class LoaderPropertiesFragment extends MvpSupportFragment implements PropertyListView {
 
-    private static final String SET_DATA = "SET_DATA";
-    protected EffectDataSource mEffectDataSource;
+    private static final String SET_LISTENER = "SET_LISTENER";
 
     @BindView(R.id.fragment_property_list_button_flip_hor)
     ImageButton mFlipHorButton;
@@ -44,16 +43,20 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     @BindView(R.id.property_list_recycleview_list)
     RecyclerView mPropertyRecyclerView;
 
+    protected String mPropertiesType;
+
+    protected boolean mReset;
+
     @InjectPresenter
     PropertiesPresenter mPresenter;
 
     public CollectionRecycleAdapter<Property> mAdapter;
-    protected String propertiesList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEffectDataSource = (EffectDataSource) this.getArguments().getSerializable(SET_DATA);
+        PhotoEffectsPresenter activityPresenter = (PhotoEffectsPresenter) this.getArguments().getSerializable(SET_LISTENER);
+        mPresenter.setPropertyListener(activityPresenter);
     }
 
     @Nullable
@@ -65,23 +68,16 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
         mAdapter = new CollectionRecycleAdapter<Property>(getActivity()) {
             @Override
             public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_property, parent, false), mEffectDataSource);
+                return new PropertyViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_property, parent, false), mPresenter);
             }
         };
         mPropertyRecyclerView.setAdapter(mAdapter);
         mPropertyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mPresenter.initEditor(mEffectDataSource);
         mFlipHorButton.setOnClickListener(view1 -> mPresenter.userClickButton(Filter.FLIPHOR.name()));
         mFlipVertButton.setOnClickListener(view1 -> mPresenter.userClickButton(Filter.FLIPVERT.name()));
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mPresenter.userUpdateProperties();
     }
 
     @Override
@@ -92,6 +88,10 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     @Override
     public void setData(List<Property> properties) {
         mAdapter.setCollection(properties);
+    }
+
+    public void resetProperties() {
+        mReset = true;
     }
 
 }

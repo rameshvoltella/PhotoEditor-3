@@ -11,9 +11,9 @@ import android.widget.RadioGroup;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
 import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.db.EffectDataSource;
 import com.example.olga.photoeditor.models.Filter;
 import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
+import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.olga.photoeditor.mvp.view.FiltersView;
 
 import java.util.ArrayList;
@@ -25,11 +25,8 @@ import butterknife.ButterKnife;
 
 public class FilterFragment extends MvpSupportFragment implements FiltersView {
 
-    private static final String SET_DATA = "SET_DATA";
-    protected EffectDataSource mEffectDataSource;
-
+    private static final String SET_LISTENER = "SET_LISTENER";
     private static final String FILTER = "FILTER";
-
     @BindView(R.id.fragment_filter_radio_group)
     RadioGroup mFilterRadioGroup;
 
@@ -62,10 +59,13 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
 
     private List<RadioButton> mRadioButtons;
 
+    private boolean mReset;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEffectDataSource = (EffectDataSource) this.getArguments().getSerializable(SET_DATA);
+        PhotoEffectsPresenter activityPresenter = (PhotoEffectsPresenter) this.getArguments().getSerializable(SET_LISTENER);
+        mPresenter.setFilterListener(activityPresenter);
     }
 
     @Nullable
@@ -79,10 +79,13 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mPresenter.initEditor(mEffectDataSource);
+    public void onResume() {
+        super.onResume();
         mPresenter.userSelectFiltersTab();
+        if (mReset) {
+            mPresenter.userResetFilter();
+            mReset = false;
+        }
         mPresenter.userUpdateFiltersList();
         mFilterRadioGroup.setOnCheckedChangeListener((group, checkedId) -> setFilter(checkedId));
     }
@@ -104,6 +107,10 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
         }
     }
 
+    public void resetFilters() {
+        mReset = true;
+    }
+
     private void setFilter(int id) {
         for (int i = 0; i < mRadioButtons.size(); i++) {
             if (mRadioButtons.get(i).getId() == id) {
@@ -111,4 +118,5 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
             }
         }
     }
+
 }

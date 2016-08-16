@@ -40,11 +40,10 @@ public class MvpAppCompatActivity extends AppCompatActivity {
     }
 
     public MvpDelegate getMvpDelegate() {
-        if (this.mMvpDelegate == null) {
+        if(this.mMvpDelegate == null) {
             this.mMvpDelegate = new MvpDelegate(this);
         }
 
         return this.mMvpDelegate;
     }
-
 }
