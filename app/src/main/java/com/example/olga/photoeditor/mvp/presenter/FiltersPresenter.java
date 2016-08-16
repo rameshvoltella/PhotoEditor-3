@@ -45,9 +45,8 @@ public class FiltersPresenter extends MvpPresenter<FiltersView> {
         getViewState().setFiltersList(mFilters);
     }
 
-    public void userResetFilter(){
+    public void userResetFilter() {
         mCurrentFilter = Filter.NONE.name();
-        getViewState().checkCurrentFilter(Filter.NONE.getFilterName());
     }
 
     public void userUpdateFiltersList() {

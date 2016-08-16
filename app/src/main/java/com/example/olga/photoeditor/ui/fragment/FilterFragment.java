@@ -59,6 +59,8 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
 
     private List<RadioButton> mRadioButtons;
 
+    private boolean mReset;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,10 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
     public void onResume() {
         super.onResume();
         mPresenter.userSelectFiltersTab();
+        if (mReset) {
+            mPresenter.userResetFilter();
+            mReset = false;
+        }
         mPresenter.userUpdateFiltersList();
         mFilterRadioGroup.setOnCheckedChangeListener((group, checkedId) -> setFilter(checkedId));
     }
@@ -102,9 +108,7 @@ public class FilterFragment extends MvpSupportFragment implements FiltersView {
     }
 
     public void resetFilters() {
-        if (mPresenter != null) {
-            mPresenter.userResetFilter();
-        }
+        mReset = true;
     }
 
     private void setFilter(int id) {

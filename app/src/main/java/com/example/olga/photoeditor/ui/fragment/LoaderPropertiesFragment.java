@@ -45,6 +45,8 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
 
     protected String mPropertiesType;
 
+    protected boolean mReset;
+
     @InjectPresenter
     PropertiesPresenter mPresenter;
 
@@ -89,9 +91,7 @@ public abstract class LoaderPropertiesFragment extends MvpSupportFragment implem
     }
 
     public void resetProperties() {
-        if (mPresenter != null) {
-            mPresenter.userResetProperties();
-        }
+        mReset = true;
     }
 
 }

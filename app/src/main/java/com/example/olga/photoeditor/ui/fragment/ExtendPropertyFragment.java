@@ -22,6 +22,10 @@ public class ExtendPropertyFragment extends LoaderPropertiesFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (mReset) {
+            mPresenter.userResetProperties();
+            mReset = false;
+        }
         mPresenter.userSelectPropertiesTab(mPropertiesType);
     }
 
