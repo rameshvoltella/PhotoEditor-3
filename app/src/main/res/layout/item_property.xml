@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:padding="@dimen/item_view_margin"
-              android:paddingBottom="0dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/item_view_margin"
+    android:paddingBottom="0dp">
 
     <ImageView
         android:id="@+id/item_property_image_view_property"
@@ -13,7 +13,7 @@
         android:layout_height="@dimen/icon_size"
         android:layout_marginRight="@dimen/activity_vertical_margin"
         android:src="@drawable/photo_property"
-        android:tint="@color/white"/>
+        android:tint="@color/colorAccent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,24 +31,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/item_view_margin"
+                android:textColor="@color/black"
                 android:textSize="@dimen/item_text_size"
-                tools:text="@string/property"/>
+                tools:text="@string/property" />
 
             <TextView
                 android:id="@+id/item_property_textview_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:textColor="@color/black"
                 android:textSize="@dimen/item_text_size"
-                tools:text="XX %"/>
+                tools:text="XX %" />
 
         </LinearLayout>
 
         <SeekBar
-            android:id="@+id/photo_item_property_seekbar"
+            android:id="@+id/photo_item_property_seek_bar"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/seekbar_margin"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/seek_bar_margin" />
 
     </LinearLayout>
 
