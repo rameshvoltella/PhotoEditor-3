@@ -50,6 +50,11 @@ public abstract class PhotoEffectsActivity extends MvpAppCompatActivity implemen
         mEffectView.setRenderer(this);
         mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         //Set default/current photo
         mPresenter.userUpdatePhoto(this, (Bitmap) getLastCustomNonConfigurationInstance());
     }

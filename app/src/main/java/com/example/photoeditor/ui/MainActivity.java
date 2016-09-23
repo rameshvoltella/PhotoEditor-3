@@ -3,6 +3,7 @@ package com.example.photoeditor.ui;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -25,6 +26,8 @@ import com.example.photoeditor.ui.fragment.ExtendPropertyFragment;
 import com.example.photoeditor.ui.fragment.FilterFragment;
 import com.example.photoeditor.ui.fragment.StandardPropertyFragment;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabClickListener;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -105,16 +108,15 @@ public class MainActivity extends PhotoEffectsActivity {
         if (supportActionBar != null) {
             VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
             //noinspection ConstantConditions
-            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
+            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.darkGray, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         //Bottom navigation bar
         mBottomBar = BottomBar.attachShy(mCoordinatorLayout, findViewById(R.id.activity_main_relative_layout_scroll_container), savedInstanceState);
-        mBottomBar.useDarkTheme();
-        mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setItems(R.menu.bottom_menu);
+        mBottomBar.setActiveTabColor(R.color.green);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {

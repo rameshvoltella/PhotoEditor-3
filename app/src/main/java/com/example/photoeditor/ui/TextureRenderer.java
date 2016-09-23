@@ -123,7 +123,7 @@ public class TextureRenderer {
         GLES20.glUniform1i(mTexSamplerHandle, 0);
 
         // Draw
-        GLES20.glClearColor((float)225/255, (float)225/255, (float)225/255, 1.0f);
+        GLES20.glClearColor((float)240/255, (float)240/255, (float)240/255, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
