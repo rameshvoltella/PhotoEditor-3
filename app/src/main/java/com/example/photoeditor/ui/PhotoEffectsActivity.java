@@ -9,14 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
-<<<<<<< HEAD:app/src/main/java/com/example/olga/photoeditor/ui/PhotoEffectsActivity.java
-import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
-import com.example.olga.photoeditor.mvp.view.PhotoEffectsView;
-=======
 import com.example.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.photoeditor.mvp.view.PhotoEffectsView;
->>>>>>> master:app/src/main/java/com/example/photoeditor/ui/PhotoEffectsActivity.java
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 

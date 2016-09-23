@@ -12,15 +12,6 @@ import android.provider.MediaStore;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-<<<<<<< HEAD:app/src/main/java/com/example/olga/photoeditor/mvp/presenter/PhotoEffectsPresenter.java
-import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.mvp.view.PhotoEffectsView;
-import com.example.olga.photoeditor.ui.EffectsInitializer;
-import com.example.olga.photoeditor.ui.PhotoManager;
-import com.example.olga.photoeditor.ui.TextureRenderer;
-=======
 import com.example.photoeditor.R;
 import com.example.photoeditor.models.Filter;
 import com.example.photoeditor.models.Property;
@@ -28,7 +19,6 @@ import com.example.photoeditor.mvp.view.PhotoEffectsView;
 import com.example.photoeditor.ui.EffectsInitializer;
 import com.example.photoeditor.ui.PhotoManager;
 import com.example.photoeditor.ui.TextureRenderer;
->>>>>>> master:app/src/main/java/com/example/photoeditor/mvp/presenter/PhotoEffectsPresenter.java
 
 import java.io.IOException;
 import java.io.Serializable;

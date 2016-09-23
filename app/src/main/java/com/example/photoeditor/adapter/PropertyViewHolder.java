@@ -5,15 +5,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-<<<<<<< HEAD:app/src/main/java/com/example/olga/photoeditor/adapter/PropertyViewHolder.java
-import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.mvp.presenter.PropertiesPresenter;
-=======
 import com.example.photoeditor.R;
 import com.example.photoeditor.models.Property;
 import com.example.photoeditor.mvp.presenter.PropertiesPresenter;
->>>>>>> master:app/src/main/java/com/example/photoeditor/adapter/PropertyViewHolder.java
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

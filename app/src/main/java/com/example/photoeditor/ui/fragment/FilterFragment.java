@@ -10,19 +10,11 @@ import android.widget.RadioGroup;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
-<<<<<<< HEAD:app/src/main/java/com/example/olga/photoeditor/ui/fragment/FilterFragment.java
-import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.mvp.presenter.FiltersPresenter;
-import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
-import com.example.olga.photoeditor.mvp.view.FiltersView;
-=======
 import com.example.photoeditor.R;
 import com.example.photoeditor.models.Filter;
 import com.example.photoeditor.mvp.presenter.FiltersPresenter;
 import com.example.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.photoeditor.mvp.view.FiltersView;
->>>>>>> master:app/src/main/java/com/example/photoeditor/ui/fragment/FilterFragment.java
 
 import java.util.ArrayList;
 import java.util.Arrays;

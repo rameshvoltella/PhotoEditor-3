@@ -8,18 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-
 import com.arellomobile.mvp.presenter.InjectPresenter;
-<<<<<<< HEAD:app/src/main/java/com/example/olga/photoeditor/ui/fragment/LoaderPropertiesFragment.java
-import com.example.olga.photoeditor.R;
-import com.example.olga.photoeditor.adapter.CollectionRecycleAdapter;
-import com.example.olga.photoeditor.adapter.PropertyViewHolder;
-import com.example.olga.photoeditor.models.Filter;
-import com.example.olga.photoeditor.models.Property;
-import com.example.olga.photoeditor.mvp.presenter.PhotoEffectsPresenter;
-import com.example.olga.photoeditor.mvp.presenter.PropertiesPresenter;
-import com.example.olga.photoeditor.mvp.view.PropertyListView;
-=======
 import com.example.photoeditor.R;
 import com.example.photoeditor.adapter.CollectionRecycleAdapter;
 import com.example.photoeditor.adapter.PropertyViewHolder;
@@ -28,10 +17,7 @@ import com.example.photoeditor.models.Property;
 import com.example.photoeditor.mvp.presenter.PhotoEffectsPresenter;
 import com.example.photoeditor.mvp.presenter.PropertiesPresenter;
 import com.example.photoeditor.mvp.view.PropertyListView;
->>>>>>> master:app/src/main/java/com/example/photoeditor/ui/fragment/LoaderPropertiesFragment.java
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

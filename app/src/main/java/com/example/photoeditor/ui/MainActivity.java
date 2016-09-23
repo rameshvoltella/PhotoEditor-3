@@ -3,7 +3,6 @@ package com.example.photoeditor.ui;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -21,14 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import com.example.photoeditor.R;
 import com.example.photoeditor.ui.fragment.ExtendPropertyFragment;
 import com.example.photoeditor.ui.fragment.FilterFragment;
 import com.example.photoeditor.ui.fragment.StandardPropertyFragment;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabClickListener;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -211,7 +207,6 @@ public class MainActivity extends PhotoEffectsActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mBottomBar.onSaveInstanceState((outState));
     }
 
     @Override
